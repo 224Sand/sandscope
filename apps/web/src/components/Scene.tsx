@@ -18,11 +18,17 @@ export default function Scene({
   heading,
   body,
   aside,
+  media,
 }: {
   kicker: string;
   heading: string;
   body: string;
   aside?: React.ReactNode;
+  /** Ambient background clip name, from public/media. Optional by design: a
+   *  scene whose argument is carried by a table does not need footage behind
+   *  it, and putting video behind every section is texture rather than
+   *  emphasis. */
+  media?: string;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
@@ -47,7 +53,26 @@ export default function Scene({
   }, []);
 
   return (
-    <section style={{ borderTop: "1px solid var(--line)" }}>
+    <section className="scene" style={{ borderTop: "1px solid var(--line)" }}>
+      {media && (
+        /* Poster-first, video lazily. The clip is decoration: it must never
+           delay the text, and it is muted/inert so it cannot demand attention
+           the content has not earned. Hidden entirely under reduced motion —
+           a looping background is motion whether or not it was asked for. */
+        <div className="scene-media" aria-hidden="true">
+          <video
+            className="scene-video"
+            src={`/media/${media}.mp4`}
+            poster={`/media/${media}.jpg`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="none"
+          />
+          <div className="scene-scrim" />
+        </div>
+      )}
       <div
         ref={ref}
         className="wrap"

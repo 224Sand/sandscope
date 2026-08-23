@@ -31,6 +31,12 @@ const KEYFRAME_INTERVAL = 6;
  *  whatever is trending today is not a reproducible build. */
 const CLIPS = [
   { id: 7140928, name: "hero", startSeconds: 1 },
+  // Ambient section grounds (S9). Each is treated exactly like the hero: cut to
+  // the same 4s / 2.5MB budget and shipped with a poster, because a background
+  // that is not worth 900KB is not worth showing.
+  { id: 1085656, name: "estate", startSeconds: 3 },
+  { id: 6754820, name: "signal", startSeconds: 2 },
+  { id: 7140937, name: "trace", startSeconds: 2 },
 ];
 
 function key() {

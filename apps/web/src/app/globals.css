@@ -201,13 +201,17 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 
 .voice-story {
+  /* Was Instrument Serif. The high-contrast serif read as delicate rather than
+     confident at hero size, and the reference the Product Owner actually named
+     is an Apple product page — which is a large, tightly-tracked SANS, not an
+     editorial serif. Instrument Sans stays for body copy: it is a genuinely
+     different texture from Geist and Bricolage, so the surface still has its
+     own voice without borrowing a serif's authority. */
   --sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --display: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --display: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
   --mono: var(--font-jetbrains-mono), ui-monospace, "Menlo", monospace;
-  /* A serif at display size wants near-zero tracking; tightening it the way a
-     grotesk is tightened closes the counters and muddies the page. */
-  --display-tracking: -0.015em;
-  --display-weight: 400;
+  --display-tracking: -0.04em;
+  --display-weight: 600;
 }
 
 .voice-proof {
@@ -289,7 +293,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
     radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
     var(--ground);
 }
-.story-mark { color: var(--text-2); margin-bottom: var(--s5); }
+.story-mark { color: var(--text-2); margin-bottom: var(--s5); display: flex; justify-content: center; }
 
 .story-eyebrow {
   font-family: var(--mono);
@@ -298,17 +302,26 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--s5);
+  text-align: center;
 }
 .story-h1 {
-  font-size: clamp(2.25rem, 5.4vw, 4.25rem);
-  line-height: 1.04;
-  max-width: 20ch;
+  /* 20ch left the line breaking early and stranding half the viewport at
+     desktop widths — it read as pushed into the corner rather than composed.
+     A wider measure lets the sentence use the space it was given, and the
+     hero is centred so the block sits in the page rather than against its
+     edge. */
+  font-size: clamp(2.25rem, 6vw, 5rem);
+  line-height: 1.02;
+  max-width: 17ch;
+  margin-inline: auto;
+  text-align: center;
 }
 .story-lede {
   color: var(--text-2);
   font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
-  max-width: 60ch;
-  margin-top: var(--s6);
+  max-width: 58ch;
+  margin: var(--s6) auto 0;
+  text-align: center;
 }
 
 .story-body { padding-bottom: var(--s10); }
@@ -336,6 +349,7 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
    loud, used twice on the page so it stays an emphasis rather than a texture. */
 .pull {
   font-family: var(--display);
+  font-weight: 500;
   font-size: clamp(1.375rem, 2.6vw, 2rem);
   line-height: 1.25;
   color: var(--text);
@@ -419,6 +433,30 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   ::view-transition-new(role-panel) {
     animation-duration: 260ms;
   }
+}
+
+/* --------------------------------------------------------- ambient scene media
+   Background footage sits behind the section, heavily scrimmed. The text is the
+   content; the clip is atmosphere and is treated as such — it never carries an
+   argument, so losing it costs nothing. */
+.scene { position: relative; isolation: isolate; overflow: hidden; }
+.scene-media { position: absolute; inset: 0; z-index: -1; }
+.scene-video {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.20;
+  filter: saturate(0.5) contrast(1.05);
+}
+/* Two-stop scrim: solid enough at the edges to keep body copy at contrast, open
+   in the middle so the footage is still visible as depth rather than a texture
+   flattened under a grey sheet. */
+.scene-scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, var(--ground) 0%, transparent 22%, transparent 78%, var(--ground) 100%),
+    radial-gradient(120% 100% at 50% 50%, transparent 30%, color-mix(in srgb, var(--ground) 82%, transparent) 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-video { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

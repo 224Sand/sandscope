@@ -56,6 +56,7 @@ export default function Home() {
 
       <Scene
         kicker="The problem"
+        media="estate"
         heading="Four questions decide whether it ships"
         body="Teams are putting agents in front of production operations. When it matters, four questions decide whether it goes live — is it grounded, is it safe, what did it cost, and what did it actually do. Most deployments cannot answer any of them with evidence, so the agent either ships unaccountably or does not ship."
       />
@@ -76,6 +77,7 @@ export default function Home() {
 
       <Scene
         kicker="Determinism"
+        media="signal"
         heading="Routing is a decision, not luck"
         body="Providers are attempted in a fixed order. Two identical requests take the same path, which is what makes a trace worth reading and a failure worth reproducing. Nothing here reads a module global or the wall clock."
         aside={<Failover />}
