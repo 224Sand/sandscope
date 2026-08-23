@@ -1,119 +1,130 @@
 ---
 name: role-council
-description: Runs a dynamic, cross-functional SDLC/PDLC review over a git repository's real history — infers which roles (BA, PM, TPM, Developer, QA, DevOps/SRE, AppSec, UX, Data/ML Engineer, Architect, Scrum Master, Stakeholder, Executive Sponsor, etc.) actually apply to THIS project, then produces grounded, citation-backed commentary from each relevant role on real defects, decisions, commits, or PRs — never invented opinions. Use whenever the user wants a project retrospective from multiple perspectives, a "council" or panel review of a PR/feature/decision, to see how different roles (dev/QA/PM/etc.) would react to something, a cross-functional post-mortem, or a role-based audit of a repository's history. Works on any git repository — not tied to one codebase or a fixed role list.
+description: Assigns and enforces delivery roles for a piece of work — picks the methodology first (Scrum, Kanban, SAFe, Waterfall/stage-gate, CI/CD), derives the role set that methodology actually implies, then names a role before each substantive action and states what a decision requires. Also runs multi-role reviews over a git repository's real history, producing grounded, citation-backed commentary per role on real defects, decisions, commits or PRs — never invented opinions. Use whenever the user asks to work under named roles, wants role/duty/responsibility assignment for a session or project, mentions a methodology (agile, scrum, kanban, SAFe, waterfall, CI/CD) and who should do what, wants a cross-functional or "council" review of a PR/feature/decision/design, wants a project retrospective from multiple perspectives, or asks how different roles (dev/QA/PM/BA/TPM/security) would react to something. Works on any project — not tied to a fixed role list or one codebase.
 ---
 
 # Role Council
 
-A council of role-grounded reviewers — Business Analyst, PM, TPM, Developer, QA, DevOps,
-Security, whichever roles the *project itself* calls for — independently reacting to the same
-real artifact, the way a real cross-functional team would. The value is in **genuine
-disagreement**: a report where every role agrees about everything is not a review, it's a
-rubber stamp with extra labels.
+Real delivery has roles because one person cannot hold every concern at once. A developer
+optimising for elegance, a QA lead optimising for evidence, and a BA optimising for traceability
+will reach different conclusions about the same artefact — and the disagreement is the value.
 
-## When this earns its keep
+This skill does two related things:
 
-- "how would QA and the BA react to this PR"
-- "give me a retrospective of this project from every role's point of view"
-- "run a council review on this decision / design / page"
-- "what would each stakeholder say about this defect"
-- "review the current state of the repo like a cross-functional team would"
+- **Operating mode** — assign roles and work under them, naming a role before each substantive
+  action and stopping where that role requires a decision.
+- **Review mode** — replay real project history through those roles, producing grounded
+  commentary on what actually happened.
 
-Skip it for a single, narrow question with one obvious answer — the council is for artifacts
-where different roles would reasonably see different things. Reviewing a typo fix through five
-roles produces five copies of "looks fine," which is exactly the manufactured-consensus failure
-mode this skill exists to avoid.
+Both start from the same place: the methodology.
 
-## The four steps
+## Step 1 — Establish the methodology, then the roles
 
-### 1. Determine the roster — don't assume it
+**Do this first, and say it out loud.** The methodology determines who exists and what a decision
+requires. Scrum has no Change Control Board. Waterfall has no retrospective. Kanban has no
+sprint. A role set chosen before a methodology produces a committee that cannot decide anything.
 
-Read the repository before picking roles. A CLI tool has no UX Designer. A pure infra repo has
-no BA. An ML pipeline needs a role none of the others do. A roster that's the same eleven names
-for a Python data-cleaning script and a consumer mobile app means this step was skipped.
+Read `references/methodologies.md` for Scrum, Kanban, SAFe, Waterfall/stage-gate and CI/CD —
+each with the roles it activates, what counts as a decision, and its characteristic failure mode.
 
-Look at:
+If the project already declares a methodology and roles — a `WAYS_OF_WORKING.md`, a charter, a
+CONTRIBUTING.md with a review process, CODEOWNERS — **adopt what it declares.** Proposing a
+parallel structure that ignores a team's own governance is how this becomes theatre.
 
-- Manifests (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`) — what kind of software
-  this actually is
-- Directory shape — `models/` or `notebooks/` → ML roles matter; `infra/` or
-  `.github/workflows/` → DevOps/SRE matters; a `docs/` folder full of PRDs and BRDs → BA/PM
-  already exist here as a practice, not a hypothetical
-- Existing docs — if the repo already names roles (a `WAYS_OF_WORKING.md`, a CONTRIBUTING.md
-  with a review process, `CODEOWNERS`), start from what it already declares rather than
-  inventing a parallel roster that ignores the project's own governance
+Otherwise infer it from the work: unpredictable arrival and no fixed cadence is Kanban; a fixed
+scope with an expensive late change is stage-gate; multiple teams shipping one thing is SAFe.
 
-See `references/role-archetypes.md` for the library of role lenses and what each one
-instinctively looks for. Pick the subset that's actually load-bearing for this project — five
-relevant roles beat twelve where seven have nothing real to say about anything in the repo.
+Then state it in two sentences, naming the methodology, the active roles, and what a decision
+requires. Add `references/role-archetypes.md` for the lens each individual role brings.
 
-### 2. Mine real artifacts — never invent the disagreement
+## Step 2 — Operating mode: work under the roles
 
-In priority order, look for:
+For a session, a feature, or a whole project. The discipline is small and it is the entire point:
 
-1. A defect/issue log (`DEFECT_LOG.md`, `CHANGELOG.md`, an issue tracker export)
+**Name the role before the action, not after.** `Role: QA Lead — verifying the fix against a
+failing case first.` A role named afterwards is a label on work already done; named first, it
+changes what you do next, because it tells you what you are optimising for.
+
+**Stop where the methodology says a decision is made.** Not on every action — that is
+unworkable — but on the ones the role set says belong to someone: scope, architecture, what
+ships, accepting a story. Routine execution inside an already-approved decision continues without
+a stop.
+
+**A role may not sign off its own work.** If one agent or person is playing several roles, this
+is the rule that stops it collapsing into a single voice agreeing with itself. QA signs off dev.
+The architect signs off design conformance. The owner accepts scope.
+
+**Classify inbound input by role too.** When the human says "the font looks wrong", that is a
+Stakeholder observation; "don't ship until security passes" is a Release Authority instruction.
+Naming which role the instruction came from tells you what authority it carries.
+
+**When a role has produced nothing for a long stretch, say so.** A silent QA role is not a
+passing QA role — that is exactly how a project ends up with a green pipeline that never ran the
+code under change.
+
+## Step 3 — Review mode: mine real artefacts
+
+Never invent the disagreement. In priority order, look for:
+
+1. A defect or issue log (`DEFECT_LOG.md`, `CHANGELOG.md`, tracker export)
 2. Decision records (ADRs, `docs/decisions/`, RFCs)
 3. Sprint or retro documents, postmortems
-4. Pull request review threads (`gh pr view --json reviews,comments` if `gh` is available and
-   the repo has a GitHub remote)
-5. If none of the above exist: `git log --stat` for commits with unusually large diffs, revert
-   commits, or messages containing "fix" / "bug" / "broke" — these are where real friction
-   happened even without a formal record of it
+4. PR review threads (`gh pr view --json reviews,comments` where available)
+5. Failing that: `git log --stat` for outsized diffs, reverts, and messages containing
+   "fix" / "bug" / "broke" — real friction leaves traces even without a formal record
 
-Every artifact reviewed needs a citation a reader can actually go check: a defect ID, a commit
-SHA, a file path and line, a PR number. If a claim can't be cited, it isn't council material —
-skip it rather than inventing texture to fill the section.
+Every artefact reviewed needs a citation a reader can check: a defect ID, a commit SHA, a file
+and line, a PR number. If a claim cannot be cited, it is not council material — drop it rather
+than inventing texture.
 
-### 3. Get independent reactions, not a committee memo
+## Step 4 — Get independent reactions, not a committee memo
 
-The failure mode is one pass that writes "the BA would probably think X, and QA would probably
-agree" — that's groupthink with role labels stapled on afterward. Instead:
+The failure mode is one pass writing "the BA would probably think X, and QA would likely agree" —
+groupthink with role labels stapled on.
 
-**If subagents are available**, dispatch one per applicable role against the SAME artifact, with
-no visibility into what the other roles produced. Give each one: the artifact, its citation, and
-that role's one-paragraph brief from `references/role-archetypes.md`. Collect independently,
-then assemble. This is the same blind-review discipline the `llm-council` skill uses to fight
-sycophancy between models — applied here to SDLC roles reviewing a real project instead of
-models answering a question.
+**With subagents:** dispatch one per role against the same artefact, each blind to the others,
+given only the artefact, its citation, and that role's brief. Collect, then assemble. Same
+discipline `llm-council` uses between models, applied to delivery roles reviewing real work.
 
-**If running inline** (no subagent budget, or a lighter request), still write each role's
-reaction as a genuinely separate pass — finish and commit one role's paragraph before starting
-the next. Drafting all of them together is exactly where they start agreeing with each other by
+**Inline:** still write each role as a genuinely separate pass — finish and commit one role's
+paragraph before starting the next. Drafting them together is where they start agreeing by
 osmosis.
 
-A role is allowed to have nothing to say about a given artifact. Not every issue touches every
-discipline, and "not something I'd weigh in on" from QA about a database-region decision is more
-honest than a manufactured opinion stretched to fill a row.
+A role may have nothing to say about a given artefact. "Not something I'd weigh in on" from QA
+about a database-region decision is more honest than an opinion stretched to fill a row.
 
-### 4. Assemble the retrospective
+## Step 5 — Assemble
 
-Group by artifact, not by role — a reader wants to see one decision and every reaction to it
-side by side, which is where real disagreement becomes visible.
+Group by artefact, not by role — the reader wants one decision with every reaction beside it,
+which is where disagreement becomes visible.
 
 ```markdown
-## [Artifact title] — [citation: D-004 / commit a1b2c3d / PR #42]
+## [Artefact title] — [citation: D-004 / commit a1b2c3d / PR #42]
 
-**What happened:** [one factual sentence, no role's opinion yet]
+**Methodology in force:** [what governed this decision at the time]
+**What happened:** [one factual sentence, no opinion yet]
 
-- **[Role]:** [reaction, grounded in what that role cares about, referencing the artifact]
-- **[Role]:** [reaction]
-- **[Role]:** [reaction — say explicitly whether it agrees with or diverges from the above]
+- **[Role]:** [reaction, grounded in that role's concern, referencing the artefact]
+- **[Role]:** [reaction — say whether it agrees with or diverges from the above]
 
-**Where they diverged:** [one line — if they genuinely didn't diverge, say so rather than
-inventing daylight between them]
+**Where they diverged:** [one line — if they genuinely didn't, say so rather than inventing
+daylight between them]
 ```
 
-Close with a short synthesis: which roles agreed most often (worth asking why — is one role just
-deferring to another?), which artifact produced the sharpest disagreement, and what that
-disagreement reveals about the project that a single-voice retrospective would have missed.
+Close with which roles agreed most (worth asking why — is one deferring to another?), which
+artefact produced the sharpest disagreement, and what that reveals that a single-voice
+retrospective would have missed.
 
 ## What makes this fail
 
-- **Inventing an opinion with no basis.** If the repo has no record of how QA felt about a
-  decision, don't write one — cite what exists, or skip that role for that artifact.
-- **Manufactured consensus.** If every role says "looks good," check whether the passes were
-  actually independent, or whether they were drafted together and converged.
-- **Manufactured conflict.** The opposite failure is just as fake — don't invent disagreement
-  for drama. Real projects have real friction; find it in the artifacts rather than staging it.
-- **A fixed role list.** Re-check step 1 if the roster looks identical across two very
-  different repositories.
+- **Skipping step 1.** Roles without a methodology are a cast list, not a governance structure.
+- **Naming the role after the work.** It becomes a label instead of a constraint.
+- **Inventing an opinion with no basis.** Cite what exists or skip that role for that artefact.
+- **Manufactured consensus.** If every role says "looks good", check the passes were actually
+  independent rather than drafted together.
+- **Manufactured conflict.** Equally fake. Find real friction in the artefacts; don't stage it.
+- **A fixed role list.** Re-check step 1 if the roster looks identical across two very different
+  projects.
+- **Quietly dropping the discipline mid-session.** The most common failure by far. It decays when
+  work gets urgent — which is precisely when the role that would have objected is the one being
+  skipped.

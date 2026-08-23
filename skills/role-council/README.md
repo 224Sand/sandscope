@@ -14,6 +14,16 @@ it on visual grounds, a BA flagging it against the actual requirement, a TPM ask
 numbers on the page even make sense — four lenses on one artifact, each grounded in what that
 role is actually responsible for.
 
+## Two modes
+
+**Operating mode** — assign roles for a session or project and work under them. Picks the
+methodology first (Scrum, Kanban, SAFe, Waterfall/stage-gate, CI/CD), because the methodology is
+what determines who exists and what a decision requires. Then names a role before each
+substantive action and stops where that methodology says a decision belongs to someone.
+
+**Review mode** — replay a repository's real history through those roles, producing
+citation-grounded commentary per role on real defects, ADRs, PRs and commits.
+
 ## Origin
 
 Built inside [SandScope](https://github.com/224Sand/sandscope), an agent-reliability platform
