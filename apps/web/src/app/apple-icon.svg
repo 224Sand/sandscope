@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="SandScope">
+  <!--
+    Home-screen variant. Same idea as icon.svg, drawn heavier: iOS renders this
+    large and applies its own rounding and shadow, so the ground is filled edge
+    to edge and the strokes are thicker to survive that treatment.
+  -->
+  <rect width="180" height="180" fill="#0b0b0d"/>
+
+  <path d="M90 30a60 60 0 1 1-42.4 102.4" fill="none" stroke="#3a3a42" stroke-width="8"
+        stroke-linecap="round"/>
+
+  <rect x="58" y="67"  width="64" height="13" rx="6.5" fill="#3fb950"/>
+  <rect x="58" y="92"  width="64" height="13" rx="6.5" fill="#d29922"/>
+  <rect x="58" y="117" width="26" height="13" rx="6.5" fill="#f85149"/>
+</svg>

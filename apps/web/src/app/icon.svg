@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SandScope">
+  <!--
+    The mark is the product's one real idea: three evidence bands, and a gate
+    that stops at the third.
+
+    SUFFICIENT (green) answers. AMBIGUOUS (amber) answers but flags. INSUFFICIENT
+    (red) emits nothing at all - so the third bar is cut short, and the aperture
+    ring around it is left open at the bottom. An agent that refuses is drawn as
+    a scope that does not close.
+
+    Three bars survive 16px where a detailed glyph would turn to mud, which is
+    the constraint a favicon is actually judged on.
+  -->
+  <rect width="64" height="64" rx="14" fill="#0b0b0d"/>
+  <rect width="64" height="64" rx="14" fill="none" stroke="#26262b" stroke-width="1"/>
+
+  <!-- aperture ring, deliberately open at the bottom -->
+  <path d="M32 11a21 21 0 1 1-14.8 35.9" fill="none" stroke="#26262b" stroke-width="3"
+        stroke-linecap="round"/>
+
+  <!-- three bands: full, full, cut short -->
+  <rect x="21" y="24" width="22" height="4.5" rx="2.25" fill="#3fb950"/>
+  <rect x="21" y="33" width="22" height="4.5" rx="2.25" fill="#d29922"/>
+  <rect x="21" y="42" width="9"  height="4.5" rx="2.25" fill="#f85149"/>
+</svg>

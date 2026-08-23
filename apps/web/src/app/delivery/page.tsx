@@ -33,7 +33,7 @@ export default function Delivery() {
   const code = loc.agent + loc.tests + loc.web + loc.tooling;
 
   return (
-    <main className="wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / DELIVERY

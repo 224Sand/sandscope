@@ -20,7 +20,7 @@ import config from "@/generated/product.config.json";
 
 export default function Home() {
   return (
-    <main>
+    <main className="voice-product">
       <ScrollScrubbed src="/media/hero.mp4" poster="/media/hero.jpg">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s5)" }}>
           {config.wordmark}
