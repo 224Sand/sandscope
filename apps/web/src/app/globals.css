@@ -406,6 +406,48 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 .role-meta dd { margin: var(--s2) 0 0; color: var(--text-2); font-size: 0.9375rem; }
 
+.role-mandate {
+  margin-top: var(--s5);
+  padding: var(--s4) var(--s5);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.role-timeline-label {
+  color: var(--text-3);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* A real rail-and-dot timeline, not a flat list — the point of showing
+   multiple moments is that the reader watches a role recur through the build,
+   and a plain vertical stack of cards doesn't communicate "in this order,
+   across this much time" the way a rail does. */
+.role-timeline { list-style: none; margin: var(--s5) 0 0; padding: 0; }
+.role-moment { display: grid; grid-template-columns: 20px 1fr; gap: var(--s4); }
+.role-moment-rail { display: flex; flex-direction: column; align-items: center; }
+.role-moment-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.role-moment-line {
+  width: 1px; flex: 1;
+  background: var(--line);
+  margin-top: var(--s2);
+}
+.role-moment-body { padding-bottom: var(--s6); }
+.role-moment-sprint { color: var(--accent); font-size: 0.6875rem; letter-spacing: 0.04em; }
+.role-moment-title { font-size: 1.0625rem; margin: var(--s2) 0 0; }
+.role-moment-what { color: var(--text-2); font-size: 0.9375rem; margin-top: var(--s3); }
+.role-moment-cite { color: var(--text-3); font-size: 0.6875rem; margin-top: var(--s3); }
+
 .role-sowhat {
   margin-top: var(--s4);
   padding-left: var(--s4);

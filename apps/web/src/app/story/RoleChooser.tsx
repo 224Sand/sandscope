@@ -8,8 +8,15 @@ import { ROLES } from "./roles";
  *
  * The interaction is the argument: a project is not one narrative, it is a dozen
  * people disagreeing about the same events. Picking a role resolves that role's
- * thread through the whole build — what they owned, what they produced, and the
- * one moment where their concern turned out to matter.
+ * MANDATE — what they were accountable for across the whole build — and a real
+ * timeline of moments where that accountability showed up, in the order it
+ * actually happened.
+ *
+ * This replaced a one-moment version after the person the page was built for
+ * looked at it and said it read as thin. It was: a role that appears once
+ * across nine sprints is a footnote, not a thread. Every moment below still
+ * cites a real artefact — the fix for "thin" is more real content, never
+ * invented texture.
  *
  * Transitions go through the View Transitions API where it exists, which is a
  * browser primitive rather than an animation library — no bundle cost, and it
@@ -18,8 +25,8 @@ import { ROLES } from "./roles";
  * that is merely faster is still motion.
  */
 export default function RoleChooser() {
-  // QA opens by default: its thread (a suite reporting 0% when the real rate
-  // was 56.6%) is the sharpest single moment in the project.
+  // QA opens by default: its timeline includes the sharpest single moment in
+  // the project (a suite reporting 0% when the real rate was 56.6%).
   const [activeId, setActiveId] = useState("qa");
   const active = ROLES.find((r) => r.id === activeId) ?? ROLES[0];
 
@@ -105,19 +112,31 @@ export default function RoleChooser() {
           </div>
         </dl>
 
-        <hr className="hairline" style={{ margin: "var(--s5) 0" }} />
+        <p className="role-mandate">{active.mandate}</p>
 
-        <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.6875rem", letterSpacing: "0.06em", textTransform: "uppercase" }}>
-          Where it mattered
+        <hr className="hairline" style={{ margin: "var(--s6) 0 var(--s5)" }} />
+
+        <p className="mono role-timeline-label">
+          Their thread — {active.moments.length} moment{active.moments.length === 1 ? "" : "s"} across the build
         </p>
-        <h4 style={{ fontSize: "1.125rem", marginTop: "var(--s3)" }}>{active.moment.title}</h4>
-        <p style={{ color: "var(--text-2)", marginTop: "var(--s3)" }}>{active.moment.what}</p>
 
-        <p className="role-sowhat">{active.moment.soWhat}</p>
-
-        <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem", marginTop: "var(--s4)" }}>
-          cited: {active.moment.citation}
-        </p>
+        <ol className="role-timeline">
+          {active.moments.map((m, i) => (
+            <li key={m.citation + i} className="role-moment">
+              <div className="role-moment-rail" aria-hidden="true">
+                <span className="role-moment-dot" />
+                {i < active.moments.length - 1 && <span className="role-moment-line" />}
+              </div>
+              <div className="role-moment-body">
+                <span className="mono role-moment-sprint">{m.sprint}</span>
+                <h4 className="role-moment-title">{m.title}</h4>
+                <p className="role-moment-what">{m.what}</p>
+                <p className="role-sowhat">{m.soWhat}</p>
+                <p className="mono role-moment-cite">cited: {m.citation}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </article>
     </div>
   );
