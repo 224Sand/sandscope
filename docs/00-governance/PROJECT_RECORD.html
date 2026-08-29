@@ -244,14 +244,17 @@
       <div class="callout callout--blocked">
         <p>
           <strong>This is not finished.</strong> 45 of 58 requirements are still <span class="mono">Planned</span>.
-          The agent runtime is live and verified end to end on a public host. <strong>The web
-          application is not deployed</strong> — no public URL exists for it yet. Read the rest
-          of this document as an honest record of a build in progress, not a completion claim.
+          Both halves are deployed and verified connected — the agent runtime on a public host,
+          and the web application at
+          <a href="https://sandscope-web.vercel.app">sandscope-web.vercel.app</a>, whose BFF
+          genuinely reaches the runtime. Read the rest of this document as an honest record of a
+          build in progress, not a completion claim — deployment was the blocker this section
+          named when it was written; it no longer is.
         </p>
       </div>
       <div class="grid3" style="margin-top: var(--s5);">
         <div class="panel stat"><dt>Agent runtime</dt><dd><span class="chip chip--grounded" style="margin-bottom:6px">live</span><br>Northflank, London</dd></div>
-        <div class="panel stat"><dt>Web application</dt><dd><span class="chip chip--blocked" style="margin-bottom:6px">not deployed</span><br>no public URL</dd></div>
+        <div class="panel stat"><dt>Web application</dt><dd><span class="chip chip--grounded" style="margin-bottom:6px">live</span><br>sandscope-web.vercel.app</dd></div>
         <div class="panel stat"><dt>CI / Security</dt><dd><span class="chip chip--grounded" style="margin-bottom:6px">green</span><br>7 security jobs, 3 CI jobs</dd></div>
       </div>
     </section>
@@ -526,9 +529,8 @@ flowchart LR
     <section id="open">
       <h2><span class="num">10</span> What's still open</h2>
       <ul class="plain">
-        <li class="panel"><strong>The web application is not deployed.</strong> No Vercel project exists. This is the single blocking item — nothing else in this record substitutes for a public URL.</li>
         <li class="panel"><strong>45 of 58 requirements are Planned</strong>, not Done. <code>docs/01-requirements/TRACEABILITY.md</code> names each one and the test it's waiting on.</li>
-        <li class="panel"><strong>Sprint 8 (Hardening &amp; Release) is open</strong> — 21 of 34 committed points are blocked on deployment credentials, per <code>SPRINT_08_PLAN.md</code> IMP-09.</li>
+        <li class="panel"><strong>Sprint 8 (Hardening &amp; Release) is open</strong> — deployment landed (both S8-HOST and S8-VERCEL done); the remainder is pen tests against the public URLs, the threat-model review, and observability, per <code>SPRINT_08_PLAN.md</code>.</li>
       </ul>
     </section>
 

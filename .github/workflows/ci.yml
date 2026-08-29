@@ -24,6 +24,8 @@ jobs:
         run: node scripts/check-config.mjs
       - name: Validate PDLC artifacts and traceability (AC-002)
         run: node scripts/check-docs.mjs
+      - name: Deploy-claims check (docs must not contradict a live deploy)
+        run: node scripts/check-deploy-claims.mjs
       - name: Sprint check (no sprint number precedes its plan)
         run: node scripts/check-sprints.mjs
       - name: README check (stated figures match the derived record)

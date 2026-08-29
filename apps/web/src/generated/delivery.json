@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-08-28T12:14:27.049Z",
+  "generatedAt": "2026-08-29T01:59:10.157Z",
   "repo": "224Sand/sandscope",
-  "sha": "18f1be3",
-  "commits": 77,
+  "sha": "4c7806e",
+  "commits": 78,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-23T12:31:49+05:30",
+  "lastCommit": "2026-08-28T17:44:49+05:30",
   "tests": {
-    "total": 357,
+    "total": 358,
     "files": 20
   },
   "lines": {
     "agent": 5344,
-    "tests": 3440,
+    "tests": 3454,
     "web": 3224,
-    "tooling": 2732
+    "tooling": 2821
   },
   "docs": {
     "files": "46",
-    "lines": 3545
+    "lines": 3547
   },
   "requirements": {
     "total": 58,
@@ -25,7 +25,7 @@
     "planned": 45
   },
   "defects": {
-    "total": 18,
+    "total": 19,
     "severityOne": 6,
     "entries": [
       {
@@ -188,6 +188,15 @@
         "severity": "1",
         "description": "CI never built the web application. A Dependabot PR taking Next 15→16 reported 10/10 green while the production build failed on all seven pages; no job had ever run `next build`",
         "cause": "A pipeline whose green tick exercises none of the code under change",
+        "status": "Fixed, guarded"
+      },
+      {
+        "id": "D-019",
+        "found": "Sprint 8",
+        "sprint": "8",
+        "severity": "2",
+        "description": "Two governance documents (PROJECT_RECORD.html, SPRINT_08_PLAN.md) asserted the web app was undeployed and Sprint 8 was blocked on credentials for a full week after the real deploy landed; caught only because the Product Owner quoted the stale text back and asked \"true?\"",
+        "cause": "The traceability guard catches a requirement claiming Done falsely (overclaiming); nothing caught a document claiming Blocked falsely once it resolved (underclaiming)",
         "status": "Fixed, guarded"
       }
     ]

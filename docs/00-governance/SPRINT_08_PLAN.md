@@ -23,9 +23,9 @@ first real build, and it should be expected to fail at least once.
 
 | ID | Story | Pts | Acceptance | Status |
 |---|---|---|---|---|
-| S8-HOST | Agent runtime live on Northflank | 8 | `/healthz` 200 from the public URL; `/v1/*` 401 without a token | **Blocked — IMP-09** |
-| S8-VERCEL | Experience layer live on Vercel | 5 | All five routes 200; headers present on a live response | **Blocked — IMP-09** |
-| S8-E2E | Pen tests green against the deployed system | 5 | 6/6 against public URLs, not localhost | Blocked on the two above |
+| S8-HOST | Agent runtime live on Northflank | 8 | `/healthz` 200 from the public URL; `/v1/*` 401 without a token | **Done** |
+| S8-VERCEL | Experience layer live on Vercel | 5 | All five routes 200; headers present on a live response | **Done** |
+| S8-E2E | Pen tests green against the deployed system | 5 | 6/6 against public URLs, not localhost | Ready — unblocked, not yet run |
 | S8-GUARD | Guard-of-the-guard tests (Sprint 7 improvement 1) | 5 | Every check script has a test asserting it fails on known-bad input | Ready |
 | S8-OBS | Runbook and observability | 5 | Every fault in the threat model reaches a documented response | Ready |
 | S8-THREAT | Threat model review against the deployed surface | 3 | Each of 17 threats re-tested or explicitly deferred with a reason | Blocked on deploy |
@@ -48,13 +48,13 @@ New product surface. If a page is missing at this point it ships in 1.1.
 
 ## Impediments
 
-### IMP-09 — deployment credentials are not held (BLOCKING)
+### IMP-09 — RESOLVED
 
-`VERCEL_TOKEN` must be created by the account owner, and the Northflank service
-is configured through its console; neither can
-be generated from inside the project. **21 of 34 committed points are blocked
-behind them**, and the release gate cannot be reached at all until they exist.
-Raised to the Executive Sponsor.
+Deployment happened via CLI, not the dashboard token flow this impediment assumed: the user
+was already `vercel` CLI-authenticated locally, and Northflank's console handled the agent side
+directly. Both S8-HOST and S8-VERCEL are live and verified — `/healthz` 200, `/api/providers`
+200, the BFF genuinely reaching the runtime. Closed rather than left marked Blocking, which is
+what this whole plan being stale for a week came from in the first place.
 
 ### IMP-10 — the container image has never been built
 

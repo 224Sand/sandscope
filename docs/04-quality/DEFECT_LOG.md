@@ -28,6 +28,7 @@
 | D-016 | Sprint 7 | 7 | 2 | Sprints 6 and 7 were worked and shipped with no planning ceremony and no plan document; the sprint numbers existed only in defect-log entries, and a Sprint 5 retrospective commitment to raise exactly this was never honoured | Governance applied to the product but not to the process; the control relied on someone remembering | Fixed, guarded |
 | D-017 | Sprint 8 | 8 | 2 | ADR-0003 placed the agent runtime on Hugging Face Docker Spaces "because it is free"; Docker Spaces are PRO-only, so three sprints of deployment work targeted a platform that cannot host it at $0 | A pricing claim recorded in an ADR without ever being read from the pricing page | Fixed, guarded |
 | D-018 | Sprint 8 | 8 | **1** | CI never built the web application. A Dependabot PR taking Next 15→16 reported 10/10 green while the production build failed on all seven pages; no job had ever run `next build` | A pipeline whose green tick exercises none of the code under change | Fixed, guarded |
+| D-019 | Sprint 8 | 8 | 2 | Two governance documents (PROJECT_RECORD.html, SPRINT_08_PLAN.md) asserted the web app was undeployed and Sprint 8 was blocked on credentials for a full week after the real deploy landed; caught only because the Product Owner quoted the stale text back and asked "true?" | The traceability guard catches a requirement claiming Done falsely (overclaiming); nothing caught a document claiming Blocked falsely once it resolved (underclaiming) | Fixed, guarded |
 
 ## Where these were found, which is the finding
 
@@ -41,6 +42,7 @@
 | CI reporting a failure whose visible cause was wrong | 1 (D-011) |
 | Running the security suite against a live system | 2 (D-012, D-013) |
 | Deriving a public number instead of trusting the document | 1 (D-014) |
+| The Product Owner quoting stale text back and asking "true?" | 1 (D-019) |
 | Deliberately breaking a guard to see whether it notices | 1 (D-015) |
 | The Product Owner asking a direct question | **1** (D-016) |
 | Reaching the deploy and finding the platform had changed | 1 (D-017) |

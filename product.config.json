@@ -9,5 +9,6 @@
   "primaryDomain": "sandscope.vercel.app",
   "agentServiceUrl": "https://p01--sandscope-agent--ql6pdjy9fhnj.code.run",
   "provisional": false,
-  "_note": "FR-001 / ADR-0002. This file is the ONLY place the product name is authored. Nothing else may hardcode it. Rename with: npm run rename -- <NEW_NAME>"
+  "_note": "FR-001 / ADR-0002. This file is the ONLY place the product name is authored. Nothing else may hardcode it. Rename with: npm run rename -- <NEW_NAME>",
+  "frontendUrl": "https://sandscope-web.vercel.app"
 }

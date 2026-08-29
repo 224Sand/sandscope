@@ -112,6 +112,21 @@ class GuardsFailOnKnownBadInput(unittest.TestCase):
             (dst / "README.md").write_text(readme)
             self.assertGuardFails(run("check-readme.mjs", str(dst)), "defects")
 
+    def test_deploy_claims_guard_catches_a_stale_undeployed_claim(self) -> None:
+        """The D-019 regression: PROJECT_RECORD.html and SPRINT_08_PLAN.md both
+        asserted the web app was undeployed and Sprint 8 was blocked on
+        credentials for a full week after the real deploy landed. Caught only
+        because the user quoted the stale text back and asked "true?" -- not by
+        any guard, because none existed yet."""
+        with tempfile.TemporaryDirectory() as tmp:
+            dst = Path(tmp)
+            (dst / "docs/00-governance").mkdir(parents=True)
+            shutil.copy(ROOT / "product.config.json", dst / "product.config.json")
+            (dst / "docs/00-governance/FAKE.md").write_text(
+                "The web application is not deployed. No Vercel project exists.\n"
+            )
+            self.assertGuardFails(run("check-deploy-claims.mjs", str(dst)), "stale")
+
     def test_workflow_guard_catches_a_comment_inside_a_continuation(self) -> None:
         """The D-011 regression."""
         with tempfile.TemporaryDirectory() as tmp:
