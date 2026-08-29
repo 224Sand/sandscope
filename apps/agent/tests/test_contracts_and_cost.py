@@ -115,7 +115,8 @@ class ZeroInfrastructureCost(unittest.TestCase):
 
     def _manifests(self) -> list[Path]:
         paths = [
-            ROOT / "apps/web/vercel.json",  # moved here when the deploy stopped depending on the dashboard Root Directory setting
+            ROOT
+            / "apps/web/vercel.json",  # moved here when the deploy stopped depending on the dashboard Root Directory setting
             ROOT / "deploy/Dockerfile",
         ]
         paths += sorted((ROOT / ".github/workflows").glob("*.yml"))
