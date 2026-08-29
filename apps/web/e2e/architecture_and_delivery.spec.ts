@@ -173,6 +173,86 @@ test.describe("the architecture surface", () => {
     expect(map.toLowerCase()).toContain("northflank");
   });
 
+  test("the map is interactive, not a drawing labelled interactive", async ({ page }) => {
+    /** FR-019. The page shipped a static inline SVG under the heading
+     *  "interactive architecture view" for three sprints: no state, no
+     *  handlers, nothing selectable. A diagram a reader cannot interrogate
+     *  tells them the shape of the system and nothing about whether any of it
+     *  is real. */
+    const nodes = page.locator(".map-node");
+    expect(await nodes.count(), "the map has no selectable components").toBeGreaterThan(5);
+
+    const detail = page.getByTestId("system-map-detail");
+    await expect(detail).toContainText(/select any component/i);
+
+    await nodes.first().click();
+    await expect(detail).not.toContainText(/select any component/i);
+    // The claim that makes it worth clicking: a real file, not a description.
+    await expect(detail.locator("a")).toHaveAttribute("href", /\/blob\/main\/apps\/.+\.\w+$/);
+  });
+
+  test("selecting a component names the file that implements it", async ({ page }) => {
+    const evidence = page.locator(".map-node", { hasText: "Evidence gate" });
+    await evidence.click();
+    const detail = page.getByTestId("system-map-detail");
+    await expect(detail).toContainText("Evidence gate");
+    await expect(detail.locator("a")).toContainText("retrieval/evidence.py");
+  });
+
+  test("the map is operable from the keyboard", async ({ page }) => {
+    /** An SVG full of click handlers is a mouse-only surface, and a reader on
+     *  a keyboard would get exactly the static drawing this replaced. */
+    const first = page.locator(".map-node").first();
+    await first.focus();
+    await page.keyboard.press("Enter");
+    await expect(page.getByTestId("system-map-detail")).not.toContainText(/select any component/i);
+
+    // Selecting the same node again clears it, so the panel cannot get stuck.
+    await page.keyboard.press("Enter");
+    await expect(page.getByTestId("system-map-detail")).toContainText(/select any component/i);
+  });
+
+  test("every file the map points at is inside the repository", async ({ page }) => {
+    /** D-023 was twelve decision links that pointed at a DIRECTORY because a
+     *  filename was never emitted, and they rendered as ordinary links. This
+     *  asserts each destination is a file path rather than trusting the
+     *  template that builds it. */
+    const nodes = page.locator(".map-node");
+    const count = await nodes.count();
+    for (let i = 0; i < count; i += 1) {
+      await nodes.nth(i).click();
+      const href = await page.getByTestId("system-map-detail").locator("a").getAttribute("href");
+      expect(href, `component ${i} links nowhere`).toMatch(/\/blob\/main\/[\w./-]+\.\w+$/);
+    }
+  });
+
+  test("the dashed-path labels are not struck through by their own lines", async ({ page }) => {
+    /** Each of the two return paths has a masking plate behind its label so
+     *  the dashes do not run through the words. Both plates were 4px narrower
+     *  than the text they covered, which struck out the last two characters
+     *  of each. Measured rather than eyeballed — at this size it looks fine
+     *  right up until someone tries to read it. */
+    const overruns = await page.getByTestId("system-map").evaluate((svg) => {
+      const bad: string[] = [];
+      for (const text of Array.from(svg.querySelectorAll("text"))) {
+        const content = text.textContent ?? "";
+        if (!content.includes("cache hit") && !content.includes("INSUFFICIENT")) continue;
+        const plate = text.previousElementSibling as SVGRectElement | null;
+        if (!plate) {
+          bad.push(`${content}: no masking plate`);
+          continue;
+        }
+        const box = (text as SVGTextElement).getBBox();
+        const plateEnd = Number(plate.getAttribute("x")) + Number(plate.getAttribute("width"));
+        if (box.x + box.width > plateEnd) {
+          bad.push(`${content}: text ends at ${box.x + box.width}, plate at ${plateEnd}`);
+        }
+      }
+      return bad;
+    });
+    expect(overruns, "a dashed line runs through its own label").toEqual([]);
+  });
+
   test("every decision listed here resolves to a real record", async ({ page }) => {
     const links = page.locator('a[href*="/adr/"]');
     const count = await links.count();

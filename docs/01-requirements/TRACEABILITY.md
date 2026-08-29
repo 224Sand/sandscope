@@ -74,7 +74,7 @@ directions.
 | FR-016 | Known-limitation probe suite that warns every run | S2-EVAL | `test_probe_warns` | 2 | Done |
 | FR-017 | Cinematic scroll-driven product narrative | S4-UX | `apps/web/e2e/scroll_scene_progression.spec.ts` | 5,9 | Done |
 | FR-018 | Reduced-motion and mobile comprehension paths | S4-UX | `apps/web/e2e/motion_and_reduced_motion.spec.ts` | 5,9 | Done |
-| FR-019 | Interactive architecture view | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
+| FR-019 | Interactive architecture view | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6,9 | Done |
 | FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | `test_delivery_reads_live_github` | 6 | Done |
 | FR-021 | Requirements traceability rendered publicly | S5-DELIV | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6,9 | Done |
 | FR-022 | Sprint and velocity record from real commit history | S5-DELIV | `test_sprint_velocity_is_computed_from_commits_not_typed` | 6,9 | Done |

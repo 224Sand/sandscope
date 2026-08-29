@@ -650,3 +650,29 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   .memory-item { grid-template-columns: 1fr auto; }
   .memory-run, .memory-workload { grid-column: 1 / -1; }
 }
+
+/* ------------------------------------------------- interactive system map (FR-019)
+   Each node resolves to the file that implements it. The affordance has to be
+   visible before the pointer arrives — a diagram that only reveals it is
+   clickable on hover reads as static to everyone who does not happen to hover. */
+.map-node { cursor: pointer; }
+.map-node rect { transition: fill 120ms ease, stroke 120ms ease; }
+.map-node:hover rect { stroke: var(--text-3); }
+.map-node:focus-visible { outline: none; }
+.map-node:focus-visible rect { stroke: var(--accent); stroke-width: 2; }
+.map-node[data-on="true"] rect { stroke-width: 1.5; }
+
+.map-detail {
+  margin-top: var(--s5);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+  min-height: 5.5rem;
+}
+.map-detail-title { font-size: 1rem; margin: 0 0 var(--s2); }
+.map-detail-what { color: var(--text-2); font-size: 0.9375rem; margin: 0 0 var(--s3); max-width: 70ch; }
+.map-detail-file { font-size: 0.8125rem; }
+.map-detail-hint { color: var(--text-3); font-size: 0.875rem; margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .map-node rect { transition: none; }
+}

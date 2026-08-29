@@ -71,7 +71,20 @@ export default defineConfig({
   webServer: {
     command: "npm run build && npm run start -- --port 3000",
     url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
+    // Never reuse a server that is already up, not even locally.
+    //
+    // `reuseExistingServer: !process.env.CI` is the documented default and it
+    // is a trap for this workflow: a server left running from an earlier build
+    // is silently reused, so the suite tests the PREVIOUS binary and reports
+    // green. That happened twice here — once masking a fix that had not been
+    // rebuilt, and once masking a hydration mismatch (#418) that CI then
+    // caught on a build it had made itself. A local pass that does not
+    // exercise the current code is worse than no local run, because it is
+    // believed.
+    //
+    // The cost is a rebuild per invocation. Next's incremental build makes
+    // that about a second, against the cost of trusting a false green.
+    reuseExistingServer: false,
     timeout: 180_000,
     stdout: "pipe",
     stderr: "pipe",

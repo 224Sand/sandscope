@@ -113,6 +113,16 @@ export default function Console() {
   /** What the agent has already been asked in this session (FR-008). */
   const [memory, setMemory] = useState<MemoryItem[] | null>(null);
   const [memoryError, setMemoryError] = useState<string | null>(null);
+  /** Whether the client has hydrated.
+   *
+   *  The session id is read from `sessionStorage` during render, so it is ""
+   *  on the server and a real id in the browser. That was harmless while
+   *  nothing RENDERED it — and the moment the memory panel displayed it, the
+   *  two markups disagreed and React threw a hydration mismatch (#418) on
+   *  every page carrying the console. Rendering it only after mount makes the
+   *  first client render match the server's by construction, rather than
+   *  suppressing the warning and leaving the mismatch there. */
+  const [mounted, setMounted] = useState(false);
   const abort = useRef<AbortController | null>(null);
 
   /**
@@ -209,6 +219,7 @@ export default function Console() {
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     void refreshMemory();
   }, [refreshMemory]);
 
@@ -567,7 +578,7 @@ export default function Console() {
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)" }}>
           <h3>Session memory</h3>
           <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
-            {sessionId.current}
+            {mounted ? sessionId.current : ""}
           </span>
         </header>
         <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", margin: "var(--s2) 0 var(--s4)" }}>
