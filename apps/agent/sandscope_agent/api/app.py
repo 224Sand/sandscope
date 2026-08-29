@@ -14,9 +14,11 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
 import time
 from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
@@ -36,6 +38,7 @@ from sandscope_agent.router.adapters import build_default_providers
 from sandscope_agent.router.cache import SemanticCache
 from sandscope_agent.router.router import Router, RouterEvent
 from sandscope_agent.router.state import RouterState
+from sandscope_agent.seed.incidents import as_run_input, current_incident, generate_incident
 
 #: Per-run spend ceiling. Small on purpose: this is a demonstration and the
 #: worst outcome of a bug should be a refused call, not a bill.
@@ -164,6 +167,30 @@ def workloads() -> dict[str, Any]:
     return {
         "workloads": [{"name": w.name, "action_noun": w.action_noun} for w in WORKLOADS.values()]
     }
+
+
+@app.get("/v1/incidents/current", dependencies=[Depends(require_token)])
+def incident_current() -> dict[str, Any]:
+    """The incident on the air right now (FR-003, scheduled half).
+
+    Deterministic within `SCHEDULE_INTERVAL_SECONDS`: every visitor who polls
+    inside the same window sees the same incident, and it rotates on its own
+    with no background process required (NFR-005).
+    """
+    incident = current_incident()
+    return {"incident_id": incident.id, "severity": incident.severity, **as_run_input(incident)}
+
+
+@app.post("/v1/incidents/generate", dependencies=[Depends(require_token)])
+def incident_generate() -> dict[str, Any]:
+    """A fresh incident, on demand (FR-003, visitor-triggered half).
+
+    Unlike `/current`, every call returns a different incident — the seed is
+    drawn fresh each time rather than from the schedule clock.
+    """
+    seed = secrets.randbits(32)
+    incident = generate_incident(seed, datetime.now(UTC))
+    return {"incident_id": incident.id, "severity": incident.severity, **as_run_input(incident)}
 
 
 @app.post("/v1/runs/stream", dependencies=[Depends(require_token)])

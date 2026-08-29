@@ -292,3 +292,72 @@ class TestWorkloads:
     def test_both_workloads_are_advertised(self, client: TestClient) -> None:
         names = {w["name"] for w in client.get("/v1/workloads", headers=auth()).json()["workloads"]}
         assert names == {"incident_triage", "change_review"}
+
+
+class TestIncidentFeed:
+    """FR-003: an incident feed on schedule and on demand.
+
+    `generate_incident` existed since Sprint 1 with nothing that ever called
+    it outside a test — the console's picker was, and remains, four hand
+    -authored scenarios. These are the first tests that exercise it as an
+    actual feed reachable over HTTP.
+    """
+
+    def test_current_incident_is_shaped_like_a_run_request(self, client: TestClient) -> None:
+        response = client.get("/v1/incidents/current", headers=auth())
+        assert response.status_code == 200
+        body = response.json()
+        for field in ("incident_id", "severity", "workload", "subject", "body", "context"):
+            assert field in body, f"missing {field!r}"
+        assert body["workload"] in {"incident_triage", "change_review"}
+        assert len(body["body"]) > 0
+
+    def test_current_incident_is_stable_within_the_schedule_window(
+        self, client: TestClient
+    ) -> None:
+        """The whole point of 'scheduled' rather than 'random every request' —
+        two polls a moment apart must see the same incident."""
+        first = client.get("/v1/incidents/current", headers=auth()).json()
+        second = client.get("/v1/incidents/current", headers=auth()).json()
+        assert first["incident_id"] == second["incident_id"]
+
+    def test_generate_produces_a_fresh_incident_on_demand(self, client: TestClient) -> None:
+        """Unlike /current, every call must differ — this is the
+        visitor-triggered half of FR-003."""
+        seen = {
+            client.post("/v1/incidents/generate", headers=auth()).json()["incident_id"]
+            for _ in range(5)
+        }
+        assert len(seen) == 5, f"expected 5 distinct incidents, got {seen}"
+
+    def test_incident_feed_requires_authentication(self, client: TestClient) -> None:
+        assert client.get("/v1/incidents/current").status_code in (401, 403)
+        assert client.post("/v1/incidents/generate").status_code in (401, 403)
+
+    def test_a_generated_incident_can_actually_drive_a_run(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The feed is only real if its output is runnable, not just shaped
+        correctly — this drives an actual triage run from a generated
+        incident end to end."""
+        import sandscope_agent.api.app as app_module
+        from sandscope_agent.router.providers import StubProvider
+
+        monkeypatch.setattr(
+            app_module,
+            "build_default_providers",
+            lambda: [StubProvider("stub", default="[1] A cited claim.")],
+        )
+        generated = client.post("/v1/incidents/generate", headers=auth()).json()
+        response = client.post(
+            "/v1/runs/stream",
+            headers=auth(),
+            json={
+                "workload": generated["workload"],
+                "subject": generated["subject"],
+                "body": generated["body"],
+                "context": generated["context"],
+            },
+        )
+        assert response.status_code == 200
+        assert "event: run_started" in response.text

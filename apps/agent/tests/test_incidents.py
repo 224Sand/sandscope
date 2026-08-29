@@ -17,6 +17,9 @@ from sandscope_agent.seed.faults import PATTERNS, Signal, pattern_by_id
 from sandscope_agent.seed.incidents import (
     BASELINE_WINDOW,
     FAULT_WINDOW,
+    SCHEDULE_INTERVAL_SECONDS,
+    as_run_input,
+    current_incident,
     generate_incident,
     generate_telemetry,
 )
@@ -177,6 +180,35 @@ class TestFaultCatalogue:
         runtimes = {s.runtime for s in estate.services()}
         for pattern in PATTERNS:
             assert any(pattern.applies_to(r) for r in runtimes), f"{pattern.id} is unreachable"
+
+
+class TestIncidentFeed:
+    """FR-003: the incident feed, at the level below the HTTP surface."""
+
+    def test_the_same_schedule_slot_yields_the_same_incident(self) -> None:
+        t1 = datetime(2026, 8, 20, 12, 0, 0, tzinfo=UTC)
+        t2 = t1 + timedelta(seconds=SCHEDULE_INTERVAL_SECONDS - 1)
+        assert current_incident(t1).id == current_incident(t2).id
+
+    def test_the_next_schedule_slot_yields_a_different_incident(self) -> None:
+        t1 = datetime(2026, 8, 20, 12, 0, 0, tzinfo=UTC)
+        t2 = t1 + timedelta(seconds=SCHEDULE_INTERVAL_SECONDS)
+        assert current_incident(t1).id != current_incident(t2).id
+
+    def test_as_run_input_names_the_service_that_is_actually_failing(self) -> None:
+        incident = generate_incident(42, T0)
+        run_input = as_run_input(incident)
+        assert run_input["context"]["service"] == incident.service_id
+        assert run_input["subject"] == incident.id
+        assert len(run_input["body"]) > 0
+
+    def test_as_run_input_body_names_the_signal_that_actually_moved(self) -> None:
+        """Not an invented sentence — the body must reference the pattern's own
+        authored lead signal, not generic filler."""
+        incident = generate_incident(42, T0)
+        pattern = next(p for p in PATTERNS if p.id == incident.pattern_id)
+        run_input = as_run_input(incident)
+        assert pattern.primary[0].metric in run_input["body"]
 
 
 class TestSyntheticOnly:

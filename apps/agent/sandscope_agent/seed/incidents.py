@@ -15,7 +15,7 @@ from __future__ import annotations
 import random
 import zlib
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from sandscope_agent.seed import estate
 from sandscope_agent.seed.faults import FaultPattern, Signal, patterns_for_runtime
@@ -215,3 +215,61 @@ def _patterns() -> tuple[FaultPattern, ...]:
     from sandscope_agent.seed.faults import PATTERNS
 
     return PATTERNS
+
+
+#: How often the "current" incident rotates for a visitor who does nothing
+#: (FR-003's "on schedule" half). Short enough that two visits minutes apart
+#: plausibly see different incidents; long enough that a run in progress
+#: doesn't have the ground under it shift mid-triage.
+SCHEDULE_INTERVAL_SECONDS = 600
+
+
+def as_run_input(incident: Incident) -> dict[str, str | dict[str, str]]:
+    """Render a generated incident into the shape a triage run actually
+    accepts: `subject`/`body`/`context`, matching `WorkloadInput`.
+
+    This is the missing half of FR-003. `generate_incident` produced a fully
+    structured, reproducible `Incident` from day one, but nothing turned that
+    into text an agent — or a visitor clicking a console preset — could run
+    against; the console's incident picker was, and outside this function
+    remains, a hand-authored list of four scenarios. Deliberately reuses the
+    fault pattern's own authored `summary` and the first primary signal's
+    real peak value rather than generating prose, for the same reason
+    `estate.py` authors topology instead of generating it: an invented
+    sentence describing a fault is exactly the kind of texture this project's
+    ethos exists to avoid, and the pattern already carries real, reviewed
+    copy that says the true thing.
+    """
+    pattern = next(p for p in _patterns() if p.id == incident.pattern_id)
+    service = estate.service_by_id(incident.service_id)
+    lead_signal = pattern.primary[0]
+    body = (
+        f"{lead_signal.metric} on {service.name} has moved from a baseline of "
+        f"{lead_signal.baseline:g} {lead_signal.unit} to {lead_signal.peak:g} "
+        f"{lead_signal.unit}. {pattern.summary}"
+    )
+    return {
+        "workload": "incident_triage",
+        "subject": incident.id,
+        "body": body,
+        "context": {
+            "service": service.id,
+            "tier": str(int(service.tier)),
+            "signature": pattern.signature,
+        },
+    }
+
+
+def current_incident(now: datetime | None = None) -> Incident:
+    """The incident "on the air" right now (FR-003's scheduled feed).
+
+    Deterministic within a `SCHEDULE_INTERVAL_SECONDS` window and different
+    across windows, without a running background scheduler: the seed IS the
+    schedule. A visitor polling twice inside the same window sees the same
+    incident: an actual clock-driven cron would give no such guarantee, and
+    would need a process to keep running between requests, which this
+    deliberately stateless runtime does not have (NFR-005).
+    """
+    at = now or datetime.now(UTC)
+    slot = int(at.timestamp() // SCHEDULE_INTERVAL_SECONDS)
+    return generate_incident(slot, at)

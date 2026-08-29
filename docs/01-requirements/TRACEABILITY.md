@@ -58,7 +58,7 @@ directions.
 | BR-010 | Reduce redundant model calls via semantic caching | S2-CACHE | `test_paraphrase_hits_the_semantic_tier` | 2 | Done |
 | BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
 | FR-002 | Simulated production estate, deterministically seeded | S1-SEED | `test_same_seed_yields_the_same_incident` | 1 | Done |
-| FR-003 | Incident feed on schedule and on demand | S1-FEED | `test_incident_fires_on_demand` | 1 | Planned |
+| FR-003 | Incident feed on schedule and on demand | S1-FEED | `TestIncidentFeed::test_generate_produces_a_fresh_incident_on_demand` | 1,9 | Done |
 | FR-004 | Live triage run streamed to the client | S3-STREAM | `test_node_events_are_emitted_in_the_graphs_actual_topological_order` | 3,9 | Done |
 | FR-005 | Cited evidence panel; unsupported claims marked | S3-CITE | `test_escalation_emits_no_proposal` | 3 | Done |
 | FR-006 | Explicit refusal on insufficient evidence | S2-RAG | `test_no_unanswerable_question_is_ever_marked_sufficient` | 2 | Done |
