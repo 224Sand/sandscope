@@ -12,7 +12,14 @@
 import { useCallback, useRef, useState } from "react";
 
 import Trace from "@/components/Trace";
+import architecture from "@/generated/architecture.json";
 import { readEvents, type Citation, type NodeEvent, type RunCompleted } from "@/lib/events";
+
+/** The routing chain, in the order the runtime declares it. Derived rather
+ *  than typed so the control cannot drift from what the router actually has —
+ *  an unknown name is refused upstream with a 422, which would surface to a
+ *  visitor as a broken button. */
+const PROVIDERS: string[] = architecture.providers;
 
 const PRESETS = [
   {
@@ -91,6 +98,10 @@ export default function Console() {
   const [error, setError] = useState<string | null>(null);
   const [openCitation, setOpenCitation] = useState<string | null>(null);
   const [decision, setDecision] = useState<string | null>(null);
+  /** Providers the visitor has chosen to break for the next run (FR-011).
+   *  Scoped to the run, not the session: the runtime builds a router per
+   *  request and discards it, so nobody else’s run is affected. */
+  const [broken, setBroken] = useState<string[]>([]);
   const abort = useRef<AbortController | null>(null);
 
   /**
@@ -126,6 +137,7 @@ export default function Console() {
           subject: preset.subject,
           body: preset.body,
           context: preset.context,
+          inject_failures: broken,
         }),
         signal: controller.signal,
       });
@@ -155,7 +167,7 @@ export default function Console() {
       }
       setPhase("done");
     }
-  }, [preset]);
+  }, [preset, broken]);
 
   const terminal = events.find((e) =>
     ["refuse", "escalate", "await_approval", "emit"].includes(e.node),
@@ -201,6 +213,41 @@ export default function Console() {
         <p className="mono" style={{ color: "var(--text-2)", marginBottom: "var(--s4)" }}>
           {preset.body}
         </p>
+        {/* FR-011. The reliability claim on the landing page is deterministic
+            failover; this is where a visitor gets to disbelieve it and check.
+            Breaking a provider is scoped to the next run only. */}
+        <fieldset className="chaos">
+          <legend className="chaos-legend">Break a provider for this run</legend>
+          <div className="chaos-row">
+            {PROVIDERS.map((name) => {
+              const on = broken.includes(name);
+              return (
+                <label key={name} className="chaos-item" data-on={on ? "true" : "false"}>
+                  <input
+                    type="checkbox"
+                    checked={on}
+                    disabled={phase === "running"}
+                    onChange={() =>
+                      setBroken((current) =>
+                        current.includes(name)
+                          ? current.filter((p) => p !== name)
+                          : [...current, name],
+                      )
+                    }
+                  />
+                  <span className="mono">{name}</span>
+                </label>
+              );
+            })}
+          </div>
+          <p className="chaos-note">
+            {broken.length === 0
+              ? "Nothing broken. The chain routes in its declared order."
+              : broken.length >= PROVIDERS.length
+                ? "Every provider broken — the run should fail closed rather than invent an answer."
+                : `${broken.join(", ")} will be treated as failed. Watch the trace route past ${broken.length === 1 ? "it" : "them"}.`}
+          </p>
+        </fieldset>
         <button
           onClick={start}
           disabled={phase === "running"}

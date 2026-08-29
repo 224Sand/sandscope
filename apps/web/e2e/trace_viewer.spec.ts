@@ -1,5 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
+import architecture from "../src/generated/architecture.json";
+
 /**
  * FR-013 — the execution trace viewer.
  *
@@ -204,5 +206,63 @@ test.describe("the execution trace viewer", () => {
     });
     await page.getByRole("button", { name: /run triage/i }).click();
     await expect(page.getByText(/every provider refused/)).toBeVisible();
+  });
+});
+
+test.describe("visitor-triggered failure injection (FR-011)", () => {
+  test("the control lists every provider the router actually has", async ({ page }) => {
+    await page.goto("/console");
+    const items = page.locator(".chaos-item");
+    await expect(items).toHaveCount(architecture.providers.length);
+    for (const name of architecture.providers) {
+      await expect(page.locator(".chaos-item", { hasText: name })).toHaveCount(1);
+    }
+  });
+
+  test("breaking a provider sends it to the runtime for that run", async ({ page }) => {
+    /** The assertion that matters: the choice has to REACH the runtime. A
+     *  checkbox that toggles and changes nothing would look identical. */
+    await page.goto("/console");
+    let sent: unknown = null;
+    await page.route("**/api/runs/stream", async (route) => {
+      sent = JSON.parse(route.request().postData() ?? "{}");
+      await route.fulfill({
+        status: 200,
+        headers: { "content-type": "text/event-stream" },
+        body: sse("run_started", { run_id: "r", workload: "incident_triage" }),
+      });
+    });
+
+    await page.locator(".chaos-item", { hasText: "groq" }).click();
+    await page.getByRole("button", { name: /run triage/i }).click();
+    await expect.poll(() => sent).not.toBeNull();
+    expect((sent as { inject_failures?: string[] }).inject_failures).toEqual(["groq"]);
+  });
+
+  test("a run with nothing broken sends an empty list, not undefined", async ({ page }) => {
+    await page.goto("/console");
+    let sent: unknown = null;
+    await page.route("**/api/runs/stream", async (route) => {
+      sent = JSON.parse(route.request().postData() ?? "{}");
+      await route.fulfill({
+        status: 200,
+        headers: { "content-type": "text/event-stream" },
+        body: sse("run_started", { run_id: "r", workload: "incident_triage" }),
+      });
+    });
+    await page.getByRole("button", { name: /run triage/i }).click();
+    await expect.poll(() => sent).not.toBeNull();
+    expect((sent as { inject_failures?: string[] }).inject_failures).toEqual([]);
+  });
+
+  test("the control says what breaking everything would mean", async ({ page }) => {
+    /** Refusing is the correct behaviour when no provider survives, and the
+     *  copy has to say so — otherwise a visitor who breaks all five reads the
+     *  refusal as the demo falling over. */
+    await page.goto("/console");
+    for (const name of architecture.providers) {
+      await page.locator(".chaos-item", { hasText: name }).click();
+    }
+    await expect(page.locator(".chaos-note")).toContainText(/fail closed/i);
   });
 });

@@ -590,3 +590,44 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .adr-h + .adr-p { margin-bottom: var(--s5); }
 .adr-p { color: var(--text-2); font-size: 0.9375rem; line-height: 1.65; max-width: 74ch; }
 .adr-link { font-size: 0.8125rem; }
+
+/* --------------------------------------------------- chaos injection (FR-011)
+   A visitor can break any provider for a single run and watch the router go
+   around it. Scoped to the run, never the session — one visitor degrading
+   another's demonstration is T-6 in the threat model. */
+.chaos {
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 10px);
+  padding: var(--s3) var(--s4) var(--s4);
+  margin: var(--s5) 0;
+  background: var(--surface-2);
+}
+.chaos-legend {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 0 var(--s2);
+}
+.chaos-row { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.chaos-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s1) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  user-select: none;
+}
+.chaos-item:hover { border-color: var(--text-3); }
+/* Broken reads in the same colour the rest of the system uses for a blocked
+   state, so the control and the trace agree without a legend. */
+.chaos-item[data-on="true"] {
+  border-color: color-mix(in srgb, var(--blocked) 45%, var(--line));
+  color: var(--blocked);
+}
+.chaos-item input { accent-color: var(--blocked); margin: 0; }
+.chaos-item:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chaos-note { color: var(--text-3); font-size: 0.8125rem; margin-top: var(--s3); }

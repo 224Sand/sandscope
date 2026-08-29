@@ -54,7 +54,14 @@ class ContractBffToRuntime(unittest.TestCase):
         # marginally better than one that cannot fail at all.
         block = re.search(r"body: JSON\.stringify\(\{(.*?)\}\),", self.route, re.DOTALL)
         self.assertIsNotNone(block, "could not locate the upstream payload in the BFF route")
-        sent = set(re.findall(r"(\w+):", block.group(1)))
+        # Comments are stripped before fields are parsed. `(\w+):` matches
+        # inside a comment just as happily as in code, so a `//` line
+        # explaining WHY a field is forwarded -- which contained the word
+        # "payload:" -- registered as a field named `payload` and failed the
+        # contract. A check that a comment can break is a check people learn
+        # to work around by not writing comments.
+        payload_block = re.sub(r"//[^\n]*", "", block.group(1))
+        sent = set(re.findall(r"(\w+):", payload_block))
         accepted = set(RunRequest.model_fields)
         unknown = sent - accepted
         self.assertFalse(

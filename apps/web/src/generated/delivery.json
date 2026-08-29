@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-08-29T23:39:05.000Z",
+  "generatedAt": "2026-08-29T23:45:27.532Z",
   "repo": "224Sand/sandscope",
-  "sha": "becf8d7",
-  "commits": 85,
+  "sha": "fc6729e",
+  "commits": 86,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:03:13+05:30",
+  "lastCommit": "2026-08-30T05:09:46+05:30",
   "tests": {
-    "total": 387,
+    "total": 393,
     "files": 21
   },
   "lines": {
-    "agent": 5487,
-    "tests": 3877,
-    "web": 3325,
+    "agent": 5517,
+    "tests": 3954,
+    "web": 3379,
     "tooling": 3114
   },
   "docs": {
@@ -21,8 +21,8 @@
   },
   "requirements": {
     "total": 58,
-    "done": 51,
-    "planned": 7,
+    "done": 52,
+    "planned": 6,
     "rows": [
       {
         "id": "VIS-001",
@@ -332,9 +332,9 @@
         "id": "FR-011",
         "requirement": "Visitor-triggered provider failure injection",
         "story": "S2-CHAOS",
-        "test": "test_chaos_injection_is_session_scoped",
-        "sprint": "2",
-        "status": "Planned"
+        "test": "TestChaosInjection::test_injection_does_not_leak_into_the_next_run",
+        "sprint": "2,9",
+        "status": "Done"
       },
       {
         "id": "FR-012",

@@ -35,6 +35,8 @@ export const maxDuration = 60;
 type Body = {
   workload?: string;
   subject?: string;
+  /** Providers the visitor asked to fail for this run (FR-011). */
+  inject_failures?: string[];
   body?: string;
   context?: Record<string, string>;
 };
@@ -110,6 +112,12 @@ export async function POST(request: Request): Promise<Response> {
         subject: payload.subject,
         body: payload.body,
         context: payload.context ?? {},
+        // FR-011. Forwarded as an explicit field rather than by spreading the
+        // payload: this whitelist IS the contract with the runtime (AC-001),
+        // and a spread would let any future client-side key through it.
+        // Length-capped here as well as upstream so a 10,000-name list is
+        // refused at the edge rather than after crossing the boundary.
+        inject_failures: (payload.inject_failures ?? []).slice(0, 5),
       }),
     });
   } catch (error) {

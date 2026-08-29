@@ -66,7 +66,7 @@ directions.
 | FR-008 | Session memory, visible to the user | S3-MEM | `test_memory_panel_reflects_stored_items` | 3 | Planned |
 | FR-009 | Postmortem drafting from a completed run | S3-RCA | `test_postmortem_cites_only_run_evidence` | 3 | Planned |
 | FR-010 | Deterministic router with time-boxed provider disabling | S2-ROUTER | `test_disabled_provider_is_reenabled_after_the_ttl` | 2 | Done |
-| FR-011 | Visitor-triggered provider failure injection | S2-CHAOS | `test_chaos_injection_is_session_scoped` | 2 | Planned |
+| FR-011 | Visitor-triggered provider failure injection | S2-CHAOS | `TestChaosInjection::test_injection_does_not_leak_into_the_next_run` | 2,9 | Done |
 | FR-012 | Semantic cache with visible hit rate and spend avoided | S2-CACHE | `test_cache_key_includes_embedding_model` | 2 | Planned |
 | FR-013 | Execution trace viewer | S3-TRACE | `apps/web/e2e/trace_viewer.spec.ts` | 3,9 | Done |
 | FR-014 | Cost attribution and pre-flight spend guard | S2-SPEND | `test_a_live_call_is_refused_with_no_budget_open` | 2 | Done |

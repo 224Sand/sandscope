@@ -238,6 +238,91 @@ class TestRunEndpoint:
         )
 
 
+class TestChaosInjection:
+    """FR-011: a visitor can fail a provider and watch failover happen.
+
+    Scoped to a single RUN rather than to a session. The threat model (T-6)
+    requires only that one visitor cannot degrade another's run; per-run
+    scoping gets there by construction instead of by discipline, because
+    there is no state to leak — the router is built inside the stream
+    handler and discarded when it ends.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _two_providers(self, client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Two scripted providers so failover has somewhere to go.
+
+        Against the REAL chain this run dies on the spend guard rather than
+        the router: with no keys configured the first provider is unavailable,
+        failover reaches a costlier model, and reserving its worst case
+        exceeds the $0.02 ceiling. That is D-010's fix behaving exactly as
+        designed, and it makes the real chain useless for testing THIS.
+
+        Depends on `client` so it runs AFTER it. The client fixture calls
+        `importlib.reload` on the api module, which replaces the very
+        attribute being patched -- patching first silently reverted, and the
+        run then failed on the budget again with no sign that the stub had
+        been discarded.
+        """
+        import sandscope_agent.api.app as app_module
+        from sandscope_agent.router.providers import StubProvider
+
+        monkeypatch.setattr(
+            app_module,
+            "build_default_providers",
+            lambda: [
+                StubProvider("groq", default="[1] A cited claim."),
+                StubProvider("gemini", default="[1] A cited claim."),
+            ],
+        )
+
+    def _run(self, client: TestClient, inject: list[str] | None = None):
+        payload = {
+            "workload": "incident_triage",
+            "subject": "s",
+            "body": "what is the disaster recovery failover procedure",
+        }
+        if inject is not None:
+            payload["inject_failures"] = inject
+        return client.post("/v1/runs/stream", headers=auth(), json=payload)
+
+    def test_an_injected_provider_is_reported_as_injected(self, client: TestClient) -> None:
+        response = self._run(client, ["groq"])
+        assert response.status_code == 200
+        assert "injected_failure" in response.text
+
+    def test_a_run_without_injection_reports_none(self, client: TestClient) -> None:
+        assert "injected_failure" not in self._run(client).text
+
+    def test_injection_does_not_leak_into_the_next_run(self, client: TestClient) -> None:
+        """The property FR-011 actually cares about. If the router were shared,
+        the second run would still see groq disabled."""
+        self._run(client, ["groq"])
+        assert "injected_failure" not in self._run(client).text
+
+    def test_the_surviving_provider_serves_the_run(self, client: TestClient) -> None:
+        """The point of the feature: a broken provider is routed AROUND, not
+        fatal. Without this the previous assertion would still pass on a run
+        that injected a failure and then died."""
+        response = self._run(client, ["groq"])
+        assert "event: run_completed" in response.text
+        assert "gemini" in response.text
+
+    def test_an_unknown_provider_is_refused_rather_than_ignored(self, client: TestClient) -> None:
+        """Silently accepting a typo would show the visitor an UNINJECTED run
+        and let them conclude the failover does not work.
+
+        Refused BEFORE the stream opens: raising inside the generator cannot
+        set a status code, because the 200 has already been sent."""
+        response = self._run(client, ["grok"])
+        assert response.status_code == 422
+        assert "unknown provider" in response.text
+
+    def test_more_injections_than_providers_is_refused(self, client: TestClient) -> None:
+        response = self._run(client, ["groq"] * 9)
+        assert response.status_code == 422
+
+
 class TestNoLocalState:
     """NFR-005: the runtime holds no persistent local state.
 

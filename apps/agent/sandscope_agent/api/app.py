@@ -92,12 +92,21 @@ class RunRequest(BaseModel):
     subject: str = Field(min_length=1, max_length=200)
     body: str = Field(min_length=1, max_length=4000)
     context: dict[str, str] = Field(default_factory=dict)
+    #: Providers the visitor has asked to fail for THIS run (FR-011).
+    #:
+    #: Scoped to the single run rather than to a session, which is stronger
+    #: than the threat model requires: the router is built inside `generate()`
+    #: and discarded when the stream ends, so there is no state a visitor
+    #: could use to degrade anyone else's run, and none to clean up (T-6,
+    #: NFR-005). Capped because the routing chain is 5 long and a list longer
+    #: than that is either a mistake or an attempt at something.
+    inject_failures: list[str] = Field(default_factory=list, max_length=5)
 
     def to_input(self) -> WorkloadInput:
         return WorkloadInput(subject=self.subject, body=self.body, context=self.context)
 
 
-def _dependencies(events: list[RouterEvent]) -> Dependencies:
+def _dependencies(events: list[RouterEvent], inject: list[str] | None = None) -> Dependencies:
     """A fresh router, cache and spend guard per run.
 
     Sharing a spend guard between concurrent runs means neither has a ceiling,
@@ -110,6 +119,16 @@ def _dependencies(events: list[RouterEvent]) -> Dependencies:
         environment=os.environ.get("SANDSCOPE_ENV", "production"),
         on_event=events.append,
     )
+    # FR-011. Applied to this run's own router, which is discarded when the
+    # stream ends -- a visitor can watch failover happen without being able to
+    # affect anyone else's run. Names are validated by the CALLER, before the
+    # response starts: raising in here happens inside the streaming generator,
+    # where an HTTPException cannot set a status code because the 200 has
+    # already gone out. It became an SSE error event instead, which is how a
+    # rejected request came back looking like a successful one.
+    for name in inject or []:
+        router.inject_failure(name)
+
     guard = SpendGuard()
     guard.open(RUN_BUDGET_USD)
     return Dependencies(
@@ -208,11 +227,23 @@ def stream_run(request: RunRequest, http_request: Request) -> StreamingResponse:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="corpus not loaded"
         )
+    # FR-011, validated here rather than at the point of use: once the stream
+    # has begun the status code is already sent, so a bad name could only be
+    # reported as an error EVENT inside a 200. Silently accepting "grok" for
+    # "groq" would be worse still -- the visitor would watch an uninjected run
+    # and conclude the failover does not work.
+    known = {p.name for p in build_default_providers()}
+    unknown = [name for name in request.inject_failures if name not in known]
+    if unknown:
+        raise HTTPException(
+            status_code=422,
+            detail=f"unknown provider(s) {unknown}; known: {sorted(known)}",
+        )
 
     def generate() -> Iterator[str]:
         router_events: list[RouterEvent] = []
         try:
-            deps = _dependencies(router_events)
+            deps = _dependencies(router_events, request.inject_failures)
             graph = build_graph(deps)
         except Exception as error:
             # Anything that fails before the first node still has to reach the
