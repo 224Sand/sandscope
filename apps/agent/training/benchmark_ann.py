@@ -62,6 +62,21 @@ REPORT = (
 )
 
 
+def recall_at_k(found_ids: list[int], expected_ids: list[int]) -> float:
+    """Fraction of the true top-k neighbours an approximate search actually
+    returned. Exact search against itself is 1.0 by construction; this is the
+    number every other method is measured against (FR-030).
+
+    Pulled out as its own pure function so it can be unit-tested (`test_recall_
+    at_k_measured_against_exact_search`) without a live pgvector connection —
+    the rest of this module needs one, which is why FR-030's own test had
+    nothing to run against until this existed.
+    """
+    if not expected_ids:
+        return 1.0
+    return len(set(found_ids) & set(expected_ids)) / len(expected_ids)
+
+
 @dataclass
 class Measurement:
     method: str
@@ -173,12 +188,12 @@ def measure(
     tuning = {"hnsw": {"hnsw.ef_search": "100"}, "ivfflat": {"ivfflat.probes": "20"}}.get(method)
 
     latencies: list[float] = []
-    hits = 0
+    recalls: list[float] = []
     ratios: list[float] = []
     for query, (expected_ids, expected_distances) in zip(queries, truth, strict=True):
         found, elapsed, distances = search(conn, query, TOP_K, tuning)
         latencies.append(elapsed)
-        hits += len(set(found) & set(expected_ids))
+        recalls.append(recall_at_k(found, expected_ids))
         if distances and expected_distances and expected_distances[0] > 0:
             ratios.append(distances[0] / expected_distances[0])
 
@@ -190,7 +205,7 @@ def measure(
         index_bytes=size_bytes,
         p50_ms=round(statistics.median(latencies), 2),
         p95_ms=round(latencies[int(0.95 * (len(latencies) - 1))], 2),
-        recall_at_k=round(hits / (len(truth) * TOP_K), 4),
+        recall_at_k=round(statistics.mean(recalls), 4),
         distance_ratio=round(statistics.mean(ratios), 4) if ratios else 1.0,
     )
 

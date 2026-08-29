@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-29T11:54:50.430Z",
+  "generatedAt": "2026-08-29T12:00:00.413Z",
   "repo": "224Sand/sandscope",
-  "sha": "349eedb",
-  "commits": 80,
+  "sha": "6b9ca36",
+  "commits": 81,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-29T07:42:18+05:30",
+  "lastCommit": "2026-08-29T17:25:44+05:30",
   "tests": {
-    "total": 369,
-    "files": 20
+    "total": 376,
+    "files": 21
   },
   "lines": {
     "agent": 5416,
-    "tests": 3720,
+    "tests": 3758,
     "web": 3224,
-    "tooling": 2874
+    "tooling": 2886
   },
   "docs": {
     "files": "46",
@@ -21,8 +21,8 @@
   },
   "requirements": {
     "total": 58,
-    "done": 39,
-    "planned": 19
+    "done": 40,
+    "planned": 18
   },
   "defects": {
     "total": 20,
@@ -204,9 +204,9 @@
         "found": "Sprint 9",
         "sprint": "9",
         "severity": "2",
-        "description": "20 of 45 `Planned` rows in the traceability matrix (BR-001/004/006/007/008/009/010, FR-002/005/006/007/010/014/015/016/020/025/026/027/029) had real, passing, CI-green tests months before the row was updated — a recurrence of D-014's exact root cause at 20x the scale, caught only by an explicit read-the-code-not-the-doc audit requested by the Product Owner (\"I want all of the 45 to be done\")",
-        "cause": "`check-traceability.mjs` (built for D-014) only fails the build in the overclaiming direction — a `Done` row with no matching test. It has never checked the reverse: a `Planned` row whose named-or-equivalent test already exists and passes, which the public delivery page then undercounts",
-        "status": "Fixed (rows corrected); guard extension for the reverse direction is open — see backlog"
+        "description": "20 of 45 `Planned` rows in the traceability matrix (BR-001/004/006/007/008/009/010, FR-002/005/006/007/010/014/015/016/020/025/026/027/029) had real, passing, CI-green tests months before the row was updated — a recurrence of D-014's exact root cause at 20x the scale, caught only by an explicit read-the-code-not-the-doc audit requested by the Product Owner (\"I want all of the 45 to be done\"). `PROJECT_RECORD.html` (the same document D-019 was found in) independently carried the same stale `13 done` / `45 Planned` figures in three places, hand-typed rather than generated",
+        "cause": "`check-traceability.mjs` (built for D-014) only fails the build in the overclaiming direction — a `Done` row with no matching test. It has never checked the reverse: a `Planned` row whose named-or-equivalent test already exists and passes, which the public delivery page then undercounts. `PROJECT_RECORD.html` is not generated from `delivery.json` at all, unlike the `/delivery` page and `README.md` — a third recurrence in the same file",
+        "status": "Fixed (rows and HTML figures corrected); guard extension for the reverse direction, and generating PROJECT_RECORD.html's figures rather than typing them, are both open — see backlog"
       }
     ]
   },

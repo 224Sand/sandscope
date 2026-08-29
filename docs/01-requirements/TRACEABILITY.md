@@ -85,7 +85,7 @@ directions.
 | FR-027 | Statistical evaluation of the refusal gate | S3-STATS | `test_youden_selects_the_point_furthest_from_the_diagonal` | 3 | Done |
 | FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `test_the_model_beats_the_heuristic_it_replaces` | 3 | Planned |
 | FR-029 | Cross-encoder re-ranker trained in PyTorch, served via ONNX | S3-RERANK | `test_onnx_matches_torch_on_the_recorded_sample` | 3 | Done |
-| FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `test_recall_at_k_measured_against_exact_search` | 3 | Planned |
+| FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one` | 3,9 | Done |
 
 ---
 
