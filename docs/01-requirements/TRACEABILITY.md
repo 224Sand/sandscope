@@ -36,55 +36,55 @@ directions.
 | NFR-002 | Zero infrastructure cost | S0-04 | `test_no_paid_service_in_deploy_manifest` | 0,6,7 | Done |
 | NFR-003 | First meaningful paint under 2.5s on cold 4G | S4-PERF | Lighthouse budget assertion in CI | 5 | Planned |
 | NFR-004 | Public endpoint survives untrusted traffic without unbounded cost | S2-GUARD | `test_rate_limiter_denies_when_store_unreachable` | 2 | Planned |
-| NFR-005 | Runtime holds no persistent local state | S1-DATA | `test_no_local_filesystem_writes` | 1 | Planned |
+| NFR-005 | Runtime holds no persistent local state | S1-DATA | `TestNoLocalState::test_serving_requests_writes_nothing_to_the_package_directory` | 1,9 | Done |
 | DR-001 | Visual quality meets apple.com product-page standard | S4-UX | `e2e/motion_and_reduced_motion.spec.ts` | 5 | Planned |
 | FR-001 | Product name changeable without code changes | S0-06 | `check-config.mjs` slug-derivation invariant | 0 | Done |
 | SD-001 | Deliverable is a working product, not a portfolio listing | S0-03 | PO acceptance at each sprint review | 0 | Done |
-| SD-002 | Synthetic data only; no real customer data | S1-SEED | `test_seed_data_is_generated_not_imported` | 1 | Planned |
+| SD-002 | Synthetic data only; no real customer data | S1-SEED | `TestSyntheticOnly::test_no_data_generation_module_reads_from_an_external_source` | 1,9 | Done |
 | SD-003 | No job-application or resume tooling | S0-03 | PRD §8 scope exclusion, reviewed at each gate | 0 | Done |
 | SD-004 | Domain is agent reliability; incident triage is the workload | S0-03 | PO acceptance | 0 | Done |
 | CR-001 | Resume content restrictions do not apply | S0-02 | BRD §7 scope statement | 0 | Done |
 | INF-001 | Containerised runtime, Vercel experience layer | S0-05 | `test_container_binds_7860` | 0,6,7,8 | Done |
 | OPS-001 | Host disk reclamation authorised | S0-09 | Pre-build disk check recorded in sprint log | 0 | Done |
-| BR-001 | Triage an incident, produce a hypothesis with cited evidence | S3-TRIAGE | `test_every_emitted_claim_carries_a_citation` | 2,4 | Planned |
-| BR-002 | Demonstrate PDLC/SDLC/CI-CD/Agile/Scrum verifiably | S5-DELIV | `test_delivery_reads_live_github` | 6 | Planned |
+| BR-001 | Triage an incident, produce a hypothesis with cited evidence | S3-TRIAGE | `test_uncited_claims_loop_back_then_escalate` | 2,4 | Done |
+| BR-002 | Demonstrate PDLC/SDLC/CI-CD/Agile/Scrum verifiably | S5-DELIV | `test_delivery_reads_live_github`, `test_sprint_velocity_is_computed_from_commits_not_typed` | 6,9 | Done |
 | BR-003 | Continue operating when a provider fails or rate-limits | S2-ROUTER | `test_workflow_completes_when_first_provider_fails` | 2 | Done |
-| BR-004 | Refuse when evidence does not support an answer | S2-RAG | `test_unanswerable_questions_are_refused` | 2 | Planned |
-| BR-005 | Record a full, inspectable execution trace per run | S3-TRACE | `test_span_tree_covers_every_node` | 2,4 | Planned |
-| BR-006 | Block high-risk actions pending human approval | S2-GOV | `test_approval_node_has_no_outgoing_edges` | 2 | Planned |
-| BR-007 | Attribute tokens and cost to each run | S2-SPEND | `test_spend_ledger_records_estimate_and_actual` | 2 | Planned |
-| BR-008 | Retain session and cross-incident memory | S3-MEM | `test_memory_recall_within_session` | 3 | Planned |
-| BR-009 | Evaluate quality against a fixed golden set | S2-EVAL | `test_golden_core_suite_passes` | 2 | Planned |
-| BR-010 | Reduce redundant model calls via semantic caching | S2-CACHE | `test_semantic_cache_hit_on_paraphrase` | 2 | Planned |
+| BR-004 | Refuse when evidence does not support an answer | S2-RAG | `test_no_unanswerable_question_is_ever_marked_sufficient` | 2 | Done |
+| BR-005 | Record a full, inspectable execution trace per run | S3-TRACE | `TestSpans::test_spans_are_persisted_and_readable_after_the_run` | 2,4,9 | Done |
+| BR-006 | Block high-risk actions pending human approval | S2-GOV | `test_await_approval_has_no_edge_to_a_working_node` | 2 | Done |
+| BR-007 | Attribute tokens and cost to each run | S2-SPEND | `test_actual_cost_is_ledgered_after_the_response` | 2 | Done |
+| BR-008 | Retain session and cross-incident memory | S3-MEM | `TestMemory::test_recall_is_newest_first_and_capped` | 3 | Done |
+| BR-009 | Evaluate quality against a fixed golden set | S2-EVAL | `test_core_passes` | 2 | Done |
+| BR-010 | Reduce redundant model calls via semantic caching | S2-CACHE | `test_paraphrase_hits_the_semantic_tier` | 2 | Done |
 | BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
-| FR-002 | Simulated production estate, deterministically seeded | S1-SEED | `test_seed_is_reproducible_from_seed_value` | 1 | Planned |
+| FR-002 | Simulated production estate, deterministically seeded | S1-SEED | `test_same_seed_yields_the_same_incident` | 1 | Done |
 | FR-003 | Incident feed on schedule and on demand | S1-FEED | `test_incident_fires_on_demand` | 1 | Planned |
-| FR-004 | Live triage run streamed to the client | S3-STREAM | `test_sse_emits_node_events_in_order` | 3 | Planned |
-| FR-005 | Cited evidence panel; unsupported claims marked | S3-CITE | `test_every_emitted_claim_carries_a_citation` | 3 | Planned |
-| FR-006 | Explicit refusal on insufficient evidence | S2-RAG | `test_unanswerable_questions_are_refused` | 2 | Planned |
-| FR-007 | Human approval gate; approval is terminal | S2-GOV | `test_approval_node_has_no_outgoing_edges` | 2 | Planned |
+| FR-004 | Live triage run streamed to the client | S3-STREAM | `test_node_events_are_emitted_in_the_graphs_actual_topological_order` | 3,9 | Done |
+| FR-005 | Cited evidence panel; unsupported claims marked | S3-CITE | `test_escalation_emits_no_proposal` | 3 | Done |
+| FR-006 | Explicit refusal on insufficient evidence | S2-RAG | `test_no_unanswerable_question_is_ever_marked_sufficient` | 2 | Done |
+| FR-007 | Human approval gate; approval is terminal | S2-GOV | `test_await_approval_has_no_edge_to_a_working_node` | 2 | Done |
 | FR-008 | Session memory, visible to the user | S3-MEM | `test_memory_panel_reflects_stored_items` | 3 | Planned |
 | FR-009 | Postmortem drafting from a completed run | S3-RCA | `test_postmortem_cites_only_run_evidence` | 3 | Planned |
-| FR-010 | Deterministic router with time-boxed provider disabling | S2-ROUTER | `test_rate_limited_provider_is_disabled_for_ttl_then_reenabled` | 2 | Planned |
+| FR-010 | Deterministic router with time-boxed provider disabling | S2-ROUTER | `test_disabled_provider_is_reenabled_after_the_ttl` | 2 | Done |
 | FR-011 | Visitor-triggered provider failure injection | S2-CHAOS | `test_chaos_injection_is_session_scoped` | 2 | Planned |
 | FR-012 | Semantic cache with visible hit rate and spend avoided | S2-CACHE | `test_cache_key_includes_embedding_model` | 2 | Planned |
 | FR-013 | Execution trace viewer | S3-TRACE | `e2e/trace_viewer.spec.ts` | 3 | Planned |
-| FR-014 | Cost attribution and pre-flight spend guard | S2-SPEND | `test_live_call_refused_without_open_budget` | 2 | Planned |
-| FR-015 | Evaluation harness over the golden set | S2-EVAL | `test_golden_core_suite_passes` | 2 | Planned |
-| FR-016 | Known-limitation probe suite that warns every run | S2-EVAL | `test_probe_suite_reports_warning_not_failure` | 2 | Planned |
+| FR-014 | Cost attribution and pre-flight spend guard | S2-SPEND | `test_a_live_call_is_refused_with_no_budget_open` | 2 | Done |
+| FR-015 | Evaluation harness over the golden set | S2-EVAL | `test_core_passes` | 2 | Done |
+| FR-016 | Known-limitation probe suite that warns every run | S2-EVAL | `test_probe_warns` | 2 | Done |
 | FR-017 | Cinematic scroll-driven product narrative | S4-UX | `e2e/scroll_scene_progression.spec.ts` | 5 | Planned |
 | FR-018 | Reduced-motion and mobile comprehension paths | S4-UX | `e2e/motion_and_reduced_motion.spec.ts` | 5 | Planned |
 | FR-019 | Interactive architecture view | S5-ARCH | `e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
-| FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | `test_delivery_reads_live_github` | 6 | Planned |
+| FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | `test_delivery_reads_live_github` | 6 | Done |
 | FR-021 | Requirements traceability rendered publicly | S5-DELIV | `test_traceability_view_matches_matrix_file` | 6 | Planned |
-| FR-022 | Sprint and velocity record from real commit history | S5-DELIV | `test_velocity_derived_from_commit_timestamps` | 6 | Planned |
+| FR-022 | Sprint and velocity record from real commit history | S5-DELIV | `test_sprint_velocity_is_computed_from_commits_not_typed` | 6,9 | Done |
 | FR-023 | Decision records rendered with context and consequences | S5-DELIV | `test_all_adrs_render` | 6 | Planned |
 | FR-024 | Postmortems for real defects hit during the build | S6-DELIV | `test_postmortems_render` | 7 | Planned |
-| FR-025 | Change risk review workload on the same orchestration graph | S4-WORKLOAD | `test_both_workloads_share_one_graph` | 5 | Planned |
-| FR-026 | Labelled evaluation dataset, labels true by construction | S3-DATA | `test_labels_are_derived_not_asserted` | 3 | Planned |
-| FR-027 | Statistical evaluation of the refusal gate | S3-STATS | `test_operating_point_matches_youden_j` | 3 | Planned |
-| FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `test_classifier_beats_or_reports_against_baseline` | 3 | Planned |
-| FR-029 | Cross-encoder re-ranker trained in PyTorch, served via ONNX | S3-RERANK | `test_onnx_matches_torch_within_tolerance` | 3 | Planned |
+| FR-025 | Change risk review workload on the same orchestration graph | S4-WORKLOAD | `test_both_workloads_share_one_topology` | 5 | Done |
+| FR-026 | Labelled evaluation dataset, labels true by construction | S3-DATA | `test_every_answerable_question_names_its_gold_document` | 3 | Done |
+| FR-027 | Statistical evaluation of the refusal gate | S3-STATS | `test_youden_selects_the_point_furthest_from_the_diagonal` | 3 | Done |
+| FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `test_the_model_beats_the_heuristic_it_replaces` | 3 | Planned |
+| FR-029 | Cross-encoder re-ranker trained in PyTorch, served via ONNX | S3-RERANK | `test_onnx_matches_torch_on_the_recorded_sample` | 3 | Done |
 | FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `test_recall_at_k_measured_against_exact_search` | 3 | Planned |
 
 ---

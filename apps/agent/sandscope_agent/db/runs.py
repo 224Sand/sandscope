@@ -18,6 +18,7 @@ import json
 import os
 import uuid
 from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import psycopg
@@ -69,12 +70,20 @@ def save_run(
     state: dict[str, Any],
     cost_usd: float,
     parent_run_id: str | None = None,
+    spans: list[dict[str, Any]] | None = None,
 ) -> None:
-    """Write the completed run and its citations.
+    """Write the completed run, its citations and its execution trace.
 
     Citations are written per claim rather than as a blob so that a reviewer can
     ask which passage supported a specific sentence months later, which is the
     question Sofia in the BRD actually has.
+
+    Spans are written per node for the same reason (BR-005): the live SSE
+    stream already carries them to the client while the run is in progress
+    (api/app.py's `run_completed` event), but that view disappears the moment
+    the tab closes. Without a row here, "a full, inspectable execution trace
+    per run" was true only for the person watching it happen — this is what
+    makes it true for a reviewer minutes or months later.
     """
     status = state.get("status", "failed")
     with conn.cursor() as cur:
@@ -109,6 +118,35 @@ def save_run(
                     citation["chunk_id"],
                     float(citation.get("score", 0.0)),
                     ordinal,
+                ),
+            )
+
+        # Spans arrive as offsets from the run's own start (api/app.py's
+        # `node_started`/`run_started` are perf_counter values with no wall-clock
+        # meaning), so they are anchored to a single wall-clock instant here
+        # rather than trusting perf_counter to mean anything outside this process.
+        trace_id = run_id
+        anchor = datetime.now(UTC)
+        for ordinal, span in enumerate(spans or []):
+            started_at = anchor + timedelta(milliseconds=span["start_ms"])
+            ended_at = started_at + timedelta(milliseconds=span["duration_ms"])
+            cur.execute(
+                """
+                INSERT INTO span (id, run_id, trace_id, name, kind, status,
+                                  started_at, ended_at, attributes)
+                VALUES (%s, %s, %s, %s, 'internal', 'ok', %s, %s, %s)
+                ON CONFLICT (id) DO NOTHING
+                """,
+                (
+                    f"{run_id}:{ordinal}:{span['name']}",
+                    run_id,
+                    trace_id,
+                    span["name"],
+                    started_at,
+                    ended_at,
+                    json.dumps(
+                        {"calls": span.get("calls", 0), "cache_hits": span.get("cache_hits", 0)}
+                    ),
                 ),
             )
 
@@ -159,6 +197,32 @@ def recall(conn: psycopg.Connection, session_id: str, limit: int = 5) -> list[di
             (session_id, limit),
         )
         return [json.loads(row[0]) for row in cur.fetchall()]
+
+
+def get_spans(conn: psycopg.Connection, run_id: str) -> list[dict[str, Any]]:
+    """The persisted execution trace for a completed run, oldest node first.
+
+    This is the read half of BR-005. Writing the span table with no way to
+    read it back would satisfy the letter of "record" while leaving "and
+    inspect it later" as untrue as it was before the write path existed.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            SELECT name, started_at, ended_at, attributes
+            FROM span WHERE run_id = %s ORDER BY started_at ASC
+            """,
+            (run_id,),
+        )
+        rows = cur.fetchall()
+    return [
+        {
+            "name": name,
+            "duration_ms": round((ended - started).total_seconds() * 1000, 2) if ended else None,
+            **(attributes or {}),
+        }
+        for name, started, ended, attributes in rows
+    ]
 
 
 def load_pending_approval(conn: psycopg.Connection, run_id: str) -> StoredRun | None:

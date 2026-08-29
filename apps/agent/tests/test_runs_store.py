@@ -11,6 +11,7 @@ must create a NEW run and must never resume the gated one.
 from __future__ import annotations
 
 import os
+from typing import ClassVar
 
 import pytest
 
@@ -220,3 +221,84 @@ class TestMemory:
     def test_another_session_recalls_nothing(self, conn) -> None:
         gate(conn)
         assert store.recall(conn, "sess-someone-else") == []
+
+
+class TestSpans:
+    """BR-005: a full, inspectable execution trace, readable after the run ends.
+
+    Before this class existed, `save_run` silently dropped the `spans`
+    argument (it did not accept one), so every one of these would fail with
+    either a TypeError on the call or an empty list from `get_spans` — the
+    exact failure mode the requirement's own audit finding described.
+    """
+
+    SPANS: ClassVar[list[dict[str, object]]] = [
+        {"name": "retrieve", "start_ms": 0.0, "duration_ms": 120.5, "calls": 1, "cache_hits": 0},
+        {
+            "name": "hypothesize",
+            "start_ms": 120.5,
+            "duration_ms": 340.25,
+            "calls": 2,
+            "cache_hits": 1,
+        },
+    ]
+
+    def test_spans_are_persisted_and_readable_after_the_run(self, conn) -> None:
+        store.save_run(
+            conn,
+            run_id="run-traced",
+            session_id=SESSION,
+            workload="incident_triage",
+            subject="inc-traced",
+            cost_usd=0.002,
+            state={"status": "completed"},
+            spans=self.SPANS,
+        )
+        spans = store.get_spans(conn, "run-traced")
+        assert [s["name"] for s in spans] == ["retrieve", "hypothesize"]
+
+    def test_span_order_and_attributes_survive_the_round_trip(self, conn) -> None:
+        store.save_run(
+            conn,
+            run_id="run-traced-2",
+            session_id=SESSION,
+            workload="incident_triage",
+            subject="inc-traced-2",
+            cost_usd=0.0,
+            state={"status": "completed"},
+            spans=self.SPANS,
+        )
+        spans = store.get_spans(conn, "run-traced-2")
+        assert spans[0]["duration_ms"] == 120.5
+        assert spans[1]["calls"] == 2
+        assert spans[1]["cache_hits"] == 1
+        # Oldest first, matching the order they actually executed in.
+        assert spans[0]["name"] == "retrieve"
+
+    def test_a_run_with_no_spans_reads_back_empty_not_an_error(self, conn) -> None:
+        gate(conn, run_id="run-no-spans")
+        assert store.get_spans(conn, "run-no-spans") == []
+
+    def test_spans_from_one_run_do_not_leak_into_another(self, conn) -> None:
+        store.save_run(
+            conn,
+            run_id="run-a",
+            session_id=SESSION,
+            workload="incident_triage",
+            subject="inc-a",
+            cost_usd=0.0,
+            state={"status": "completed"},
+            spans=self.SPANS,
+        )
+        store.save_run(
+            conn,
+            run_id="run-b",
+            session_id=SESSION,
+            workload="incident_triage",
+            subject="inc-b",
+            cost_usd=0.0,
+            state={"status": "completed"},
+            spans=[{"name": "solo", "start_ms": 0.0, "duration_ms": 5.0}],
+        )
+        assert [s["name"] for s in store.get_spans(conn, "run-b")] == ["solo"]
+        assert len(store.get_spans(conn, "run-a")) == 2

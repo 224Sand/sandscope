@@ -7,12 +7,16 @@ unknown workloads, and its own misconfiguration.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
 from sandscope_agent.api.security import TokenNotConfiguredError, expected_token
+
+PACKAGE_ROOT = Path(__file__).resolve().parent.parent / "sandscope_agent"
 
 TOKEN = "t" * 48
 
@@ -167,6 +171,121 @@ class TestRunEndpoint:
         assert response.headers["content-type"].startswith("text/event-stream")
         assert "event: run_started" in response.text
         assert "event: run_completed" in response.text or "event: error" in response.text
+
+    def test_node_events_are_emitted_in_the_graphs_actual_topological_order(
+        self, client: TestClient, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """FR-004: a live run streamed to the client is only genuinely 'live' if
+        the events describe what actually ran, in the order it actually ran.
+
+        Providers are stubbed (per the module docstring's own rule: no test here
+        makes a live model call) so the run is deterministic rather than tolerant
+        of an 'error' event, which is the only way ordering can be asserted at all.
+        """
+        import sandscope_agent.api.app as app_module
+        from sandscope_agent.router.providers import StubProvider
+
+        monkeypatch.setattr(
+            app_module,
+            "build_default_providers",
+            lambda: [
+                StubProvider(
+                    "stub",
+                    responses=[
+                        "[1] Wait time rose before query time, which points at the pool.",
+                        "Compare db.pool.wait_ms against db.query.p99_ms to confirm the ordering.",
+                    ],
+                )
+            ],
+        )
+        response = client.post(
+            "/v1/runs/stream",
+            headers=auth(),
+            json={
+                "workload": "incident_triage",
+                "subject": "inc-2",
+                "body": "db.pool.wait_ms is climbing on orders-db and available connections "
+                "reached zero",
+                "context": {"service": "analytics-etl", "tier": "3"},
+            },
+        )
+        assert response.status_code == 200
+        events = [
+            json.loads(line[len("data: ") :])
+            for line in response.text.splitlines()
+            if line.startswith("data: ")
+        ]
+        completed_nodes = [e["node"] for e in events if "node" in e]
+        # The topology this run must have taken (graph.py's low-risk path):
+        # classify -> retrieve -> assess_evidence -> hypothesise -> verify ->
+        # propose_action -> risk_gate -> emit. Assert it as a subsequence rather
+        # than exact equality so a legitimate extra verify loop iteration cannot
+        # make an otherwise-correct test brittle.
+        topology = [
+            "classify",
+            "retrieve",
+            "assess_evidence",
+            "hypothesise",
+            "verify",
+            "propose_action",
+            "risk_gate",
+            "emit",
+        ]
+        assert completed_nodes, "no node_completed events were emitted at all"
+        positions = [topology.index(n) for n in completed_nodes if n in topology]
+        assert positions == sorted(positions), (
+            f"node events arrived out of topological order: {completed_nodes}"
+        )
+
+
+class TestNoLocalState:
+    """NFR-005: the runtime holds no persistent local state.
+
+    The retrieval index is rebuilt from the corpus at startup rather than
+    cached to disk (api/app.py's lifespan docstring says so); this is the test
+    that actually drives requests through a live process and proves nothing
+    on disk changed, rather than trusting the comment.
+    """
+
+    def _snapshot(self) -> set[Path]:
+        return {p for p in PACKAGE_ROOT.rglob("*") if "__pycache__" not in p.parts}
+
+    def test_serving_requests_writes_nothing_to_the_package_directory(
+        self, client: TestClient
+    ) -> None:
+        before = self._snapshot()
+        client.get("/healthz")
+        client.get("/v1/workloads", headers=auth())
+        client.post(
+            "/v1/runs/stream",
+            headers=auth(),
+            json={
+                "workload": "incident_triage",
+                "subject": "s",
+                "body": "what is the disaster recovery failover procedure",
+            },
+        )
+        after = self._snapshot()
+        assert after == before, f"requests created or removed files: {after ^ before}"
+
+    def test_two_lifespans_rebuild_independent_index_instances(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """If the index were persisted rather than rebuilt, two independent
+        startups would share the same object; they must not."""
+        monkeypatch.setenv("AGENT_SERVICE_TOKEN", "t" * 48)
+        monkeypatch.setenv("SANDSCOPE_ENV", "test")
+        monkeypatch.setenv("RUN_BUDGET_USD", "0.02")
+        import importlib
+
+        from sandscope_agent.api import app as module
+
+        importlib.reload(module)
+        with TestClient(module.app):
+            first = module._state["retriever"]
+        with TestClient(module.app):
+            second = module._state["retriever"]
+        assert first is not second
 
 
 class TestWorkloads:

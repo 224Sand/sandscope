@@ -7,6 +7,7 @@ not replayed.
 
 from __future__ import annotations
 
+import inspect
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -176,3 +177,48 @@ class TestFaultCatalogue:
         runtimes = {s.runtime for s in estate.services()}
         for pattern in PATTERNS:
             assert any(pattern.applies_to(r) for r in runtimes), f"{pattern.id} is unreachable"
+
+
+class TestSyntheticOnly:
+    """SD-002: synthetic data only, no real customer data.
+
+    Not a claim to trust from the module docstring — checked directly against
+    the source of every module that produces estate/incident/telemetry data.
+    A real-data leak here would be an `open()`, a network client, or a CSV/JSON
+    load of something not committed as part of this package; none of those
+    should ever appear, and this fails the moment one does.
+    """
+
+    FORBIDDEN_TOKENS = ("open(", "requests.", "httpx.", "urllib.", "boto3", "psycopg")
+
+    def test_no_data_generation_module_reads_from_an_external_source(self) -> None:
+        import sandscope_agent.seed.estate as estate_mod
+        import sandscope_agent.seed.faults as faults_mod
+        import sandscope_agent.seed.incidents as incidents_mod
+
+        for module in (estate_mod, faults_mod, incidents_mod):
+            source = inspect.getsource(module)
+            for token in self.FORBIDDEN_TOKENS:
+                assert token not in source, f"{module.__name__} contains {token!r}"
+
+    def test_incident_and_telemetry_values_are_reproducible_from_the_seed_alone(self) -> None:
+        """The only inputs `generate_incident`/`generate_telemetry` accept are a
+        seed and a clock. If the output depended on anything else — a file, an
+        environment variable, real wall-clock time — two calls with the same
+        seed and the same T0 would not be guaranteed to match, which is exactly
+        what TestDeterminism above already proves. This test names the
+        SD-002 reading of that same proof explicitly, rather than leaving the
+        connection implicit."""
+        first = generate_telemetry(generate_incident(7, T0))
+        second = generate_telemetry(generate_incident(7, T0))
+        assert first == second
+
+    def test_service_and_team_names_are_not_a_real_organisation(self) -> None:
+        """A generated estate that happened to reuse a real company or team name
+        would still be reproducible and still pass every other test here — this
+        is the one check aimed at that specific failure mode."""
+        banned = {"google", "amazon", "microsoft", "meta", "netflix", "stripe", "adyen"}
+        for service in estate.services():
+            haystack = f"{service.name} {service.owner_team}".lower()
+            for name in banned:
+                assert name not in haystack, f"{service.id} references {name!r}"

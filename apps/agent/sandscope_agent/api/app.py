@@ -258,6 +258,7 @@ def stream_run(request: RunRequest, http_request: Request) -> StreamingResponse:
                     subject=request.subject,
                     state=final,
                     cost_usd=deps.guard.actual_usd,
+                    spans=spans,
                 )
                 persisted = True
         except Exception:
@@ -365,6 +366,21 @@ def read_approval(run_id: str) -> dict[str, Any]:
         "action": pending.proposal,
         "status": pending.status,
     }
+
+
+@app.get("/v1/runs/{run_id}/spans", dependencies=[Depends(require_token)])
+def read_spans(run_id: str) -> dict[str, Any]:
+    """The persisted trace for a run that has already finished (BR-005).
+
+    The live `run_completed` SSE event carries the same shape while a visitor
+    is watching; this is the only way to see it once that connection is gone.
+    """
+    try:
+        with connect() as conn:
+            spans = run_store.get_spans(conn, run_id)
+    except DatabaseNotConfiguredError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+    return {"run_id": run_id, "spans": spans}
 
 
 @app.post("/v1/runs/{run_id}/approve", dependencies=[Depends(require_token)])

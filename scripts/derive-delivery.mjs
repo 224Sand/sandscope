@@ -98,18 +98,73 @@ function adrs() {
     });
 }
 
+/** The commit date the given path was first added to the repository, or null
+ *  if git has no record of it (a shallow clone, or the file genuinely never
+ *  existed on this branch). `--follow` survives a rename. */
+function firstAddedISO(relativePath) {
+  try {
+    const lines = git("log", "--diff-filter=A", "--follow", "--format=%aI", "--", relativePath)
+      .split("\n")
+      .filter(Boolean);
+    return lines.length ? lines[lines.length - 1] : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Commits with a commit date in [startISO, endISO). `endISO` of null means
+ *  "still open" and counts up to HEAD. */
+function commitsBetween(startISO, endISO) {
+  if (!startISO) return null;
+  const args = ["rev-list", "--count", `--since=${startISO}`];
+  if (endISO) args.push(`--until=${endISO}`);
+  args.push("HEAD");
+  try {
+    return Number.parseInt(git(...args), 10);
+  } catch {
+    return null;
+  }
+}
+
 function sprints() {
+  /** D-020 / FR-022: this used to read `**Velocity: 40/40**` out of the
+   *  review document with a regex -- a number typed by whoever wrote the
+   *  review, asserting its own correctness. `ACCEPTANCE_CRITERIA_CONSOLE.md`
+   *  explicitly names that pattern as a rejected example ("a sprint velocity
+   *  that is not computed from commits"), and the codebase violated its own
+   *  written acceptance criterion until this was noticed by the same audit
+   *  that produced D-020.
+   *
+   *  Velocity is now literally that: real commits with a commit date inside
+   *  the sprint's window. The window's boundaries are themselves derived from
+   *  git, not typed -- the date each SPRINT_N_PLAN.md was first added to the
+   *  repository, through the date the NEXT sprint's plan was added (or HEAD,
+   *  for whichever sprint is currently open). Nothing about a sprint's pace
+   *  is hand-entered anymore; if that number is wrong, it is wrong because
+   *  the commit history is, which is the only kind of wrong this page can
+   *  meaningfully claim to have eliminated. */
   const dir = resolve(root, "docs/00-governance");
+  const planFiles = readdirSync(dir).filter((name) => /^SPRINT_\d+_PLAN\.md$/.test(name));
+  const planStart = new Map();
+  for (const name of planFiles) {
+    const number = Number.parseInt(name.match(/\d+/)?.[0] ?? "0", 10);
+    planStart.set(number, firstAddedISO(`docs/00-governance/${name}`));
+  }
   return readdirSync(dir)
     .filter((name) => /^SPRINT_\d+_REVIEW\.md$/.test(name))
     .sort()
     .map((name) => {
       const body = read(`docs/00-governance/${name}`);
+      const number = Number.parseInt(name.match(/\d+/)?.[0] ?? "0", 10);
+      const commits = commitsBetween(planStart.get(number), planStart.get(number + 1) ?? null);
       return {
-        number: Number.parseInt(name.match(/\d+/)?.[0] ?? "0", 10),
+        number,
         name: body.match(/^\*\*Sprint:\*\*\s*\d+\s*—\s*(.+?)\s*·/m)?.[1] ?? "",
         release: body.match(/\*\*Release:\*\*\s*([\d.]+)/)?.[1] ?? "",
-        velocity: body.match(/\*\*Velocity:\s*([^*]+)\*\*/)?.[1]?.trim() ?? "",
+        velocity:
+          commits === null
+            ? "unavailable (no commit history)"
+            : `${commits} commit${commits === 1 ? "" : "s"}`,
       };
     });
 }

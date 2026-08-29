@@ -207,6 +207,57 @@ class DeploymentClaims(unittest.TestCase):
             "a build-time snapshot would go stale the moment the next push ran",
         )
 
+    def test_sprint_velocity_is_computed_from_commits_not_typed(self) -> None:
+        """FR-022 / D-020.
+
+        `ACCEPTANCE_CRITERIA_CONSOLE.md` explicitly rejects "a sprint velocity
+        that is not computed from commits" — and until this defect was found,
+        `derive-delivery.mjs` violated its own project's written acceptance
+        criterion by regex-extracting a human-typed `**Velocity: 40/40**`
+        string out of each sprint review document.
+
+        Source-checked (the script must no longer contain that extraction) AND
+        behaviour-checked (running it must produce a number that is actually a
+        commit count) — either alone would let a partial fix look complete.
+        """
+        script = (ROOT / "scripts/derive-delivery.mjs").read_text()
+        self.assertNotIn(
+            r"\*\*Velocity:",
+            script,
+            "velocity must not be parsed out of a hand-typed review-document string",
+        )
+        self.assertIn(
+            "commitsBetween",
+            script,
+            "velocity must be derived from git commit dates",
+        )
+
+        import json
+        import shutil
+        import subprocess
+
+        node = shutil.which("node")
+        if node is None:
+            self.skipTest("node is not on PATH")
+        result = subprocess.run(  # noqa: S603 -- `node` resolved via PATH lookup above
+            [node, "scripts/derive-delivery.mjs"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        delivery = json.loads((ROOT / "apps/web/src/generated/delivery.json").read_text())
+        sprints = delivery["sprints"]
+        self.assertTrue(sprints, "no sprints were derived at all")
+        for sprint in sprints:
+            self.assertRegex(
+                sprint["velocity"],
+                r"^(\d+ commits?|unavailable \(no commit history\))$",
+                f"sprint {sprint['number']}'s velocity is not a real commit count: "
+                f"{sprint['velocity']!r}",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
