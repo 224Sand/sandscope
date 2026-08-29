@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * A pinned scene. One idea per viewport.
  *
@@ -9,9 +7,27 @@
  *
  * Content is present in the DOM and legible with animation removed. Motion
  * changes emphasis, never availability (AC-C10).
+ *
+ * That last sentence was FALSE for as long as this component reveal itself in
+ * JavaScript (D-021). The previous version held an `IntersectionObserver` and
+ * a `visible` state that started `false`, so the server-rendered markup — the
+ * markup a reader sees before hydration, with JavaScript disabled, or when
+ * hydration fails as it did in D-008 — carried an inline `opacity: 0` on every
+ * scene. Measured with JavaScript off, all seven scenes on the landing page
+ * computed to `opacity: 0`: the content was present in the DOM, exactly as the
+ * docstring promised, and completely invisible, which is what the docstring
+ * promised it would never be.
+ *
+ * The reveal is now the CSS `.reveal` class, which `/story` already used and
+ * which has none of that failure mode: it declares no base hidden state at all
+ * (the from-state lives inside the keyframes), it is gated behind BOTH
+ * `@supports (animation-timeline: view())` and
+ * `@media (prefers-reduced-motion: no-preference)`, and it runs on the
+ * compositor rather than the main thread. No JavaScript, no observer, no
+ * hydration dependency — a browser that does not animate it simply shows it.
+ *
+ * This component no longer needs to be a client component.
  */
-
-import { useEffect, useRef, useState } from "react";
 
 export default function Scene({
   kicker,
@@ -30,28 +46,6 @@ export default function Scene({
    *  emphasis. */
   media?: string;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Latching rather than toggling: a scene that fades out when scrolled
-        // past reads as content disappearing, which is what AC-C10 forbids.
-        if (entry?.isIntersecting) setVisible(true);
-      },
-      { threshold: 0.35 },
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <section className="scene" style={{ borderTop: "1px solid var(--line)" }}>
       {media && (
@@ -74,8 +68,7 @@ export default function Scene({
         </div>
       )}
       <div
-        ref={ref}
-        className="wrap"
+        className="wrap reveal"
         style={{
           paddingBlock: "var(--s9)",
           display: "grid",
@@ -88,9 +81,6 @@ export default function Scene({
             ? "repeat(auto-fit, minmax(min(100%, 400px), 1fr))"
             : "1fr",
           alignItems: "start",
-          opacity: visible ? 1 : 0,
-          transform: visible ? "none" : "translateY(14px)",
-          transition: "opacity var(--t-considered), transform var(--t-considered)",
         }}
       >
         <div>

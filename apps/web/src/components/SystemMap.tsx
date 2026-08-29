@@ -37,7 +37,7 @@ export default function SystemMap() {
       <Node x={0} y={22} w={190} t="Browser console" s="SSE consumer" />
       <Node x={0} y={86} w={190} t="BFF route handler" s="rate limit · fails closed" />
 
-      <text x={240} y="12" {...sub} fill="var(--text-3)">RUNTIME — hugging face space</text>
+      <text x={240} y="12" {...sub} fill="var(--text-3)">RUNTIME — northflank container</text>
       <Node x={240} y={22} w={190} t="Orchestrator" s="langgraph · one chokepoint" />
       <Node x={240} y={86} w={190} t="Hybrid retrieval" s="BM25 + dense" />
       <Node x={240} y={150} w={190} t="Evidence gate" s="3 bands · default refuse" />

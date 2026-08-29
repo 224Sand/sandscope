@@ -31,6 +31,9 @@
 | D-019 | Sprint 8 | 8 | 2 | Two governance documents (PROJECT_RECORD.html, SPRINT_08_PLAN.md) asserted the web app was undeployed and Sprint 8 was blocked on credentials for a full week after the real deploy landed; caught only because the Product Owner quoted the stale text back and asked "true?" | The traceability guard catches a requirement claiming Done falsely (overclaiming); nothing caught a document claiming Blocked falsely once it resolved (underclaiming) | Fixed, guarded |
 | D-020 | Sprint 9 | 9 | 2 | 20 of 45 `Planned` rows in the traceability matrix (BR-001/004/006/007/008/009/010, FR-002/005/006/007/010/014/015/016/020/025/026/027/029) had real, passing, CI-green tests months before the row was updated — a recurrence of D-014's exact root cause at 20x the scale, caught only by an explicit read-the-code-not-the-doc audit requested by the Product Owner ("I want all of the 45 to be done"). `PROJECT_RECORD.html` (the same document D-019 was found in) independently carried the same stale `13 done` / `45 Planned` figures in three places, hand-typed rather than generated | `check-traceability.mjs` (built for D-014) only fails the build in the overclaiming direction — a `Done` row with no matching test. It has never checked the reverse: a `Planned` row whose named-or-equivalent test already exists and passes, which the public delivery page then undercounts. `PROJECT_RECORD.html` is not generated from `delivery.json` at all, unlike the `/delivery` page and `README.md` — a third recurrence in the same file | Fixed (rows and HTML figures corrected); guard extension for the reverse direction, and generating PROJECT_RECORD.html's figures rather than typing them, are both open — see backlog |
 
+| D-021 | Sprint 9 | 9 | **1** | Every scene on the landing page rendered at `opacity: 0` without JavaScript. `Scene` revealed itself with an `IntersectionObserver` and a `visible` state starting `false`, so the server-rendered markup carried an inline `opacity: 0` — measured with JS disabled, all 7 scenes computed to 0. The component's own docstring claimed "content is present in the DOM and legible with animation removed"; it was present and invisible. Reached production and sat there for four sprints | Motion implemented in JavaScript when the same reveal already existed in CSS (`.reveal`, scroll-driven, `@supports`- and `prefers-reduced-motion`-gated) on another page. A `next build` cannot see it, and there was no browser test that could | Fixed, guarded |
+| D-022 | Sprint 9 | 9 | 3 | The public architecture diagram (`SystemMap.tsx`) labelled the runtime "hugging face space" for a week after ADR-0012 moved it to Northflank — the same stale-claim class as D-017 and D-019, on the surface a reviewer is most likely to read | An ADR superseded a platform decision; the prose documents were updated and an inline SVG label was not. `check-deploy-claims.mjs` (built for D-019) greps documents under `docs/`, not components under `apps/web/src` | Fixed; guard extension open — see backlog |
+
 ## Where these were found, which is the finding
 
 | Found by | Count |
@@ -49,6 +52,7 @@
 | Reaching the deploy and finding the platform had changed | 1 (D-017) |
 | Building a dependency PR by hand instead of trusting its checks | **1** (D-018) |
 | An explicit "verify the doc against the code, not the other way round" audit | 1 (D-020) |
+| **Standing up a test runner where there had never been one** | **2** (D-021, D-022) |
 | **Code review** | **0** |
 | **Unit tests written before the defect** | **0** |
 

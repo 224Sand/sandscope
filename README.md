@@ -106,8 +106,8 @@ defect count, and including the numbers in this README.
 | | |
 |---|---|
 | Tests | 385 across 21 files |
-| Requirements | 58, of which 41 `Done` and each names a test that exists |
-| Defects logged | 20, of which 6 severity 1 |
+| Requirements | 58, of which 46 `Done` and each names a test that exists |
+| Defects logged | 22, of which 7 severity 1 |
 | ADRs | 12 |
 
 **Not one defect was caught by code review, and not one by a unit test written
@@ -142,7 +142,7 @@ cd apps/web && npm ci && npm run dev
 ```
 
 Deployment manifests live in [`deploy/Dockerfile`](deploy/Dockerfile) (Northflank)
-and [`vercel.json`](vercel.json). The runtime moved off Hugging Face Spaces when
+and [`apps/web/vercel.json`](apps/web/vercel.json). The runtime moved off Hugging Face Spaces when
 Docker Spaces went PRO-only — see
 [ADR-0012](docs/03-architecture/adr/0012-agent-runtime-on-northflank.md).
 
@@ -153,8 +153,8 @@ Docker Spaces went PRO-only — see
 - The corpus is synthetic by design. No real customer data touches this.
 - Session identity is a cookie. It scopes memory and binds approvals; it is not
   authentication, and the threat model says so.
-- 17 of 58 requirements are still `Planned`, and the matrix says so rather than
-  rounding up. 20 of the other 41 were `Planned` too, until an audit requested
+- 12 of 58 requirements are still `Planned`, and the matrix says so rather than
+  rounding up. 20 of the other 46 were `Planned` too, until an audit requested
   by the Product Owner found them already implemented and tested (D-020).
 
 ---

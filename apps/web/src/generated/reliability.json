@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-29T01:59:10.287Z",
-  "sha": "4c7806e",
+  "generatedAt": "2026-08-29T23:18:28.702Z",
+  "sha": "12ae650",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,7 +90,7 @@
     }
   },
   "defects": {
-    "total": 19,
+    "total": 20,
     "severity1": 6,
     "caughtByReview": 0,
     "rows": [
@@ -245,6 +245,14 @@
         "severity": "2",
         "description": "Two governance documents (PROJECT_RECORD.html, SPRINT_08_PLAN.md) asserted the web app was undeployed and Sprint 8 was blocked on credentials for a full week after the real deploy landed; caught only because the Product Owner quoted the stale text back and asked \"true?\"",
         "rootCause": "The traceability guard catches a requirement claiming Done falsely (overclaiming); nothing caught a document claiming Blocked falsely once it resolved (underclaiming)"
+      },
+      {
+        "id": "D-020",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "2",
+        "description": "20 of 45 `Planned` rows in the traceability matrix (BR-001/004/006/007/008/009/010, FR-002/005/006/007/010/014/015/016/020/025/026/027/029) had real, passing, CI-green tests months before the row was updated — a recurrence of D-014's exact root cause at 20x the scale, caught only by an explicit read-the-code-not-the-doc audit requested by the Product Owner (\"I want all of the 45 to be done\"). `PROJECT_RECORD.html` (the same document D-019 was found in) independently carried the same stale `13 done` / `45 Planned` figures in three places, hand-typed rather than generated",
+        "rootCause": "`check-traceability.mjs` (built for D-014) only fails the build in the overclaiming direction — a `Done` row with no matching test. It has never checked the reverse: a `Planned` row whose named-or-equivalent test already exists and passes, which the public delivery page then undercounts. `PROJECT_RECORD.html` is not generated from `delivery.json` at all, unlike the `/delivery` page and `README.md` — a third recurrence in the same file"
       }
     ]
   },

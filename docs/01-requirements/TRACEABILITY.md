@@ -28,7 +28,7 @@ directions.
 
 | ID | Requirement | Story | Test | Sprint | Status |
 |---|---|---|---|---|---|
-| VIS-001 | Reads as production-grade engineering to a senior reviewer | S6-REVIEW | `e2e/reviewer_journey.spec.ts` | 7 | Planned |
+| VIS-001 | Reads as production-grade engineering to a senior reviewer | S6-REVIEW | `apps/web/e2e/reviewer_journey.spec.ts` | 7,9 | Done |
 | PR-001 | Named-role PDLC with explicit sign-off gates | S0-01 | `check-docs.mjs` (artifact + gate presence) | 0 | Done |
 | AC-002 | Every PDLC claim verifiable; no simulated delivery metrics | S0-01, S5-DELIV | `test_delivery_reads_live_github` | 0,5,7 | Done |
 | AC-001 | Experience layer separated from agent runtime | S0-04 | `test_bff_sends_exactly_the_fields_the_runtime_accepts` | 0,2,7 | Done |
@@ -37,7 +37,7 @@ directions.
 | NFR-003 | First meaningful paint under 2.5s on cold 4G | S4-PERF | Lighthouse budget assertion in CI | 5 | Planned |
 | NFR-004 | Public endpoint survives untrusted traffic without unbounded cost | S2-GUARD | `test_rate_limiter_denies_when_store_unreachable` | 2 | Planned |
 | NFR-005 | Runtime holds no persistent local state | S1-DATA | `TestNoLocalState::test_serving_requests_writes_nothing_to_the_package_directory` | 1,9 | Done |
-| DR-001 | Visual quality meets apple.com product-page standard | S4-UX | `e2e/motion_and_reduced_motion.spec.ts` | 5 | Planned |
+| DR-001 | Visual quality meets apple.com product-page standard | S4-UX | `apps/web/e2e/motion_and_reduced_motion.spec.ts` | 5,9 | Done |
 | FR-001 | Product name changeable without code changes | S0-06 | `check-config.mjs` slug-derivation invariant | 0 | Done |
 | SD-001 | Deliverable is a working product, not a portfolio listing | S0-03 | PO acceptance at each sprint review | 0 | Done |
 | SD-002 | Synthetic data only; no real customer data | S1-SEED | `TestSyntheticOnly::test_no_data_generation_module_reads_from_an_external_source` | 1,9 | Done |
@@ -56,7 +56,7 @@ directions.
 | BR-008 | Retain session and cross-incident memory | S3-MEM | `TestMemory::test_recall_is_newest_first_and_capped` | 3 | Done |
 | BR-009 | Evaluate quality against a fixed golden set | S2-EVAL | `test_core_passes` | 2 | Done |
 | BR-010 | Reduce redundant model calls via semantic caching | S2-CACHE | `test_paraphrase_hits_the_semantic_tier` | 2 | Done |
-| BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
+| BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
 | FR-002 | Simulated production estate, deterministically seeded | S1-SEED | `test_same_seed_yields_the_same_incident` | 1 | Done |
 | FR-003 | Incident feed on schedule and on demand | S1-FEED | `TestIncidentFeed::test_generate_produces_a_fresh_incident_on_demand` | 1,9 | Done |
 | FR-004 | Live triage run streamed to the client | S3-STREAM | `test_node_events_are_emitted_in_the_graphs_actual_topological_order` | 3,9 | Done |
@@ -68,13 +68,13 @@ directions.
 | FR-010 | Deterministic router with time-boxed provider disabling | S2-ROUTER | `test_disabled_provider_is_reenabled_after_the_ttl` | 2 | Done |
 | FR-011 | Visitor-triggered provider failure injection | S2-CHAOS | `test_chaos_injection_is_session_scoped` | 2 | Planned |
 | FR-012 | Semantic cache with visible hit rate and spend avoided | S2-CACHE | `test_cache_key_includes_embedding_model` | 2 | Planned |
-| FR-013 | Execution trace viewer | S3-TRACE | `e2e/trace_viewer.spec.ts` | 3 | Planned |
+| FR-013 | Execution trace viewer | S3-TRACE | `apps/web/e2e/trace_viewer.spec.ts` | 3,9 | Done |
 | FR-014 | Cost attribution and pre-flight spend guard | S2-SPEND | `test_a_live_call_is_refused_with_no_budget_open` | 2 | Done |
 | FR-015 | Evaluation harness over the golden set | S2-EVAL | `test_core_passes` | 2 | Done |
 | FR-016 | Known-limitation probe suite that warns every run | S2-EVAL | `test_probe_warns` | 2 | Done |
-| FR-017 | Cinematic scroll-driven product narrative | S4-UX | `e2e/scroll_scene_progression.spec.ts` | 5 | Planned |
-| FR-018 | Reduced-motion and mobile comprehension paths | S4-UX | `e2e/motion_and_reduced_motion.spec.ts` | 5 | Planned |
-| FR-019 | Interactive architecture view | S5-ARCH | `e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
+| FR-017 | Cinematic scroll-driven product narrative | S4-UX | `apps/web/e2e/scroll_scene_progression.spec.ts` | 5,9 | Done |
+| FR-018 | Reduced-motion and mobile comprehension paths | S4-UX | `apps/web/e2e/motion_and_reduced_motion.spec.ts` | 5,9 | Done |
+| FR-019 | Interactive architecture view | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
 | FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | `test_delivery_reads_live_github` | 6 | Done |
 | FR-021 | Requirements traceability rendered publicly | S5-DELIV | `test_traceability_view_matches_matrix_file` | 6 | Planned |
 | FR-022 | Sprint and velocity record from real commit history | S5-DELIV | `test_sprint_velocity_is_computed_from_commits_not_typed` | 6,9 | Done |

@@ -1,0 +1,21 @@
+{
+  // The end-to-end suite is typechecked SEPARATELY from the application.
+  //
+  // `next build` runs `tsc` over everything the root tsconfig includes, and
+  // Playwright's config and specs are not application code — a type error in
+  // them would fail the production build for a reason that has nothing to do
+  // with the product, and `next build` would be typechecking test files it
+  // will never compile.
+  //
+  // But excluding them from the root config and stopping there would mean
+  // NOTHING typechecks them, which is this project's most-repeated defect
+  // class (D-013, D-015, D-018: a check whose green result exercises nothing).
+  // So they get their own config and their own CI step instead.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true
+  },
+  "include": ["e2e/**/*.ts", "playwright.config.ts"],
+  "exclude": ["node_modules"]
+}

@@ -68,10 +68,57 @@ jobs:
       # build are what actually gate this app; ESLint setup is tracked separately.
       - name: Type check
         run: npx tsc --noEmit
+      # The e2e suite is typechecked separately: it is excluded from the root
+      # tsconfig so `next build` does not compile test files, and a config
+      # excluded from every check is a config nothing checks (tsconfig.e2e.json
+      # explains the full reasoning).
+      - name: Type check the e2e suite
+        run: npm run typecheck:e2e
       - name: Build
         run: npm run build
       - name: Audit dependencies
         run: npm audit --audit-level=high
+
+  # The experience layer had NO test runner until Sprint 9 — no jest, no
+  # vitest, no Playwright. Ten requirements named an `e2e/*.spec.ts` file as
+  # their evidence and not one existed, so the half of the product a reviewer
+  # actually looks at was verified only by `next build` exiting 0. D-018 is the
+  # precedent for why that is not enough. The first run of this job found
+  # D-021: every scene on the landing page rendered at `opacity: 0` without
+  # JavaScript, which `next build` had been perfectly happy with for six
+  # sprints.
+  e2e:
+    name: Experience layer (e2e)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The prebuild derives delivery figures from the root commit.
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install
+        run: npm ci
+      # Chromium only. A cross-browser matrix would triple this job to defend
+      # against a class of bug this project has never had, while the defects it
+      # HAS had (D-008, D-009, D-021) reproduce identically in one engine.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run end-to-end suite
+        run: npm run test:e2e
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
 
   agent:
     name: Agent runtime
