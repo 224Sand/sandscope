@@ -87,7 +87,7 @@ export default function Architecture() {
             <li key={a.id} className="panel">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)", flexWrap: "wrap" }}>
                 <a
-                  href={`https://github.com/${config.repo}/blob/main/docs/03-architecture/adr/`}
+                  href={`https://github.com/${config.repo}/blob/main/docs/03-architecture/adr/${a.file}`}
                   style={{ color: "var(--text)", fontSize: "1.0625rem", fontWeight: 590, letterSpacing: "-0.01em" }}
                 >
                   <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>ADR-{a.id}</span>
@@ -97,6 +97,18 @@ export default function Architecture() {
               </div>
               {a.context && (
                 <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginTop: "var(--s3)" }}>{a.context}</p>
+              )}
+              {/* FR-023: the consequences, not only the reasoning that led to
+                  the decision. Rendering context alone shows why each choice
+                  looked right and never what it cost, which is the half a
+                  reader is actually evaluating. */}
+              {a.consequences && (
+                <p style={{ color: "var(--text-3)", fontSize: "0.875rem", marginTop: "var(--s3)", paddingTop: "var(--s3)", borderTop: "1px solid var(--line)" }}>
+                  <span className="mono" style={{ fontSize: "0.6875rem", textTransform: "uppercase", letterSpacing: "0.06em", marginRight: "var(--s2)" }}>
+                    consequences
+                  </span>
+                  {a.consequences}
+                </p>
               )}
             </li>
           ))}

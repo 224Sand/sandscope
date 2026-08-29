@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-29T23:18:28.702Z",
-  "sha": "12ae650",
+  "generatedAt": "2026-08-29T23:32:30.048Z",
+  "sha": "f241e24",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,8 +90,8 @@
     }
   },
   "defects": {
-    "total": 20,
-    "severity1": 6,
+    "total": 23,
+    "severity1": 7,
     "caughtByReview": 0,
     "rows": [
       {
@@ -253,6 +253,30 @@
         "severity": "2",
         "description": "20 of 45 `Planned` rows in the traceability matrix (BR-001/004/006/007/008/009/010, FR-002/005/006/007/010/014/015/016/020/025/026/027/029) had real, passing, CI-green tests months before the row was updated — a recurrence of D-014's exact root cause at 20x the scale, caught only by an explicit read-the-code-not-the-doc audit requested by the Product Owner (\"I want all of the 45 to be done\"). `PROJECT_RECORD.html` (the same document D-019 was found in) independently carried the same stale `13 done` / `45 Planned` figures in three places, hand-typed rather than generated",
         "rootCause": "`check-traceability.mjs` (built for D-014) only fails the build in the overclaiming direction — a `Done` row with no matching test. It has never checked the reverse: a `Planned` row whose named-or-equivalent test already exists and passes, which the public delivery page then undercounts. `PROJECT_RECORD.html` is not generated from `delivery.json` at all, unlike the `/delivery` page and `README.md` — a third recurrence in the same file"
+      },
+      {
+        "id": "D-021",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "1",
+        "description": "Every scene on the landing page rendered at `opacity: 0` without JavaScript. `Scene` revealed itself with an `IntersectionObserver` and a `visible` state starting `false`, so the server-rendered markup carried an inline `opacity: 0` — measured with JS disabled, all 7 scenes computed to 0. The component's own docstring claimed \"content is present in the DOM and legible with animation removed\"; it was present and invisible. Reached production and sat there for four sprints",
+        "rootCause": "Motion implemented in JavaScript when the same reveal already existed in CSS (`.reveal`, scroll-driven, `@supports`- and `prefers-reduced-motion`-gated) on another page. A `next build` cannot see it, and there was no browser test that could"
+      },
+      {
+        "id": "D-022",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "3",
+        "description": "The public architecture diagram (`SystemMap.tsx`) labelled the runtime \"hugging face space\" for a week after ADR-0012 moved it to Northflank — the same stale-claim class as D-017 and D-019, on the surface a reviewer is most likely to read",
+        "rootCause": "An ADR superseded a platform decision; the prose documents were updated and an inline SVG label was not. `check-deploy-claims.mjs` (built for D-019) greps documents under `docs/`, not components under `apps/web/src`"
+      },
+      {
+        "id": "D-023",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "2",
+        "description": "All 12 \"read the decision\" links on the public architecture surface pointed at the ADR *directory* rather than at a record: the href was built by concatenating a path ending `/adr/` with a filename the derived record never carried. Twelve dead links, each rendering as an ordinary underlined title. Found by the first e2e assertion that every decision link resolves to a `.md`",
+        "rootCause": "`derive-surfaces.mjs` omitted the ADR filename, and the page interpolated the missing field into a template literal — where `undefined` would have been visible but an absent property is simply empty string. Nothing checked that a rendered link had a destination"
       }
     ]
   },

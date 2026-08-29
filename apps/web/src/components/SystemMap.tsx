@@ -24,6 +24,10 @@ export default function SystemMap() {
     <svg
       viewBox="0 0 880 336"
       role="img"
+      // A stable hook for the e2e suite. The page carries more than one
+      // `svg[role="img"]` -- the masthead mark is one too -- so a positional
+      // selector silently asserted against the logo instead of the diagram.
+      data-testid="system-map"
       aria-label="Request path: browser to edge BFF to agent runtime, through retrieval, the evidence gate, the semantic cache and the provider chain, with dashed returns for cache hits and refusals."
       style={{ width: "100%", height: "auto", display: "block" }}
     >

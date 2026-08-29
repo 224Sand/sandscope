@@ -56,6 +56,13 @@ function countLines(globs) {
 }
 
 function requirements() {
+  /** FR-021 renders the matrix PUBLICLY, which until now meant three
+   *  aggregate numbers — total, done, planned. Three numbers are a summary of
+   *  a traceability matrix, not the matrix; a reader could see that 46 of 58
+   *  are done and had no way to ask WHICH, or what test any one of them
+   *  rests on. The per-row detail is emitted here so the page can render the
+   *  actual table, which is the only version of "rendered publicly" that
+   *  lets a reviewer check the claim rather than accept it. */
   const matrix = read("docs/01-requirements/TRACEABILITY.md");
   const rows = matrix
     .split("\n")
@@ -65,6 +72,17 @@ function requirements() {
     total: rows.length,
     done: rows.filter((r) => (r[5] ?? "").toLowerCase().startsWith("done")).length,
     planned: rows.filter((r) => (r[5] ?? "").toLowerCase().startsWith("planned")).length,
+    rows: rows.map((r) => ({
+      id: r[0] ?? "",
+      requirement: r[1] ?? "",
+      story: r[2] ?? "",
+      // The matrix wraps test names in backticks for markdown; the page does
+      // its own monospacing, so they are stripped here rather than rendered
+      // as literal punctuation.
+      test: (r[3] ?? "").replace(/`/g, ""),
+      sprint: r[4] ?? "",
+      status: r[5] ?? "",
+    })),
   };
 }
 
@@ -85,7 +103,67 @@ function defects() {
   };
 }
 
+/** The body of the first matching `## Heading` section of an ADR, markdown
+ *  emphasis removed.
+ *
+ *  Takes a LIST of acceptable headings because the house format is not quite
+ *  as fixed as it looks: most ADRs use `## Consequences`, but ADR-0012 splits
+ *  the same content across `## What this costs` and `## What survives`. The
+ *  first version of this parser looked only for `Consequences` and returned
+ *  an empty string for that one file — which the page would have rendered as
+ *  a blank panel, silently implying the decision had no consequences rather
+ *  than that the parser could not find them. Falling back through real
+ *  alternatives is the fix; a `Consequences` section that genuinely does not
+ *  exist is caught by check-delivery-content.mjs rather than shown as blank. */
+function adrSection(body, headings) {
+  // Split on the headings themselves rather than matching a section with a
+  // lookahead. The lookahead version was `(?=\n## |$)` with the `m` flag —
+  // and under `m`, `$` matches the end of every LINE, so the non-greedy body
+  // stopped at the first newline. Every section rendered as its own opening
+  // sentence, about 75 characters, cut mid-clause. It looked plausible enough
+  // in a truncated console dump and was only obvious in the browser.
+  const sections = new Map();
+  let current = null;
+  const lines = [];
+  for (const line of body.split("\n")) {
+    const heading = line.match(/^##\s+(.+?)\s*$/);
+    if (heading) {
+      if (current) sections.set(current, lines.splice(0).join("\n"));
+      current = heading[1];
+      lines.length = 0;
+    } else if (current) {
+      lines.push(line);
+    }
+  }
+  if (current) sections.set(current, lines.join("\n"));
+
+  for (const heading of headings) {
+    const raw = sections.get(heading);
+    if (!raw) continue;
+    const text = raw
+      .replace(/\*\*/g, "")
+      .split("\n")
+      // A markdown horizontal rule is a document separator, not prose. Left
+      // in, it arrived at the end of the rendered paragraph as a literal
+      // "---" — which is also how a truncated section looks, so the e2e
+      // guard flagged it before a reader had to.
+      .filter((line) => !/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(line))
+      .map((line) => line.trim())
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (text) return text;
+  }
+  return "";
+}
+
 function adrs() {
+  /** FR-023 asks for decision records rendered "with context and
+   *  consequences". The page rendered a title, a status, and a link to
+   *  GitHub — which is a bibliography, not a decision record. The point of an
+   *  ADR is the reasoning and what it cost; a reader who has to leave the
+   *  site to find either is being shown that the ADRs exist, not what they
+   *  say. Both sections are derived here so the page can render them. */
   const dir = resolve(root, "docs/03-architecture/adr");
   return readdirSync(dir)
     .filter((name) => name.endsWith(".md"))
@@ -94,7 +172,20 @@ function adrs() {
       const body = read(`docs/03-architecture/adr/${name}`);
       const title = body.match(/^#\s*(.+)$/m)?.[1] ?? name;
       const status = body.match(/\*\*Status:\*\*\s*([A-Za-z]+)/)?.[1] ?? "unknown";
-      return { file: name, title, status };
+      const date = body.match(/\*\*Status:\*\*[^\n]*?Date:\*\*\s*([\d-]+)/)?.[1] ?? "";
+      return {
+        file: name,
+        title,
+        status,
+        date,
+        context: adrSection(body, ["Context"]),
+        decision: adrSection(body, ["Decision"]),
+        consequences: adrSection(body, [
+          "Consequences",
+          "What this costs",
+          "Consequence for the requirement",
+        ]),
+      };
     });
 }
 

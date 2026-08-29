@@ -56,7 +56,7 @@ directions.
 | BR-008 | Retain session and cross-incident memory | S3-MEM | `TestMemory::test_recall_is_newest_first_and_capped` | 3 | Done |
 | BR-009 | Evaluate quality against a fixed golden set | S2-EVAL | `test_core_passes` | 2 | Done |
 | BR-010 | Reduce redundant model calls via semantic caching | S2-CACHE | `test_paraphrase_hits_the_semantic_tier` | 2 | Done |
-| BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
+| BR-011 | Present own architecture, decisions and delivery record | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6,9 | Done |
 | FR-002 | Simulated production estate, deterministically seeded | S1-SEED | `test_same_seed_yields_the_same_incident` | 1 | Done |
 | FR-003 | Incident feed on schedule and on demand | S1-FEED | `TestIncidentFeed::test_generate_produces_a_fresh_incident_on_demand` | 1,9 | Done |
 | FR-004 | Live triage run streamed to the client | S3-STREAM | `test_node_events_are_emitted_in_the_graphs_actual_topological_order` | 3,9 | Done |
@@ -76,10 +76,10 @@ directions.
 | FR-018 | Reduced-motion and mobile comprehension paths | S4-UX | `apps/web/e2e/motion_and_reduced_motion.spec.ts` | 5,9 | Done |
 | FR-019 | Interactive architecture view | S5-ARCH | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6 | Planned |
 | FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | `test_delivery_reads_live_github` | 6 | Done |
-| FR-021 | Requirements traceability rendered publicly | S5-DELIV | `test_traceability_view_matches_matrix_file` | 6 | Planned |
+| FR-021 | Requirements traceability rendered publicly | S5-DELIV | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6,9 | Done |
 | FR-022 | Sprint and velocity record from real commit history | S5-DELIV | `test_sprint_velocity_is_computed_from_commits_not_typed` | 6,9 | Done |
-| FR-023 | Decision records rendered with context and consequences | S5-DELIV | `test_all_adrs_render` | 6 | Planned |
-| FR-024 | Postmortems for real defects hit during the build | S6-DELIV | `test_postmortems_render` | 7 | Planned |
+| FR-023 | Decision records rendered with context and consequences | S5-DELIV | `apps/web/e2e/architecture_and_delivery.spec.ts` | 6,9 | Done |
+| FR-024 | Postmortems for real defects hit during the build | S6-DELIV | `apps/web/e2e/architecture_and_delivery.spec.ts` | 7,9 | Done |
 | FR-025 | Change risk review workload on the same orchestration graph | S4-WORKLOAD | `test_both_workloads_share_one_topology` | 5 | Done |
 | FR-026 | Labelled evaluation dataset, labels true by construction | S3-DATA | `test_every_answerable_question_names_its_gold_document` | 3 | Done |
 | FR-027 | Statistical evaluation of the refusal gate | S3-STATS | `test_youden_selects_the_point_furthest_from_the_diagonal` | 3 | Done |

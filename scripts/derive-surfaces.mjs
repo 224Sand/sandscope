@@ -205,6 +205,27 @@ if (evaluation) {
 }
 
 // -------------------------------------------------------------- architecture
+
+/** The first paragraph of an ADR's consequences, whatever that section is
+ *  called. Most records use `## Consequences`; ADR-0012 splits the same
+ *  content across `## What this costs` and `## What survives`, so a parser
+ *  that knows only the one heading returns nothing for it — and a blank
+ *  panel reads as "this decision had no consequences" rather than "the
+ *  parser could not find them". */
+function adrConsequences(body) {
+  for (const heading of ["Consequences", "What this costs", "Consequence for the requirement"]) {
+    const section = body.split(new RegExp(`^##\\s*${heading}\\s*$`, "m"))[1];
+    const paragraph = section
+      ?.trim()
+      .split(/\n\s*\n/)[0]
+      ?.replace(/\*\*/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (paragraph) return paragraph;
+  }
+  return null;
+}
+
 const adrDir = resolve(root, "docs/03-architecture/adr");
 const adrs = readdirSync(adrDir)
   .filter((f) => /^\d{4}-.*\.md$/.test(f))
@@ -214,6 +235,13 @@ const adrs = readdirSync(adrDir)
     const heading = body.match(/^#\s*ADR-(\d+)\s*—\s*(.+)$/m);
     return {
       id: heading?.[1] ?? f.slice(0, 4),
+      // The filename, so the page can link to the RECORD rather than to the
+      // directory it lives in. It was omitted, and the architecture page
+      // built its href by concatenating a path that ended `/adr/` with
+      // nothing after it: every "read the decision" link on that surface
+      // landed on a folder listing. Twelve dead links, all rendering as
+      // perfectly ordinary underlined titles.
+      file: f,
       title: required(heading?.[2], `title of ${f}`),
       status: body.match(/\*\*Status:\*\*\s*([A-Za-z]+)/)?.[1] ?? "Unknown",
       date: body.match(/\*\*Date:\*\*\s*([\d-]+)/)?.[1] ?? null,
@@ -226,6 +254,10 @@ const adrs = readdirSync(adrDir)
         .split(/\n\s*\n/)[0]
         ?.replace(/\s+/g, " ")
         .trim() ?? null,
+      // FR-023 asks for context AND consequences. This surface rendered only
+      // context, which is the half that makes a decision sound good; the
+      // consequences are the half that makes the record honest.
+      consequences: adrConsequences(body),
     };
   });
 

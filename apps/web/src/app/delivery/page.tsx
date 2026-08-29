@@ -127,6 +127,54 @@ export default function Delivery() {
           <Stat label="delivered" value={record.requirements.done} />
           <Stat label="planned" value={record.requirements.planned} />
         </dl>
+
+        {/* FR-021: the matrix itself, not a summary of it.
+            Three aggregate numbers told a reader that 46 of 58 were done and
+            gave them no way to ask WHICH, or what test any one rests on —
+            which is the only question that makes the claim checkable. Every
+            row is derived from TRACEABILITY.md at build time. */}
+        <hr className="hairline" style={{ margin: "var(--s6) 0 var(--s5)" }} />
+        <details className="matrix-details">
+          <summary className="matrix-summary">
+            Show all {record.requirements.total} requirements, with the test each one names
+          </summary>
+          <div className="tablewrap" style={{ marginTop: "var(--s4)" }}>
+            <table className="matrix-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Requirement</th>
+                  <th>Test</th>
+                  <th>Sprint</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {record.requirements.rows.map((row) => (
+                  <tr key={row.id}>
+                    <td className="mono" style={{ whiteSpace: "nowrap", color: "var(--text-3)" }}>
+                      {row.id}
+                    </td>
+                    <td>{row.requirement}</td>
+                    <td className="mono" style={{ fontSize: "0.75rem", color: "var(--text-2)" }}>
+                      {row.test}
+                    </td>
+                    <td className="mono" style={{ color: "var(--text-3)" }}>{row.sprint}</td>
+                    <td>
+                      <span
+                        className={
+                          row.status === "Done" ? "chip chip--grounded" : "chip chip--neutral"
+                        }
+                      >
+                        {row.status.toLowerCase()}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
       </section>
 
       <section className="panel" style={{ marginBottom: "var(--s6)" }}>
@@ -151,26 +199,53 @@ export default function Delivery() {
         </p>
       </section>
 
+      {/* FR-023: decision records rendered WITH context and consequences.
+          This was a list of titles linking to GitHub — a bibliography, not a
+          decision record. The point of an ADR is the reasoning and what it
+          cost; a reader who has to leave the site to find either has been
+          shown that the ADRs exist, not what they say. Both sections are
+          derived from the markdown at build time, so they cannot drift from
+          the files they summarise. */}
       <section className="panel">
-        <h3 style={{ marginBottom: "var(--s5)" }}>Architecture decisions</h3>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
+        <h3 style={{ marginBottom: "var(--s3)" }}>Architecture decisions</h3>
+        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
+          {record.adrs.length} records. Each is immutable once accepted — a reversal is a new
+          record that supersedes it, never an edit — and each carries what it cost, because a
+          decision log that only records upside is a marketing document.
+        </p>
+        <div style={{ display: "grid", gap: "var(--s3)" }}>
           {record.adrs.map((adr) => (
-            <li
-              key={adr.file}
-              style={{ display: "grid", gridTemplateColumns: "9ch 1fr", gap: "var(--s3)", padding: "var(--s2) 0", borderBottom: "1px solid var(--line)" }}
-            >
-              <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>
-                {adr.status.toLowerCase()}
-              </span>
-              <a
-                href={`https://github.com/${record.repo}/blob/main/docs/03-architecture/adr/${adr.file}`}
-                style={{ color: "var(--text-2)", fontSize: "0.9375rem" }}
-              >
-                {adr.title.replace(/^ADR-\d+\s*—\s*/, "")}
-              </a>
-            </li>
+            <details key={adr.file} className="adr">
+              <summary className="adr-summary">
+                <span className="mono adr-id">{adr.file.slice(0, 4)}</span>
+                <span className="adr-title">{adr.title.replace(/^ADR-\d+\s*—\s*/, "")}</span>
+                <span
+                  className={
+                    adr.status.toLowerCase() === "accepted"
+                      ? "chip chip--grounded"
+                      : "chip chip--neutral"
+                  }
+                >
+                  {adr.status.toLowerCase()}
+                </span>
+              </summary>
+              <div className="adr-body">
+                <h4 className="adr-h">Context</h4>
+                <p className="adr-p">{adr.context}</p>
+                <h4 className="adr-h">Decision</h4>
+                <p className="adr-p">{adr.decision}</p>
+                <h4 className="adr-h">Consequences</h4>
+                <p className="adr-p">{adr.consequences}</p>
+                <a
+                  className="mono adr-link"
+                  href={`https://github.com/${record.repo}/blob/main/docs/03-architecture/adr/${adr.file}`}
+                >
+                  read the full record →
+                </a>
+              </div>
+            </details>
           ))}
-        </ul>
+        </div>
       </section>
     </main>
   );

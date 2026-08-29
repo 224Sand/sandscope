@@ -510,3 +510,83 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   }
   .rise, .reveal, .reveal-scale { opacity: 1; transform: none; animation: none; }
 }
+
+/* ------------------------------------------------ traceability matrix (FR-021)
+   The matrix is 58 rows. Rendering it open by default would bury the sprint and
+   decision records under a wall of table below it, so it opens on request —
+   but it is real markup in the page, not fetched on click, so it is findable
+   by ctrl-F and present for anything that does not run scripts. */
+.matrix-details { margin: 0; }
+.matrix-summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 0.9375rem;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+}
+.matrix-summary::-webkit-details-marker { display: none; }
+.matrix-summary::before {
+  content: "▸";
+  font-size: 0.75rem;
+  transition: transform var(--t-quick, 140ms) ease;
+}
+.matrix-details[open] .matrix-summary::before { transform: rotate(90deg); }
+.matrix-summary:hover { text-decoration: underline; }
+
+.matrix-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; min-width: 720px; }
+.matrix-table th,
+.matrix-table td { text-align: left; padding: var(--s2) var(--s3); vertical-align: top; }
+.matrix-table thead th {
+  color: var(--text-3);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+}
+.matrix-table tbody tr + tr td { border-top: 1px solid var(--line); }
+.matrix-table tbody tr:hover { background: var(--surface-2); }
+
+/* ------------------------------------------------- decision records (FR-023)
+   Context and consequences render inline. Twelve records fully expanded is
+   more prose than anyone reads at once, so each opens on demand — the summary
+   row carries id, title and status, which is what a reader scans by. */
+.adr {
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 10px);
+  background: var(--surface);
+  padding: var(--s3) var(--s4);
+}
+.adr-summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex-wrap: wrap;
+}
+.adr-summary::-webkit-details-marker { display: none; }
+.adr-id { color: var(--text-3); font-size: 0.8125rem; }
+.adr-title { flex: 1; min-width: 12rem; color: var(--text); font-size: 0.9375rem; }
+.adr-summary:hover .adr-title { color: var(--accent); }
+.adr-body {
+  margin-top: var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid var(--line);
+}
+.adr-h {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin: 0 0 var(--s2);
+  font-weight: 500;
+}
+.adr-h + .adr-p { margin-bottom: var(--s5); }
+.adr-p { color: var(--text-2); font-size: 0.9375rem; line-height: 1.65; max-width: 74ch; }
+.adr-link { font-size: 0.8125rem; }

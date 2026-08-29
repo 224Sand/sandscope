@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-29T23:20:01.478Z",
+  "generatedAt": "2026-08-29T23:32:29.605Z",
   "repo": "224Sand/sandscope",
-  "sha": "12ae650",
-  "commits": 83,
+  "sha": "f241e24",
+  "commits": 84,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-29T17:44:10+05:30",
+  "lastCommit": "2026-08-30T04:50:48+05:30",
   "tests": {
     "total": 385,
     "files": 21
@@ -12,20 +12,486 @@
   "lines": {
     "agent": 5487,
     "tests": 3844,
-    "web": 3218,
-    "tooling": 2886
+    "web": 3308,
+    "tooling": 3005
   },
   "docs": {
     "files": "46",
-    "lines": 3552
+    "lines": 3553
   },
   "requirements": {
     "total": 58,
-    "done": 46,
-    "planned": 12
+    "done": 50,
+    "planned": 8,
+    "rows": [
+      {
+        "id": "VIS-001",
+        "requirement": "Reads as production-grade engineering to a senior reviewer",
+        "story": "S6-REVIEW",
+        "test": "apps/web/e2e/reviewer_journey.spec.ts",
+        "sprint": "7,9",
+        "status": "Done"
+      },
+      {
+        "id": "PR-001",
+        "requirement": "Named-role PDLC with explicit sign-off gates",
+        "story": "S0-01",
+        "test": "check-docs.mjs (artifact + gate presence)",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "AC-002",
+        "requirement": "Every PDLC claim verifiable; no simulated delivery metrics",
+        "story": "S0-01, S5-DELIV",
+        "test": "test_delivery_reads_live_github",
+        "sprint": "0,5,7",
+        "status": "Done"
+      },
+      {
+        "id": "AC-001",
+        "requirement": "Experience layer separated from agent runtime",
+        "story": "S0-04",
+        "test": "test_bff_sends_exactly_the_fields_the_runtime_accepts",
+        "sprint": "0,2,7",
+        "status": "Done"
+      },
+      {
+        "id": "NFR-001",
+        "requirement": "Effort directed at delivery, not deliberation",
+        "story": "S0-01",
+        "test": "Sprint velocity vs. committed points",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "NFR-002",
+        "requirement": "Zero infrastructure cost",
+        "story": "S0-04",
+        "test": "test_no_paid_service_in_deploy_manifest",
+        "sprint": "0,6,7",
+        "status": "Done"
+      },
+      {
+        "id": "NFR-003",
+        "requirement": "First meaningful paint under 2.5s on cold 4G",
+        "story": "S4-PERF",
+        "test": "Lighthouse budget assertion in CI",
+        "sprint": "5",
+        "status": "Planned"
+      },
+      {
+        "id": "NFR-004",
+        "requirement": "Public endpoint survives untrusted traffic without unbounded cost",
+        "story": "S2-GUARD",
+        "test": "test_rate_limiter_denies_when_store_unreachable",
+        "sprint": "2",
+        "status": "Planned"
+      },
+      {
+        "id": "NFR-005",
+        "requirement": "Runtime holds no persistent local state",
+        "story": "S1-DATA",
+        "test": "TestNoLocalState::test_serving_requests_writes_nothing_to_the_package_directory",
+        "sprint": "1,9",
+        "status": "Done"
+      },
+      {
+        "id": "DR-001",
+        "requirement": "Visual quality meets apple.com product-page standard",
+        "story": "S4-UX",
+        "test": "apps/web/e2e/motion_and_reduced_motion.spec.ts",
+        "sprint": "5,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-001",
+        "requirement": "Product name changeable without code changes",
+        "story": "S0-06",
+        "test": "check-config.mjs slug-derivation invariant",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "SD-001",
+        "requirement": "Deliverable is a working product, not a portfolio listing",
+        "story": "S0-03",
+        "test": "PO acceptance at each sprint review",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "SD-002",
+        "requirement": "Synthetic data only; no real customer data",
+        "story": "S1-SEED",
+        "test": "TestSyntheticOnly::test_no_data_generation_module_reads_from_an_external_source",
+        "sprint": "1,9",
+        "status": "Done"
+      },
+      {
+        "id": "SD-003",
+        "requirement": "No job-application or resume tooling",
+        "story": "S0-03",
+        "test": "PRD §8 scope exclusion, reviewed at each gate",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "SD-004",
+        "requirement": "Domain is agent reliability; incident triage is the workload",
+        "story": "S0-03",
+        "test": "PO acceptance",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "CR-001",
+        "requirement": "Resume content restrictions do not apply",
+        "story": "S0-02",
+        "test": "BRD §7 scope statement",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "INF-001",
+        "requirement": "Containerised runtime, Vercel experience layer",
+        "story": "S0-05",
+        "test": "test_container_binds_7860",
+        "sprint": "0,6,7,8",
+        "status": "Done"
+      },
+      {
+        "id": "OPS-001",
+        "requirement": "Host disk reclamation authorised",
+        "story": "S0-09",
+        "test": "Pre-build disk check recorded in sprint log",
+        "sprint": "0",
+        "status": "Done"
+      },
+      {
+        "id": "BR-001",
+        "requirement": "Triage an incident, produce a hypothesis with cited evidence",
+        "story": "S3-TRIAGE",
+        "test": "test_uncited_claims_loop_back_then_escalate",
+        "sprint": "2,4",
+        "status": "Done"
+      },
+      {
+        "id": "BR-002",
+        "requirement": "Demonstrate PDLC/SDLC/CI-CD/Agile/Scrum verifiably",
+        "story": "S5-DELIV",
+        "test": "test_delivery_reads_live_github, test_sprint_velocity_is_computed_from_commits_not_typed",
+        "sprint": "6,9",
+        "status": "Done"
+      },
+      {
+        "id": "BR-003",
+        "requirement": "Continue operating when a provider fails or rate-limits",
+        "story": "S2-ROUTER",
+        "test": "test_workflow_completes_when_first_provider_fails",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-004",
+        "requirement": "Refuse when evidence does not support an answer",
+        "story": "S2-RAG",
+        "test": "test_no_unanswerable_question_is_ever_marked_sufficient",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-005",
+        "requirement": "Record a full, inspectable execution trace per run",
+        "story": "S3-TRACE",
+        "test": "TestSpans::test_spans_are_persisted_and_readable_after_the_run",
+        "sprint": "2,4,9",
+        "status": "Done"
+      },
+      {
+        "id": "BR-006",
+        "requirement": "Block high-risk actions pending human approval",
+        "story": "S2-GOV",
+        "test": "test_await_approval_has_no_edge_to_a_working_node",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-007",
+        "requirement": "Attribute tokens and cost to each run",
+        "story": "S2-SPEND",
+        "test": "test_actual_cost_is_ledgered_after_the_response",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-008",
+        "requirement": "Retain session and cross-incident memory",
+        "story": "S3-MEM",
+        "test": "TestMemory::test_recall_is_newest_first_and_capped",
+        "sprint": "3",
+        "status": "Done"
+      },
+      {
+        "id": "BR-009",
+        "requirement": "Evaluate quality against a fixed golden set",
+        "story": "S2-EVAL",
+        "test": "test_core_passes",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-010",
+        "requirement": "Reduce redundant model calls via semantic caching",
+        "story": "S2-CACHE",
+        "test": "test_paraphrase_hits_the_semantic_tier",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "BR-011",
+        "requirement": "Present own architecture, decisions and delivery record",
+        "story": "S5-ARCH",
+        "test": "apps/web/e2e/architecture_and_delivery.spec.ts",
+        "sprint": "6,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-002",
+        "requirement": "Simulated production estate, deterministically seeded",
+        "story": "S1-SEED",
+        "test": "test_same_seed_yields_the_same_incident",
+        "sprint": "1",
+        "status": "Done"
+      },
+      {
+        "id": "FR-003",
+        "requirement": "Incident feed on schedule and on demand",
+        "story": "S1-FEED",
+        "test": "TestIncidentFeed::test_generate_produces_a_fresh_incident_on_demand",
+        "sprint": "1,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-004",
+        "requirement": "Live triage run streamed to the client",
+        "story": "S3-STREAM",
+        "test": "test_node_events_are_emitted_in_the_graphs_actual_topological_order",
+        "sprint": "3,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-005",
+        "requirement": "Cited evidence panel; unsupported claims marked",
+        "story": "S3-CITE",
+        "test": "test_escalation_emits_no_proposal",
+        "sprint": "3",
+        "status": "Done"
+      },
+      {
+        "id": "FR-006",
+        "requirement": "Explicit refusal on insufficient evidence",
+        "story": "S2-RAG",
+        "test": "test_no_unanswerable_question_is_ever_marked_sufficient",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-007",
+        "requirement": "Human approval gate; approval is terminal",
+        "story": "S2-GOV",
+        "test": "test_await_approval_has_no_edge_to_a_working_node",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-008",
+        "requirement": "Session memory, visible to the user",
+        "story": "S3-MEM",
+        "test": "test_memory_panel_reflects_stored_items",
+        "sprint": "3",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-009",
+        "requirement": "Postmortem drafting from a completed run",
+        "story": "S3-RCA",
+        "test": "test_postmortem_cites_only_run_evidence",
+        "sprint": "3",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-010",
+        "requirement": "Deterministic router with time-boxed provider disabling",
+        "story": "S2-ROUTER",
+        "test": "test_disabled_provider_is_reenabled_after_the_ttl",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-011",
+        "requirement": "Visitor-triggered provider failure injection",
+        "story": "S2-CHAOS",
+        "test": "test_chaos_injection_is_session_scoped",
+        "sprint": "2",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-012",
+        "requirement": "Semantic cache with visible hit rate and spend avoided",
+        "story": "S2-CACHE",
+        "test": "test_cache_key_includes_embedding_model",
+        "sprint": "2",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-013",
+        "requirement": "Execution trace viewer",
+        "story": "S3-TRACE",
+        "test": "apps/web/e2e/trace_viewer.spec.ts",
+        "sprint": "3,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-014",
+        "requirement": "Cost attribution and pre-flight spend guard",
+        "story": "S2-SPEND",
+        "test": "test_a_live_call_is_refused_with_no_budget_open",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-015",
+        "requirement": "Evaluation harness over the golden set",
+        "story": "S2-EVAL",
+        "test": "test_core_passes",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-016",
+        "requirement": "Known-limitation probe suite that warns every run",
+        "story": "S2-EVAL",
+        "test": "test_probe_warns",
+        "sprint": "2",
+        "status": "Done"
+      },
+      {
+        "id": "FR-017",
+        "requirement": "Cinematic scroll-driven product narrative",
+        "story": "S4-UX",
+        "test": "apps/web/e2e/scroll_scene_progression.spec.ts",
+        "sprint": "5,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-018",
+        "requirement": "Reduced-motion and mobile comprehension paths",
+        "story": "S4-UX",
+        "test": "apps/web/e2e/motion_and_reduced_motion.spec.ts",
+        "sprint": "5,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-019",
+        "requirement": "Interactive architecture view",
+        "story": "S5-ARCH",
+        "test": "apps/web/e2e/architecture_and_delivery.spec.ts",
+        "sprint": "6",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-020",
+        "requirement": "Live CI/CD status from the GitHub API",
+        "story": "S5-DELIV",
+        "test": "test_delivery_reads_live_github",
+        "sprint": "6",
+        "status": "Done"
+      },
+      {
+        "id": "FR-021",
+        "requirement": "Requirements traceability rendered publicly",
+        "story": "S5-DELIV",
+        "test": "apps/web/e2e/architecture_and_delivery.spec.ts",
+        "sprint": "6,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-022",
+        "requirement": "Sprint and velocity record from real commit history",
+        "story": "S5-DELIV",
+        "test": "test_sprint_velocity_is_computed_from_commits_not_typed",
+        "sprint": "6,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-023",
+        "requirement": "Decision records rendered with context and consequences",
+        "story": "S5-DELIV",
+        "test": "apps/web/e2e/architecture_and_delivery.spec.ts",
+        "sprint": "6,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-024",
+        "requirement": "Postmortems for real defects hit during the build",
+        "story": "S6-DELIV",
+        "test": "apps/web/e2e/architecture_and_delivery.spec.ts",
+        "sprint": "7,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-025",
+        "requirement": "Change risk review workload on the same orchestration graph",
+        "story": "S4-WORKLOAD",
+        "test": "test_both_workloads_share_one_topology",
+        "sprint": "5",
+        "status": "Done"
+      },
+      {
+        "id": "FR-026",
+        "requirement": "Labelled evaluation dataset, labels true by construction",
+        "story": "S3-DATA",
+        "test": "test_every_answerable_question_names_its_gold_document",
+        "sprint": "3",
+        "status": "Done"
+      },
+      {
+        "id": "FR-027",
+        "requirement": "Statistical evaluation of the refusal gate",
+        "story": "S3-STATS",
+        "test": "test_youden_selects_the_point_furthest_from_the_diagonal",
+        "sprint": "3",
+        "status": "Done"
+      },
+      {
+        "id": "FR-028",
+        "requirement": "Trained, calibrated evidence-sufficiency classifier",
+        "story": "S3-MODEL",
+        "test": "test_the_model_beats_the_heuristic_it_replaces",
+        "sprint": "3",
+        "status": "Planned"
+      },
+      {
+        "id": "FR-029",
+        "requirement": "Cross-encoder re-ranker trained in PyTorch, served via ONNX",
+        "story": "S3-RERANK",
+        "test": "test_onnx_matches_torch_on_the_recorded_sample",
+        "sprint": "3",
+        "status": "Done"
+      },
+      {
+        "id": "FR-030",
+        "requirement": "Approximate nearest neighbour benchmark",
+        "story": "S3-ANN",
+        "test": "TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one",
+        "sprint": "3,9",
+        "status": "Done"
+      }
+    ]
   },
   "defects": {
-    "total": 22,
+    "total": 23,
     "severityOne": 7,
     "entries": [
       {
@@ -225,6 +691,15 @@
         "description": "The public architecture diagram (`SystemMap.tsx`) labelled the runtime \"hugging face space\" for a week after ADR-0012 moved it to Northflank — the same stale-claim class as D-017 and D-019, on the surface a reviewer is most likely to read",
         "cause": "An ADR superseded a platform decision; the prose documents were updated and an inline SVG label was not. `check-deploy-claims.mjs` (built for D-019) greps documents under `docs/`, not components under `apps/web/src`",
         "status": "Fixed; guard extension open — see backlog"
+      },
+      {
+        "id": "D-023",
+        "found": "Sprint 9",
+        "sprint": "9",
+        "severity": "2",
+        "description": "All 12 \"read the decision\" links on the public architecture surface pointed at the ADR *directory* rather than at a record: the href was built by concatenating a path ending `/adr/` with a filename the derived record never carried. Twelve dead links, each rendering as an ordinary underlined title. Found by the first e2e assertion that every decision link resolves to a `.md`",
+        "cause": "`derive-surfaces.mjs` omitted the ADR filename, and the page interpolated the missing field into a template literal — where `undefined` would have been visible but an absent property is simply empty string. Nothing checked that a rendered link had a destination",
+        "status": "Fixed, guarded"
       }
     ]
   },
@@ -232,62 +707,110 @@
     {
       "file": "0001-split-experience-layer-from-agent-runtime.md",
       "title": "ADR-0001 — Split the experience layer from the agent runtime",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "The product needs a cinematic web experience and a stateful multi-agent runtime. Every credible implementation of the agent side — LangGraph, BM25, the evaluation harness, the local embedder — exists in Python. Every credible implementation of the experience side — React Server Components, streaming, the motion layer — exists in the JavaScript ecosystem. A single runtime forces one of the two to be reimplemented.",
+      "decision": "Two deployable units behind a versioned HTTP contract: a Next.js experience layer acting as a backend-for-frontend, and a FastAPI agent runtime.",
+      "consequences": "Positive. Each side uses its native ecosystem. The BFF holds provider secrets so the browser never does. Either side can be replaced independently. The pattern matches how large consumer platforms actually deploy — a JS edge in front of polyglot services. Negative. Two deploy targets, two CI paths, and a network hop on every run. Distributed tracing becomes mandatory rather than optional, because a single request now spans two languages. Reversal condition. If the Python-only components were ever replaced with equivalents in TypeScript, this decision loses its justification and the system should collapse to one runtime. That is a real condition, not a formality."
     },
     {
       "file": "0002-product-name-as-build-time-configuration.md",
       "title": "ADR-0002 — The product name is build-time configuration, not source",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "The Product Owner requires the ability to change the product name late without a refactor. A name hardcoded across components, metadata, manifests and asset filenames turns a rename into a risky find-and-replace across the tree.",
+      "decision": "`product.config.json` is the only file in which the product name is authored. Every consumer reads it at build time. `scripts/rename.mjs` performs the rename as a data edit and derives slug, wordmark, repository name and hostnames from it. `scripts/check-config.mjs` fails the build if the derived slug ever drifts from the name.",
+      "consequences": "Positive. A rename is one command and a validated data change. The invariant is enforced by a gate rather than by discipline. Negative. No component may write the name as a literal, including in tests and copy. This is a rule people forget, so the secret-scanning pass will be extended to flag hardcoded occurrences once the name is final. Deliberately not automated. The remote repository rename is opt-in (`--apply-remote`). Changing a public URL as a side effect of a build script is not acceptable behaviour for a build script."
     },
     {
       "file": "0003-agent-runtime-on-hugging-face-spaces.md",
       "title": "ADR-0003 — Host the agent runtime on Hugging Face Spaces (free CPU)",
-      "status": "unknown"
+      "status": "unknown",
+      "date": "2026-08-20",
+      "context": "NFR-002 requires zero infrastructure cost. Candidates evaluated: Google Cloud Run (generous always-free tier, ~1–3 s cold start, requires a card on file), Render free tier (no card, but sleeps after 15 minutes with a ~50 s cold start), Hugging Face Spaces free CPU (no card, 2 vCPU / 16 GB, sleeps only after prolonged inactivity), and Fly.io (no longer meaningfully free).",
+      "decision": "Hugging Face Spaces, Docker SDK, free CPU tier. The Executive Sponsor declined card-backed services outright.",
+      "consequences": "Positive. No payment instrument required. 2 vCPU / 16 GB is materially more capacity than most free tiers. The 48-hour idle window is far more forgiving than Render's 15 minutes, and a 6-hourly warm-ping makes sleep effectively unreachable. Negative. The container filesystem is ephemeral, so no state may live on local disk — this drives NFR-005 and forces all state into Postgres and Redis. The image must bind port 7860. Build times are sensitive to image size, which is what rules out `torch` (see ADR-0004). Accepted risk (R-01). A visitor arriving after a long idle period sees a cold start. Mitigated by the warm-ping and by streaming placeholder UI, not eliminated."
     },
     {
       "file": "0004-no-local-neural-embedding-model.md",
       "title": "ADR-0004 — No local neural embedding model in the container",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "Dense retrieval needs embeddings. The default choice, `sentence-transformers`, pulls `torch` — 2–3 GB of image weight. Under ADR-0003 that inflates build time severely and risks the free tier's limits, for a corpus small enough that the quality difference is marginal.",
+      "decision": "Dense embeddings come from Gemini `text-embedding-004` (768 dimensions, free tier). The offline fallback is a deterministic zero-dependency embedder carried over from prior work, which projects hashed character n-grams into the same 768 dimensions. Lexical retrieval is BM25 in pure Python and is always available.",
+      "consequences": "Positive. The image stays small. Retrieval works with no API key at all, which means tests run offline and deterministically. The fallback is a genuine degradation path rather than a hypothetical one. Negative. Dense retrieval depends on an external provider during normal operation, so the embedding provider joins the router's failure surface. Important. The fallback embedder does not produce vectors comparable with Gemini's. See ADR-0005 — this is the constraint that decision exists to enforce."
     },
     {
       "file": "0005-embedding-spaces-are-never-mixed.md",
       "title": "ADR-0005 — Vectors from different embedding models are never compared",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "ADR-0004 introduces two embedding sources. Storing both in one `vector` column and comparing them would produce a cosine similarity that is arithmetically valid and semantically meaningless. This class of bug is silent: retrieval keeps returning results, they are simply the wrong ones, and no error is ever raised.",
+      "decision": "Embeddings live in `chunk_embedding(chunk_id, model, dim, vec)` with a unique constraint on `(chunk_id, model)`. Every query filters on the active embedding model. The semantic cache key includes `embedding_model`. When the active model has no stored vectors, retrieval degrades to BM25-only and labels itself degraded — it never falls back to a different space.",
+      "consequences": "Positive. Cross-space comparison becomes structurally impossible rather than merely discouraged. Adding a third embedding model later requires no migration. Degradation is explicit and visible to the user. Negative. Storage is duplicated per model. Backfilling a new model is an explicit job. A cache miss occurs whenever the active embedding model changes, which is correct but costs a warm-up. Verification. A regression test asserts that a query under model A never returns rows embedded under model B."
     },
     {
       "file": "0006-approval-nodes-are-terminal.md",
       "title": "ADR-0006 — Human-approval nodes are terminal by construction",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "In prior work on a multi-agent system, a human-approval node had an outgoing edge into a registration node. The graph therefore proceeded to register the item regardless of what the reviewer actually answered. The approval step existed, rendered, collected a decision, and controlled nothing. It read as governance and functioned as a formality — the worst possible failure mode for a control, because it consumes the reviewer's attention while providing no protection.",
+      "decision": "`await_approval` has no outgoing edge. Reaching it ends the run. A human decision creates a new run that carries the approval record as input.",
+      "consequences": "Positive. Auto-proceed is impossible by graph topology, not by careful coding. The approval record is a first-class row with identity and timestamp, satisfying Sofia's audit requirement. Continuation runs are independently traceable. Negative. Two runs per approved incident instead of one; the UI must join them into a single narrative for the user. Verification. A regression test enumerates the compiled graph's edges and fails if any edge originates at `await_approval`. The test was written to fail against the defective topology before the correct one existed."
     },
     {
       "file": "0007-rate-limiting-fails-closed.md",
       "title": "ADR-0007 — Rate limiting and the spend guard fail closed",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "The service is publicly reachable and calls paid-capable model providers. The common default — allow the request when the rate-limit store is unreachable — is chosen so that an infrastructure blip does not degrade user experience. Here that default converts a Redis outage into an unbounded-cost incident, and the endpoint into free LLM capacity for whoever finds it.",
+      "decision": "When Redis is unreachable, rate limiting denies. When no budget is open, the spend guard refuses the live model call. Every call is priced at worst case before it is issued; actual cost is written to the ledger afterwards.",
+      "consequences": "Positive. The worst outcome of a dependency failure is unavailability, not unbounded spend. Cost is bounded before it is incurred rather than reconciled after. Negative. A Redis outage takes the demo down. Given NFR-002 and a demo workload, that is the correct trade; it would not be for a revenue-bearing service, and that difference is the point of recording it here. Verification. Unit tests simulate an unreachable limiter and assert denial, and assert that a live call with no open budget raises rather than proceeds."
     },
     {
       "file": "0008-similarity-thresholds-belong-to-the-embedder.md",
       "title": "ADR-0008 — Similarity thresholds belong to the embedder, not to the cache",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "The semantic cache was first written with a module-level `SIMILARITY_THRESHOLD = 0.86`, chosen because 0.86 is the sort of number that appears in semantic-cache examples. Measuring it over real corpus questions showed the number was wrong in both directions at once. With the offline hashed embedder, paraphrases of the same operational question scored 0.679 to 0.959 and distinct questions scored -0.065 to 0.034. A threshold of 0.86 would have missed genuine paraphrases near the bottom of that range, while sitting far above where the actual decision boundary is. The more consequential finding is why a single constant cannot be correct. A sparse hashed space and a dense neural space have entirely different similarity distributions. Unrelated text scores near zero in the first and routinely above 0.5 in the second. A threshold calibrated in one is not merely suboptimal in the other — in the dense space it would treat unrelated questions as the same question and return the wrong cached answer, with no error raised anywhere. This is the same failure ADR-0005 prevents for the vectors, arriving through the threshold instead.",
+      "decision": "`similarity_threshold` is a property of the `Embedder`. `SemanticCache` reads it from whichever embedder it holds. There is no module-level default. `HashingEmbedder.similarity_threshold = 0.60`, derived from the measurement above: an order of magnitude above the highest observed distinct pair, and below the lowest observed paraphrase. The value is biased toward the miss. A missed cache hit costs one model call. A false hit returns a wrong answer to a user and looks exactly like a correct one. Any embedder added later must state its own measured threshold. A test re-derives the separation and fails if it stops holding.",
+      "consequences": "Positive. Adding an embedder forces the question \"what is the boundary in *your* space\" to be answered with a measurement. The regression test makes a silent drift in the embedder visible as a failure rather than as slightly wrong answers. Negative. Every embedder implementation carries a calibration obligation. That is the intended cost. Watch item. The hosted embedder is not yet implemented. It must not inherit 0.60. Its threshold is measured against the same paraphrase and distinct pairs before it is enabled, and the test that does so is a release blocker for it."
     },
     {
       "file": "0009-train-offline-serve-without-the-framework.md",
       "title": "ADR-0009 — Models are trained offline and served without their training framework",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "Sprint 3 introduces trained models. ADR-0004 excluded `torch` from the runtime image because it is 2–3 GB, which breaks build times on the free tier and violates NFR-002. That reasoning still holds and is not being reversed. But ADR-0004 was about the runtime image, and it was quietly read as \"no machine learning in this project\" — which is not what it says, and is a worse constraint than the one that was actually decided. Training does not happen in the serving container.",
+      "decision": "Training runs offline, on a development machine, with whatever framework suits the model. Serving runs in the container with the smallest artefact that reproduces the trained behaviour. | Model | Trained with | Served with | Runtime cost | |---|---|---|---| | Evidence-sufficiency classifier | scikit-learn | Exported coefficients / a small pickled estimator | negligible | | Cross-encoder re-ranker | PyTorch | ONNX Runtime | ~50 MB | | Telemetry anomaly detector (if built) | TensorFlow or scikit-learn | ONNX Runtime | shared | Every trained artefact is versioned, checksummed, and accompanied by the evaluation that justified shipping it. A model in the repository without its evaluation is not deployable.",
+      "consequences": "Positive. The runtime image stays small and ADR-0003's constraints hold. The split is the standard production pattern rather than a workaround, so it survives scrutiny. Training frameworks never become a deployment dependency, and a framework can be swapped without touching the serving path. Negative. An export step exists between training and serving, and export is where numerical behaviour can silently change. A test asserts that the ONNX output matches the PyTorch output within tolerance on a fixed sample; without it, \"the model is deployed\" and \"the trained model is deployed\" are different claims that look identical. Also negative. Training is not reproducible in CI, because CI will not carry the training frameworks. Training scripts pin their seeds and record their environment, and the artefact's checksum is what CI verifies."
     },
     {
       "file": "0010-training-labels-must-be-true-by-construction.md",
       "title": "ADR-0010 — Training labels are true by construction, never model-generated",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "FR-028 needs a labelled dataset: questions paired with whether the corpus can answer them. The existing set is 22 questions written by hand, which is enough to falsify a threshold and nowhere near enough to fit a model. The obvious way to scale it is to have an LLM generate questions and label them. It is fast, it produces plausible data, and it is invalid here. A classifier trained on LLM-assigned labels learns the LLM's judgement of what is answerable, including its errors. Evaluating that classifier against LLM-derived ground truth then measures agreement with the LLM rather than correctness, and reports a high number either way. This product's central claim is that it can tell grounded from ungrounded. A training set whose ground truth is itself a model's opinion would make that claim unfalsifiable.",
+      "decision": "Every label is derived from the construction of the example, not asserted about it afterwards. Answerable examples are generated *from* a specific chunk. The chunk is selected first, the question is generated from its content, and that chunk is the gold reference. Answerability is a property of how the example was built. Unanswerable examples are generated by two mechanisms with the same property: 1. Gap topics. Questions about subjects `corpus/GAPS.md` records as absent. Absence is verified by search over the corpus, not assumed. 2. Entity perturbation. An answerable question with its entity replaced by one the corpus does not document in that respect — asking for the `sessions-cache` pool ceiling when only `orders-db` states one. This produces the hard class: full vocabulary overlap, no answer present. An LLM may be used to vary *phrasing*. It is never used to decide a label. The distinction is enforceable: label assignment happens in code that never calls a model, and a test asserts the generation path makes no model call.",
+      "consequences": "Positive. Ground truth is auditable — for any example, the reason for its label is mechanical and inspectable. Evaluation measures correctness rather than agreement with a model. The entity-perturbation mechanism produces exactly the failure class that defeated the heuristic gate in Sprint 2, so the hard cases are represented in proportion rather than by luck. Negative. The generated questions are less linguistically varied than a model would produce, so the classifier may be less robust to phrasings that never appear in training. That is a real limitation, it is stated in the model card, and it is measured by holding out a small hand-written set that no generator produced. Splitting. The train/test split is by document, not by question. Two questions generated from the same chunk share nearly all their features; putting one in train and one in test inflates every score and the inflation is invisible."
     },
     {
       "file": "0011-no-ann-index-below-5000-chunks.md",
       "title": "ADR-0011 — No approximate-nearest-neighbour index until the corpus reaches ~5,000 chunks",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-20",
+      "context": "The schema defines an HNSW index on `chunk_embedding`. It was added because a vector column with an HNSW index is what a pgvector schema looks like, which is not a reason. This system's corpus is 87 chunks. Whether an index helps at that size is a measurable question and it had not been measured.",
+      "decision": "Exact search until the corpus reaches roughly 5,000 chunks. The HNSW index declared in migration 0001 is retained — it costs 360 KB and nothing at query time at this size — but the system does not depend on it and the decision to rely on one is deferred until the measurement above says it pays. Revisit when the corpus exceeds 5,000 chunks, or when exact-search p50 exceeds 20 ms, whichever comes first.",
+      "consequences": "Positive. The system uses the simplest thing that works, and there is now a number attached to the word \"works\" and a threshold at which to revisit. Retrieval stays exact, so ADR-0005's degradation path has no approximation interacting with it. Negative. A corpus that grows past 5,000 chunks without anyone re-running the benchmark will get slow before it gets fixed. The revisit trigger is written above rather than left to be noticed."
     },
     {
       "file": "0012-agent-runtime-on-northflank.md",
       "title": "ADR-0012 — The agent runtime runs on Northflank, not Hugging Face Spaces",
-      "status": "Accepted"
+      "status": "Accepted",
+      "date": "2026-08-22",
+      "context": "ADR-0003 placed the agent runtime on Hugging Face Spaces using the Docker SDK, on the stated grounds that it was free. That was true when the decision was written and is no longer true: Hugging Face now requires a PRO subscription for Docker and Gradio Spaces, and only Static Spaces remain free. A Static Space cannot run FastAPI, so the decision did not merely become expensive — it became impossible at $0. The failure here was not choosing Spaces. It was never verifying the free tier before building three sprints of deployment work on top of it, and then writing an ADR that recorded the choice without recording how the pricing claim had been checked. It had not been checked at all. The whole point of NFR-002 is that zero infrastructure cost is a requirement with a test behind it; the test asserted that no *paid host* appeared in a manifest, which a host that silently moves behind a paywall passes trivially.",
+      "decision": "Run the agent runtime on Northflank, Developer Sandbox plan, in `europe-west` (London).",
+      "consequences": "- No SLA, and Northflank documents the Sandbox as not for production. For a demonstration surface that is acceptable and is stated on the surface itself rather than hidden. - A payment method is required on file, on every Northflank plan, even the free one. It is a verification measure and nothing is charged inside the allowance, but it is not a card-free option and should not be described as one. - Two free services, one addon. The architecture fits, with nothing spare. - The image has still never been built locally — no Docker on the development machine. Northflank's first build is the first real build."
     }
   ],
   "sprints": [
