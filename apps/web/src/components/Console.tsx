@@ -9,7 +9,7 @@
  * than against whatever got built.
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import Trace from "@/components/Trace";
 import architecture from "@/generated/architecture.json";
@@ -20,6 +20,14 @@ import { readEvents, type Citation, type NodeEvent, type RunCompleted } from "@/
  *  an unknown name is refused upstream with a 422, which would surface to a
  *  visitor as a broken button. */
 const PROVIDERS: string[] = architecture.providers;
+
+type MemoryItem = {
+  run_id: string;
+  workload: string;
+  subject: string;
+  status: string;
+  risk: string | null;
+};
 
 const PRESETS = [
   {
@@ -102,6 +110,9 @@ export default function Console() {
    *  Scoped to the run, not the session: the runtime builds a router per
    *  request and discards it, so nobody else’s run is affected. */
   const [broken, setBroken] = useState<string[]>([]);
+  /** What the agent has already been asked in this session (FR-008). */
+  const [memory, setMemory] = useState<MemoryItem[] | null>(null);
+  const [memoryError, setMemoryError] = useState<string | null>(null);
   const abort = useRef<AbortController | null>(null);
 
   /**
@@ -169,6 +180,43 @@ export default function Console() {
     }
   }, [preset, broken]);
 
+  /** Memory is READ rather than accumulated client-side.
+   *
+   *  Mirroring the run into local state would show the visitor what this tab
+   *  did, not what the agent actually stored — and those differ precisely
+   *  when persistence failed, which is the case worth seeing. The runtime
+   *  writes memory from the run OUTCOME (db/runs.py explains why), so asking
+   *  it is the only honest source. */
+  const refreshMemory = useCallback(async () => {
+    if (!sessionId.current) return;
+    try {
+      const response = await fetch(`/api/memory/${sessionId.current}`, { cache: "no-store" });
+      if (!response.ok) {
+        const detail = (await response.json().catch(() => ({}))) as { error?: string };
+        setMemoryError(
+          detail.error === "runtime_unreachable"
+            ? "The runtime is asleep, so its memory cannot be read."
+            : "Memory is unavailable.",
+        );
+        return;
+      }
+      const payload = (await response.json()) as { items?: MemoryItem[] };
+      setMemory(payload.items ?? []);
+      setMemoryError(null);
+    } catch {
+      setMemoryError("Memory is unavailable.");
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshMemory();
+  }, [refreshMemory]);
+
+  useEffect(() => {
+    // Re-read once a run finishes: that is when the runtime has written to it.
+    if (result) void refreshMemory();
+  }, [result, refreshMemory]);
+
   const terminal = events.find((e) =>
     ["refuse", "escalate", "await_approval", "emit"].includes(e.node),
   );
@@ -186,6 +234,22 @@ export default function Console() {
   const assessment = [...events].reverse().find((e) => e.node === "hypothesise")?.text;
   const uncited = [...events].reverse().find((e) => e.node === "verify")?.uncited ?? [];
   const citations: Citation[] = [...events].reverse().find((e) => e.node === "verify")?.citations ?? [];
+
+  /** Cache effectiveness for the completed run (FR-012).
+   *
+   *  `estimated_usd` rather than `actual_usd` for the avoided spend: a cache
+   *  hit's ACTUAL cost is zero by definition, so summing that would report $0
+   *  avoided on every run. What was avoided is what the call would have been
+   *  reserved at had it gone to a provider. */
+  const cache = (() => {
+    const ledger = result?.ledger ?? [];
+    const hits = ledger.filter((entry) => entry.cache_hit);
+    return {
+      calls: ledger.length,
+      rate: ledger.length === 0 ? 0 : hits.length / ledger.length,
+      spendAvoided: hits.reduce((total, entry) => total + entry.estimated_usd, 0),
+    };
+  })();
   const proposal = events.find((e) => e.node === "propose_action")?.proposal;
   const risk = events.find((e) => e.node === "risk_gate");
   const evidence = events.find((e) => e.node === "assess_evidence");
@@ -464,6 +528,17 @@ export default function Console() {
               ["cost", `$${result.cost_usd.toFixed(6)}`],
               ["claims cited", result.citations],
               ["uncited", result.uncited],
+              // FR-012 asks for a VISIBLE hit rate and the spend it avoided.
+              // Both were computed and tested in the router and neither
+              // reached the surface: only the raw token count did, which says
+              // nothing about how often the cache actually helped. Derived
+              // from the ledger the run already sends rather than added to the
+              // event contract — the numbers were there, unread.
+              ["cache hit rate", cache.calls === 0 ? "—" : `${Math.round(cache.rate * 100)}%`],
+              [
+                "spend avoided",
+                cache.calls === 0 ? "—" : `$${cache.spendAvoided.toFixed(6)}`,
+              ],
               ["tokens avoided by cache", result.tokens_avoided],
               ["provider events", result.providers.length],
             ].map(([label, value]) => (
@@ -482,6 +557,52 @@ export default function Console() {
           )}
         </section>
       )}
+
+      {/* FR-008. The runtime has recalled session memory since Sprint 3 and
+          nothing ever asked it for any, so "visible to the user" was the half
+          of the requirement that did not exist. Read from the runtime rather
+          than mirrored from this tab's own runs: the two differ exactly when
+          persistence failed, which is the case worth seeing. */}
+      <section className="panel" data-testid="memory-panel">
+        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)" }}>
+          <h3>Session memory</h3>
+          <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+            {sessionId.current}
+          </span>
+        </header>
+        <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", margin: "var(--s2) 0 var(--s4)" }}>
+          What the agent has stored about this session, newest first and capped — an
+          unbounded recall is an unbounded prompt, which is an unbounded bill. Written
+          from the run&rsquo;s outcome rather than from the model&rsquo;s own summary of
+          itself, because a model asked what it should remember writes something
+          flattering.
+        </p>
+
+        {memoryError ? (
+          <p className="mono" style={{ color: "var(--refused)", fontSize: "0.8125rem" }}>
+            {memoryError}
+          </p>
+        ) : memory === null ? (
+          <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>reading…</p>
+        ) : memory.length === 0 ? (
+          <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>
+            Nothing stored yet. Run a triage and it will appear here.
+          </p>
+        ) : (
+          <ol className="memory-list">
+            {memory.map((item) => (
+              <li key={item.run_id} className="memory-item">
+                <span className="mono memory-run">{item.run_id}</span>
+                <span className="memory-subject">{item.subject}</span>
+                <span className="mono memory-workload">{item.workload}</span>
+                <span className={`chip ${item.status === "completed" ? "chip--grounded" : "chip--neutral"}`}>
+                  {item.status.replace(/_/g, " ")}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
     </div>
   );
 }

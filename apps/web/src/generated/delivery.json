@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-29T23:45:27.532Z",
+  "generatedAt": "2026-08-29T23:49:33.721Z",
   "repo": "224Sand/sandscope",
-  "sha": "fc6729e",
-  "commits": 86,
+  "sha": "a95e0fe",
+  "commits": 87,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:09:46+05:30",
+  "lastCommit": "2026-08-30T05:16:08+05:30",
   "tests": {
     "total": 393,
     "files": 21
@@ -12,7 +12,7 @@
   "lines": {
     "agent": 5517,
     "tests": 3954,
-    "web": 3379,
+    "web": 3546,
     "tooling": 3114
   },
   "docs": {
@@ -21,8 +21,8 @@
   },
   "requirements": {
     "total": 58,
-    "done": 52,
-    "planned": 6,
+    "done": 54,
+    "planned": 4,
     "rows": [
       {
         "id": "VIS-001",
@@ -308,9 +308,9 @@
         "id": "FR-008",
         "requirement": "Session memory, visible to the user",
         "story": "S3-MEM",
-        "test": "test_memory_panel_reflects_stored_items",
-        "sprint": "3",
-        "status": "Planned"
+        "test": "apps/web/e2e/trace_viewer.spec.ts",
+        "sprint": "3,9",
+        "status": "Done"
       },
       {
         "id": "FR-009",
@@ -340,9 +340,9 @@
         "id": "FR-012",
         "requirement": "Semantic cache with visible hit rate and spend avoided",
         "story": "S2-CACHE",
-        "test": "test_cache_key_includes_embedding_model",
-        "sprint": "2",
-        "status": "Planned"
+        "test": "apps/web/e2e/trace_viewer.spec.ts",
+        "sprint": "2,9",
+        "status": "Done"
       },
       {
         "id": "FR-013",

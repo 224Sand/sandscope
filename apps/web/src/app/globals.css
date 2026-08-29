@@ -631,3 +631,22 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .chaos-item input { accent-color: var(--blocked); margin: 0; }
 .chaos-item:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .chaos-note { color: var(--text-3); font-size: 0.8125rem; margin-top: var(--s3); }
+
+/* ------------------------------------------------------- session memory (FR-008) */
+.memory-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.memory-item {
+  display: grid;
+  grid-template-columns: 12ch 1fr auto auto;
+  gap: var(--s3);
+  align-items: center;
+  padding: var(--s2) 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+}
+.memory-run { color: var(--text-3); font-size: 0.75rem; }
+.memory-subject { color: var(--text); min-width: 0; overflow-wrap: anywhere; }
+.memory-workload { color: var(--text-3); font-size: 0.75rem; }
+@media (max-width: 640px) {
+  .memory-item { grid-template-columns: 1fr auto; }
+  .memory-run, .memory-workload { grid-column: 1 / -1; }
+}

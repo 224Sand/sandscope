@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-29T23:45:28.103Z",
-  "sha": "fc6729e",
+  "generatedAt": "2026-08-29T23:49:34.254Z",
+  "sha": "a95e0fe",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38

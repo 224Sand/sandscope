@@ -266,3 +266,65 @@ test.describe("visitor-triggered failure injection (FR-011)", () => {
     await expect(page.locator(".chaos-note")).toContainText(/fail closed/i);
   });
 });
+
+test.describe("session memory, visible to the user (FR-008)", () => {
+  test("the panel says nothing is stored before any run", async ({ page }) => {
+    await page.route("**/api/memory/**", (route) =>
+      route.fulfill({ status: 200, json: { session_id: "s", items: [] } }),
+    );
+    await page.goto("/console");
+    await expect(page.getByTestId("memory-panel")).toContainText(/nothing stored yet/i);
+  });
+
+  test("stored runs are listed newest first", async ({ page }) => {
+    await page.route("**/api/memory/**", (route) =>
+      route.fulfill({
+        status: 200,
+        json: {
+          session_id: "s",
+          items: [
+            { run_id: "run-b", workload: "incident_triage", subject: "inc-4472", status: "completed", risk: "low" },
+            { run_id: "run-a", workload: "change_review", subject: "chg-881", status: "awaiting_approval", risk: "high" },
+          ],
+        },
+      }),
+    );
+    await page.goto("/console");
+    const items = page.locator(".memory-item");
+    await expect(items).toHaveCount(2);
+    await expect(items.first()).toContainText("inc-4472");
+    await expect(items.nth(1)).toContainText("chg-881");
+  });
+
+  test("an unreachable runtime says so rather than showing an empty list", async ({ page }) => {
+    /** An empty panel and a broken panel look identical, and only one of them
+     *  means "the agent remembers nothing about you". */
+    await page.route("**/api/memory/**", (route) =>
+      route.fulfill({ status: 503, json: { error: "runtime_unreachable" } }),
+    );
+    await page.goto("/console");
+    await expect(page.getByTestId("memory-panel")).toContainText(/asleep/i);
+    await expect(page.getByTestId("memory-panel")).not.toContainText(/nothing stored yet/i);
+  });
+});
+
+test.describe("cache effectiveness is visible (FR-012)", () => {
+  test("the run panel reports a hit rate and the spend it avoided", async ({ page }) => {
+    /** The ledger in the fixture has 2 entries, 1 of them a cache hit whose
+     *  call would have been reserved at $0.0004 — so 50% and $0.000400. Both
+     *  were computed in the router and tested there, and neither reached the
+     *  surface: only the raw token count did, which says nothing about how
+     *  often the cache actually helped. */
+    await stubTheStream(page);
+    await page.goto("/console");
+    await page.getByRole("button", { name: /run triage/i }).click();
+    // Scoped to the Run summary. The same figure also appears in the ledger
+    // table below it, which is correct in both places and ambiguous to a bare
+    // text match.
+    const summary = page.locator("section", { has: page.getByRole("heading", { name: "Run" }) }).last();
+    await expect(summary.getByText("cache hit rate")).toBeVisible();
+    await expect(summary.getByText("50%", { exact: true })).toBeVisible();
+    await expect(summary.getByText("spend avoided")).toBeVisible();
+    await expect(summary.locator("dd", { hasText: "$0.000400" })).toHaveCount(1);
+  });
+});
