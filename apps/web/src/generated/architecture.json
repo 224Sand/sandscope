@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-29T23:32:30.061Z",
-  "sha": "f241e24",
+  "generatedAt": "2026-08-29T23:39:05.581Z",
+  "sha": "becf8d7",
   "providers": [
     "groq",
     "gemini",
@@ -116,10 +116,19 @@
       "date": "2026-08-22",
       "context": "ADR-0003 placed the agent runtime on Hugging Face Spaces using the Docker SDK, on the stated grounds that it was free. That was true when the decision was written and is no longer true: Hugging Face now requires a PRO subscription for Docker and Gradio Spaces, and only Static Spaces remain free. A Static Space cannot run FastAPI, so the decision did not merely become expensive — it became impossible at $0.",
       "consequences": "- No SLA, and Northflank documents the Sandbox as not for production. For a demonstration surface that is acceptable and is stated on the surface itself rather than hidden. - A payment method is required on file, on every Northflank plan, even the free one. It is a verification measure and nothing is charged inside the allowance, but it is not a card-free option and should not be described as one. - Two free services, one addon. The architecture fits, with nothing spare. - The image has still never been built locally — no Docker on the development machine. Northflank's first build is the first real build."
+    },
+    {
+      "id": "0013",
+      "file": "0013-the-classifier-stays-out-of-the-live-gate.md",
+      "title": "The trained classifier stays out of the live evidence gate",
+      "status": "Accepted",
+      "date": "2026-08-29",
+      "context": "Sprint 3 trained an evidence-sufficiency classifier: gradient boosting over 12 retrieval features, 715 labelled examples, cross-validated AUC 0.808 against a 0.609 baseline, exported to ONNX and served without scikit-learn (ADR-0009). It has its own unit tests, its own ONNX-parity test, and a panel on `/reliability`.",
+      "consequences": "Positive. The published 4.7% false-answer rate continues to describe what the service actually does. The reliability surface stops implying that a model serves traffic when it does not. The measurement is committed and re-runnable, so this decision can be overturned by evidence rather than by opinion."
     }
   ],
   "counts": {
-    "adrs": 12,
-    "accepted": 11
+    "adrs": 13,
+    "accepted": 12
   }
 }

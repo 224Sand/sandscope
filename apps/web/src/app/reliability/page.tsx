@@ -133,11 +133,28 @@ export default function Reliability() {
       <div style={{ ...grid("340px"), marginBottom: "var(--s6)" }}>
         <section className="panel">
           <h3 style={{ marginBottom: "var(--s4)" }}>Sufficiency classifier</h3>
+          {/* ADR-0013. This panel used to sit beside the live gate's error
+              rates with nothing distinguishing them, which read as though the
+              model served traffic. It does not, and the reason is a
+              measurement rather than an omission — saying so is the whole
+              point of publishing a reliability page. */}
+          <p className="mono" style={{ fontSize: "0.6875rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--refused)", marginBottom: "var(--s3)" }}>
+            offline artefact · not in the request path
+          </p>
           <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
             Gradient boosting over {model.features} retrieval features, trained offline and
             shipped as {model.format.toUpperCase()}. It ships <em>uncalibrated</em>: Platt
             scaling collapsed cross-validated AUC from {model.auc.toFixed(3)} to 0.599, and
             isotonic broke ONNX parity because a step function does not survive float32.
+          </p>
+          <p style={{ color: "var(--text-3)", fontSize: "0.875rem", marginBottom: "var(--s5)" }}>
+            It does not decide anything a visitor sees. Used as a gate it refuses{" "}
+            <strong>56.8%</strong> of answerable questions against a 10% budget; a two-sided
+            band tuned to fix that measured 4.7% false answers on one pass and{" "}
+            <strong>6.1% on held-out folds</strong>, over the 5% budget. Choosing the
+            operating point on the same data it is scored against is the defect that produced
+            a &ldquo;0% false-answer rate&rdquo; here once already, so the model stays out
+            until it is refitted per fold — <a href={`https://github.com/${config.repo}/blob/main/docs/03-architecture/adr/0013-the-classifier-stays-out-of-the-live-gate.md`}>ADR-0013</a>.
           </p>
           <dl style={grid("120px")}>
             <Metric label="Cross-validated AUC" value={model.auc.toFixed(3)} sub={`baseline ${model.baselineAuc.toFixed(3)} · +${lift.toFixed(3)}`} />

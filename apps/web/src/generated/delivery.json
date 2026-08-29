@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-08-29T23:32:29.605Z",
+  "generatedAt": "2026-08-29T23:39:05.000Z",
   "repo": "224Sand/sandscope",
-  "sha": "f241e24",
-  "commits": 84,
+  "sha": "becf8d7",
+  "commits": 85,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T04:50:48+05:30",
+  "lastCommit": "2026-08-30T05:03:13+05:30",
   "tests": {
-    "total": 385,
+    "total": 387,
     "files": 21
   },
   "lines": {
     "agent": 5487,
-    "tests": 3844,
-    "web": 3308,
-    "tooling": 3005
+    "tests": 3877,
+    "web": 3325,
+    "tooling": 3114
   },
   "docs": {
-    "files": "46",
-    "lines": 3553
+    "files": "47",
+    "lines": 3632
   },
   "requirements": {
     "total": 58,
-    "done": 50,
-    "planned": 8,
+    "done": 51,
+    "planned": 7,
     "rows": [
       {
         "id": "VIS-001",
@@ -468,9 +468,9 @@
         "id": "FR-028",
         "requirement": "Trained, calibrated evidence-sufficiency classifier",
         "story": "S3-MODEL",
-        "test": "test_the_model_beats_the_heuristic_it_replaces",
-        "sprint": "3",
-        "status": "Planned"
+        "test": "TestTheClassifierIsNotInTheLivePath::test_the_evidence_gate_does_not_import_the_classifier",
+        "sprint": "3,9",
+        "status": "Done"
       },
       {
         "id": "FR-029",
@@ -811,6 +811,15 @@
       "context": "ADR-0003 placed the agent runtime on Hugging Face Spaces using the Docker SDK, on the stated grounds that it was free. That was true when the decision was written and is no longer true: Hugging Face now requires a PRO subscription for Docker and Gradio Spaces, and only Static Spaces remain free. A Static Space cannot run FastAPI, so the decision did not merely become expensive — it became impossible at $0. The failure here was not choosing Spaces. It was never verifying the free tier before building three sprints of deployment work on top of it, and then writing an ADR that recorded the choice without recording how the pricing claim had been checked. It had not been checked at all. The whole point of NFR-002 is that zero infrastructure cost is a requirement with a test behind it; the test asserted that no *paid host* appeared in a manifest, which a host that silently moves behind a paywall passes trivially.",
       "decision": "Run the agent runtime on Northflank, Developer Sandbox plan, in `europe-west` (London).",
       "consequences": "- No SLA, and Northflank documents the Sandbox as not for production. For a demonstration surface that is acceptable and is stated on the surface itself rather than hidden. - A payment method is required on file, on every Northflank plan, even the free one. It is a verification measure and nothing is charged inside the allowance, but it is not a card-free option and should not be described as one. - Two free services, one addon. The architecture fits, with nothing spare. - The image has still never been built locally — no Docker on the development machine. Northflank's first build is the first real build."
+    },
+    {
+      "file": "0013-the-classifier-stays-out-of-the-live-gate.md",
+      "title": "ADR-0013 — The trained classifier stays out of the live evidence gate",
+      "status": "Accepted",
+      "date": "2026-08-29",
+      "context": "Sprint 3 trained an evidence-sufficiency classifier: gradient boosting over 12 retrieval features, 715 labelled examples, cross-validated AUC 0.808 against a 0.609 baseline, exported to ONNX and served without scikit-learn (ADR-0009). It has its own unit tests, its own ONNX-parity test, and a panel on `/reliability`. It is not in the request path. `retrieval/evidence.py` decides with a hand-derived three-band heuristic, and has since Sprint 2. A Sprint 9 audit flagged this: three applied-ML requirements (FR-028 classifier, FR-029 re-ranker, FR-030 ANN benchmark) are each genuinely built and rigorously tested as standalone artefacts, and none of the three is wired into what the API actually serves. For a page whose entire argument is that its claims are checkable, a component presented as production behaviour that no request ever touches is the exact failure this project exists to avoid. The obvious remedy is to wire it in. That was measured before it was done.",
+      "decision": "The classifier stays out of the live evidence gate. The reliability surface states plainly that it is an offline artefact rather than implying it serves traffic. The measurement is `training/evaluate_classifier_as_gate.py`, re-runnable, and its result is the entire reason for this record.",
+      "consequences": "Positive. The published 4.7% false-answer rate continues to describe what the service actually does. The reliability surface stops implying that a model serves traffic when it does not. The measurement is committed and re-runnable, so this decision can be overturned by evidence rather than by opinion. Negative. The gate still defers 87.3% of questions to AMBIGUOUS, which is a real weakness and remains published as one. The classifier remains built, tested, and unused in production — that is honest, and it is still an asset sitting idle. What would change this. The model was fitted on all 715 questions, so it leaks into every fold above; the folds remove only the larger and entirely avoidable leak of selecting the band on its own evaluation data. A clean answer needs the model refitted inside each fold, which needs the training extra (~2GB, ADR-0009) that is deliberately absent from the serving image. Refitting per fold, or labelling more questions, is the path to revisiting this — not a better sweep. Verification. `training/evaluate_classifier_as_gate.py` reproduces every number here. `test_the_classifier_is_not_wired_into_the_live_gate` asserts the decision holds, so the wiring cannot reappear silently in a later refactor."
     }
   ],
   "sprints": [

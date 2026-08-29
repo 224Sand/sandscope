@@ -12,6 +12,7 @@ import scikit-learn, which is not.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
@@ -230,3 +231,43 @@ class TestNoTrainingFrameworkAtRuntime:
             module.METADATA_PATH = original
             module.load_metadata.cache_clear()
         assert METADATA_PATH.exists()
+
+
+class TestTheClassifierIsNotInTheLivePath:
+    """ADR-0013, asserted rather than trusted to stay true.
+
+    The classifier is trained, calibrated, ONNX-served and covered by every
+    test above — and deliberately NOT wired into the evidence gate, because
+    measuring it as a gate showed it breaching the false-answer budget on
+    held-out folds (6.1% against a 5% budget) while a single-pass sweep had
+    reported a comfortable 4.7%.
+
+    That decision is invisible in the code: `evidence.py` simply does not
+    import this module, and nothing about an absent import announces itself in
+    review. A later refactor reaching for "the model we already trained" is
+    entirely reasonable-looking and would silently change the live refusal
+    behaviour, so the boundary is asserted here instead of assumed.
+    """
+
+    def test_the_evidence_gate_does_not_import_the_classifier(self) -> None:
+        import inspect
+
+        from sandscope_agent.retrieval import evidence
+
+        source = inspect.getsource(evidence)
+        assert "evaluation.classifier" not in source, (
+            "the evidence gate now imports the classifier — if that is intended, "
+            "ADR-0013 must be superseded by a new record carrying a held-out "
+            "measurement, not edited"
+        )
+
+    def test_the_measurement_behind_that_decision_is_committed(self) -> None:
+        """A decision recorded without the measurement that produced it is a
+        memory, not a decision record (WAYS_OF_WORKING, 'Verifying external
+        claims')."""
+        root = Path(__file__).resolve().parents[1]
+        script = root / "training" / "evaluate_classifier_as_gate.py"
+        assert script.exists(), "ADR-0013 cites a measurement that is not in the repository"
+        body = script.read_text()
+        # It must actually hold out data rather than sweeping the whole set.
+        assert "folds" in body and "held-out" in body

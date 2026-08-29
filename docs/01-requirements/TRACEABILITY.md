@@ -83,7 +83,7 @@ directions.
 | FR-025 | Change risk review workload on the same orchestration graph | S4-WORKLOAD | `test_both_workloads_share_one_topology` | 5 | Done |
 | FR-026 | Labelled evaluation dataset, labels true by construction | S3-DATA | `test_every_answerable_question_names_its_gold_document` | 3 | Done |
 | FR-027 | Statistical evaluation of the refusal gate | S3-STATS | `test_youden_selects_the_point_furthest_from_the_diagonal` | 3 | Done |
-| FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `test_the_model_beats_the_heuristic_it_replaces` | 3 | Planned |
+| FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `TestTheClassifierIsNotInTheLivePath::test_the_evidence_gate_does_not_import_the_classifier` | 3,9 | Done |
 | FR-029 | Cross-encoder re-ranker trained in PyTorch, served via ONNX | S3-RERANK | `test_onnx_matches_torch_on_the_recorded_sample` | 3 | Done |
 | FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one` | 3,9 | Done |
 
