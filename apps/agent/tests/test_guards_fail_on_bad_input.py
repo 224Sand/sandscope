@@ -89,6 +89,36 @@ class GuardsFailOnKnownBadInput(unittest.TestCase):
             subprocess.run([str(GIT), "init", "-q", tmp], check=True)  # noqa: S603
             self.assertGuardFails(run("check-traceability.mjs", tmp), "Done (design)")
 
+    def test_traceability_guard_catches_planned_with_a_test_that_exists(self) -> None:
+        """D-020, in the direction nothing checked.
+
+        A row sitting at Planned while the test it names already exists is how
+        20 finished requirements stayed invisible for months. The guard caught
+        the opposite mistake from the day it was written; this is the half that
+        let the public delivery page under-report the work.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            reqs = Path(tmp) / "docs/01-requirements"
+            reqs.mkdir(parents=True)
+            (reqs / "TRACEABILITY.md").write_text(
+                "| ID | Requirement | Story | Test | Sprint | Status |\n"
+                "|---|---|---|---|---|---|\n"
+                "| FR-999 | A thing already built | S1 | `test_a_thing_that_exists` "
+                "| 1 | Planned |\n"
+            )
+            tests = Path(tmp) / "apps/agent/tests"
+            tests.mkdir(parents=True)
+            (tests / "test_real.py").write_text(
+                "def test_a_thing_that_exists() -> None:\n    assert True\n"
+            )
+            # The guard builds its corpus from `git ls-files`, so an untracked
+            # fixture is invisible to it and the test would pass for the wrong
+            # reason.
+            subprocess.run([str(GIT), "init", "-q"], cwd=tmp, check=True)  # noqa: S603
+            subprocess.run([str(GIT), "add", "-A"], cwd=tmp, check=True)  # noqa: S603
+
+            self.assertGuardFails(run("check-traceability.mjs", tmp), "FR-999")
+
     def test_readme_guard_catches_a_drifted_figure(self) -> None:
         """The D-015 regression, asserted rather than remembered."""
         with tempfile.TemporaryDirectory() as tmp:

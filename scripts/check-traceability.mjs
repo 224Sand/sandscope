@@ -61,6 +61,36 @@ for (const row of rows) {
     );
     continue;
   }
+  // The OTHER direction, added after D-020. The guard has caught a `Done` row
+  // with no test since the day it was written; nothing caught a `Planned` row
+  // whose test already exists, so 20 finished requirements stayed invisible
+  // and the public delivery page under-reported for months.
+  //
+  // A hand-maintained status column drifts BOTH ways. Checking only the
+  // flattering direction protects the reader from over-claiming and protects
+  // nobody from the project underselling itself.
+  if (row.status === "Planned") {
+    const named = (row.test.match(/[A-Za-z_][A-Za-z0-9_.\/-]{6,}/g) ?? []).filter(
+      (t) => !/^https?/.test(t),
+    );
+    const exists = named.some((t) => {
+      if (corpus.includes(t)) return true;
+      try {
+        return statSync(resolve(root, t)).isFile();
+      } catch {
+        return false;
+      }
+    });
+    if (exists) {
+      problems.push(
+        `${row.id}: claims Planned but the test it names (${row.test}) already ` +
+          `exists in the repository. If it passes, the row is Done; if it does ` +
+          `not, name the test that is actually outstanding.`,
+      );
+    }
+    continue;
+  }
+
   if (row.status !== "Done") continue;
 
   // A Done row must name something the repository actually contains.
