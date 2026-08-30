@@ -806,3 +806,183 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   .kt-term { grid-template-columns: 1fr; gap: var(--s1); }
   .kt-agenda li { grid-template-columns: 1fr; gap: var(--s1); }
 }
+
+/* ══════════════════════ handover: ambient ground, depth, evidence gate
+   Media is atmosphere at the edges and never the subject (DESIGN_SYSTEM §5).
+   One clip, behind the opening only, replaced by its poster below 768px and
+   under reduced motion. */
+.kt-ground {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 62vh;
+  max-height: 620px;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.kt-ground-video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.18;
+  filter: saturate(0.65);
+}
+.kt-ground-scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, color-mix(in srgb, var(--ground) 55%, transparent) 0%,
+      color-mix(in srgb, var(--ground) 88%, transparent) 55%, var(--ground) 100%);
+}
+.kt { position: relative; }
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  /* The still does the same job for none of the data, and a looping
+     background is motion whether or not it was asked for. */
+  .kt-ground-video { display: none; }
+  .kt-ground {
+    background-image: url("/media/handover.jpg");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.16;
+  }
+}
+
+/* ---------------------------------------------------------- depth control
+   Changes emphasis, never availability: "Plain" collapses the deep blocks and
+   never removes them, so ctrl-F and a screen reader still reach every word.
+   There is deliberately no `display: none` in this feature. */
+.depth {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+  padding: var(--s3) var(--s4);
+  margin-bottom: var(--s6);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  width: fit-content;
+}
+.depth-label {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-right: var(--s2);
+}
+.depth-option {
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-2);
+  font-size: 0.8125rem;
+  padding: var(--s1) var(--s3);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color var(--t-instant), background var(--t-instant), border-color var(--t-instant);
+}
+.depth-option:hover { color: var(--text); }
+.depth-option[data-on="true"] {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.depth-option:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ----------------------------------------------------------- evidence gate
+   The one idea the product rests on, made draggable. The only thing that
+   moves is the value the reader is dragging (DESIGN_SYSTEM §Motion). */
+.gate {
+  margin: var(--s6) 0;
+  padding: var(--s5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 10px);
+  background: var(--surface);
+}
+.gate-caption {
+  display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap;
+  color: var(--text-2); font-size: 0.9375rem; margin-bottom: var(--s5);
+}
+.gate-tag {
+  font-size: 0.625rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: 999px; padding: 2px var(--s2); flex: none;
+}
+
+.gate-axis { position: relative; display: flex; height: 12px; border-radius: 999px; overflow: visible; margin-bottom: var(--s5); }
+.gate-zone { height: 12px; }
+.gate-zone:first-child { border-radius: 999px 0 0 999px; }
+.gate-zone:last-child { border-radius: 0 999px 999px 0; }
+.gate-zone--blocked  { background: color-mix(in srgb, var(--blocked) 34%, var(--surface-2)); }
+.gate-zone--refused  { background: color-mix(in srgb, var(--refused) 26%, var(--surface-2)); }
+.gate-zone--grounded { background: color-mix(in srgb, var(--grounded) 30%, var(--surface-2)); }
+
+.gate-pin {
+  position: absolute; top: -5px; transform: translateX(-50%);
+  width: 12px; height: 22px; padding: 0;
+  border-radius: 3px; cursor: pointer;
+  border: 1px solid var(--ground);
+  transition: transform var(--t-instant);
+}
+.gate-pin[data-truth="answerable"]   { background: var(--grounded); }
+.gate-pin[data-truth="unanswerable"] { background: var(--blocked); }
+.gate-pin[data-on="true"] { transform: translateX(-50%) scaleY(1.35); }
+.gate-pin:hover { transform: translateX(-50%) scaleY(1.35); }
+.gate-pin:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.gate-marker {
+  position: absolute; top: -12px; bottom: -12px; width: 2px;
+  background: var(--text); transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.gate-slider-label { display: block; margin-bottom: var(--s5); }
+.gate-slider { width: 100%; accent-color: var(--accent); cursor: grab; }
+.gate-slider:active { cursor: grabbing; }
+.gate-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.gate-readout { border-top: 1px solid var(--line); padding-top: var(--s4); margin-bottom: var(--s5); }
+.gate-verdict { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s3); }
+.gate-score { font-size: 1.75rem; color: var(--text); font-variant-numeric: tabular-nums; }
+.gate-plain { color: var(--text) !important; font-size: 1rem !important; margin-bottom: var(--s2) !important; }
+.gate-deep  { color: var(--text-3) !important; font-size: 0.875rem !important; }
+.gate-probe { color: var(--text-2) !important; font-size: 0.875rem !important; margin-top: var(--s3) !important; }
+.gate-probe-tag {
+  font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.06em;
+  margin-right: var(--s2); padding: 1px 6px; border-radius: 999px;
+}
+.gate-probe-tag[data-truth="answerable"]   { color: var(--grounded); background: color-mix(in srgb, var(--grounded) 14%, transparent); }
+.gate-probe-tag[data-truth="unanswerable"] { color: var(--blocked);  background: color-mix(in srgb, var(--blocked) 14%, transparent); }
+
+.gate-questions { display: grid; gap: var(--s1); margin-bottom: var(--s5); }
+.gate-question {
+  display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: var(--s3);
+  align-items: baseline; text-align: left;
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  padding: var(--s2) var(--s3); cursor: pointer;
+  color: var(--text-2); font-size: 0.875rem; font-family: inherit;
+  transition: background var(--t-instant), border-color var(--t-instant);
+}
+.gate-question:hover { background: var(--surface-2); }
+.gate-question[data-on="true"] { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); background: var(--surface-2); }
+.gate-question:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.gate-question-score { font-variant-numeric: tabular-nums; }
+.gate-question[data-truth="answerable"]   .gate-question-score { color: var(--grounded); }
+.gate-question[data-truth="unanswerable"] .gate-question-score { color: var(--blocked); }
+
+.gate-overlap {
+  color: var(--text-2) !important; font-size: 0.875rem !important;
+  padding: var(--s4); border-radius: var(--radius, 10px);
+  background: color-mix(in srgb, var(--refused) 8%, var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--refused) 28%, var(--line));
+  margin-bottom: var(--s4) !important;
+}
+.gate-overlap-tag {
+  display: block; font-size: 0.625rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--refused); margin-bottom: var(--s2);
+}
+.gate-src { color: var(--text-3) !important; font-size: 0.6875rem !important; margin: 0 !important; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

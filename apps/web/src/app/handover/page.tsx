@@ -1,3 +1,5 @@
+import DepthControl from "@/components/DepthControl";
+import EvidenceGate from "@/components/EvidenceGate";
 import architecture from "@/generated/architecture.json";
 import council from "@/generated/council.json";
 import dataset from "@/generated/dataset.json";
@@ -59,6 +61,24 @@ export default function Handover() {
 
   return (
     <main className="voice-proof wrap kt" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+      {/* Ambient ground. Poster-first, muted, decorative, and replaced by the
+          still below 768px or under reduced motion (DESIGN_SYSTEM §5). It sits
+          behind the opening only — a reader scanning for a threshold does not
+          want motion competing with the paragraph they are in. */}
+      <div className="kt-ground" aria-hidden="true">
+        <video
+          className="kt-ground-video"
+          src="/media/handover.mp4"
+          poster="/media/handover.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+        />
+        <div className="kt-ground-scrim" />
+      </div>
+
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / HANDOVER
@@ -76,6 +96,8 @@ export default function Handover() {
           from a screen reader — the disclosure is native, and works with JavaScript off.
         </p>
       </header>
+
+      <DepthControl />
 
       <section className="reveal-scale story-stats" style={{ marginBottom: "var(--s8)" }}>
         <Stat value={`${delivery.requirements.done}/${delivery.requirements.total}`} label="Requirements" note="each names a passing test" />
@@ -153,6 +175,8 @@ export default function Handover() {
           expensive than an unnecessary &ldquo;I don&rsquo;t know&rdquo;, so the system is tuned to
           make the second mistake rather than the first.
         </p>
+
+        <EvidenceGate />
 
         <Deep label="The actual signals, thresholds, and why they are multiplied">
           <p>

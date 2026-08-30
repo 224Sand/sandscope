@@ -37,6 +37,12 @@ const CLIPS = [
   { id: 1085656, name: "estate", startSeconds: 3 },
   { id: 6754820, name: "signal", startSeconds: 2 },
   { id: 7140937, name: "trace", startSeconds: 2 },
+  // Handover surface (S9-KT). Two grounds only: one for the opening, one for
+  // the governance half. A reading document earns less footage than a
+  // narrative one -- a reader scanning for a threshold does not want motion
+  // competing with the paragraph they are in.
+  { id: 3129671, name: "handover", startSeconds: 2 },
+  { id: 8348771, name: "governance", startSeconds: 1 },
 ];
 
 function key() {

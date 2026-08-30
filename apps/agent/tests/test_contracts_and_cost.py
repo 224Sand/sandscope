@@ -268,3 +268,73 @@ class DeploymentClaims(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class EvidenceGateVisualiser(unittest.TestCase):
+    """FR-033. The interactive explainer must teach the REAL thresholds.
+
+    `EvidenceGate.tsx` draws its three bands from two constants, and a
+    component that quietly drifts from the runtime is worse than a paragraph:
+    it is a demonstration that looks authoritative while teaching a number the
+    system does not use. Same class as D-014 and D-020, on a surface a reader
+    is more likely to believe because they can drag it.
+    """
+
+    def setUp(self) -> None:
+        self.component = (ROOT / "apps/web/src/components/EvidenceGate.tsx").read_text()
+
+    def _declared(self, name: str) -> float:
+        match = re.search(rf"const {name} = ([\d.]+);", self.component)
+        self.assertIsNotNone(match, f"{name} is not declared in EvidenceGate.tsx")
+        return float(match.group(1))
+
+    def test_the_bands_match_the_runtime_thresholds(self) -> None:
+        from sandscope_agent.retrieval import evidence
+
+        self.assertEqual(self._declared("INSUFFICIENT_BELOW"), evidence.INSUFFICIENT_BELOW)
+        self.assertEqual(self._declared("SUFFICIENT_ABOVE"), evidence.SUFFICIENT_ABOVE)
+
+    def test_the_pinned_probes_are_scored_by_the_real_retriever(self) -> None:
+        """The pins are the component's strongest claim: that an UNANSWERABLE
+        question outscores answerable ones. If they were chosen to make the
+        chart legible rather than measured, the page would be teaching a lie
+        about the hardest part of the problem."""
+        from sandscope_agent.retrieval.corpus import chunk_corpus, load_corpus
+        from sandscope_agent.retrieval.embedding import HashingEmbedder
+        from sandscope_agent.retrieval.evidence import combined_score
+        from sandscope_agent.retrieval.hybrid import HybridRetriever
+
+        pins = re.findall(r'\{ score: ([\d.]+), truth: "(\w+)", text: "([^"]+)" \}', self.component)
+        self.assertGreaterEqual(len(pins), 4, "the visualiser pins too few real questions")
+
+        retriever = HybridRetriever(chunks=chunk_corpus(load_corpus()), embedder=HashingEmbedder())
+        retriever.build_vectors()
+
+        for declared, _truth, text in pins:
+            # The component escapes an em dash for JSX; the query is the plain text.
+            query = text.replace("&mdash;", "—")
+            actual = combined_score(retriever.search(query, limit=6))
+            self.assertAlmostEqual(
+                float(declared),
+                actual,
+                places=1,
+                msg=(
+                    f"{query!r} is pinned at {declared} but scores {actual:.2f}. "
+                    "Re-measure rather than adjusting the pin."
+                ),
+            )
+
+    def test_an_unanswerable_question_really_does_outscore_an_answerable_one(self) -> None:
+        """The overlap the component exists to show. If this ever stops being
+        true the callout beside it becomes false, and it should be rewritten
+        rather than left standing."""
+        pins = re.findall(r'\{ score: ([\d.]+), truth: "(\w+)"', self.component)
+        answerable = [float(s) for s, t in pins if t == "answerable"]
+        unanswerable = [float(s) for s, t in pins if t == "unanswerable"]
+        self.assertTrue(answerable and unanswerable)
+        self.assertGreater(
+            max(unanswerable),
+            min(answerable),
+            "no unanswerable question outscores an answerable one, so the "
+            "'the hard part' callout on the page is no longer true",
+        )

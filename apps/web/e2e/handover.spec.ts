@@ -110,3 +110,110 @@ test("the handover reads without JavaScript", async ({ browser }) => {
     await context.close();
   }
 });
+
+test.describe("the interactive explainer (FR-033)", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/handover");
+  });
+
+  test("the evidence gate responds to the reader", async ({ page }) => {
+    const gate = page.locator(".gate");
+    await expect(gate).toBeVisible();
+
+    const before = await page.locator(".gate-score").innerText();
+    await page.locator(".gate-question", { hasText: "DNS resolution failure" }).click();
+    await expect(page.locator(".gate-score")).not.toHaveText(before);
+
+    // Defer, NOT refuse — and that is the honest result. The first draft of
+    // this test asserted a refusal, because "the corpus contains no mention of
+    // DNS anywhere" sounds like the clearest possible refusal case. It scores
+    // 1.57 and INSUFFICIENT_BELOW is 0.74, so it defers.
+    //
+    // Not one of the six real probes scores low enough to be refused outright.
+    // That is the 87% deferral rate as a concrete fact rather than a
+    // percentage, and the component would be lying if it showed otherwise.
+    await expect(page.locator(".gate-verdict")).toContainText(/defer/i);
+  });
+
+  test("it crosses a real threshold rather than being decorative", async ({ page }) => {
+    /** A slider that never changes the verdict is a picture of a slider. */
+    const slider = page.locator(".gate-slider");
+    await slider.fill("0.2");
+    await expect(page.locator(".gate-verdict")).toContainText(/refuse/i);
+    await slider.fill("12");
+    await expect(page.locator(".gate-verdict")).toContainText(/answer/i);
+    await slider.fill("5");
+    await expect(page.locator(".gate-verdict")).toContainText(/defer/i);
+  });
+
+  test("it shows the overlap honestly, not a tidy separation", async ({ page }) => {
+    /** The claim the component exists to make: an UNANSWERABLE question
+     *  outscores answerable ones. If the pins were arranged to look neat, the
+     *  page would be teaching a lie about the hardest part of the problem. */
+    const pins = page.locator(".gate-pin");
+    const rows = await pins.evaluateAll((nodes) =>
+      nodes.map((n) => ({
+        truth: (n as HTMLElement).dataset.truth,
+        left: Number.parseFloat((n as HTMLElement).style.left),
+      })),
+    );
+    const answerable = rows.filter((r) => r.truth === "answerable").map((r) => r.left);
+    const unanswerable = rows.filter((r) => r.truth === "unanswerable").map((r) => r.left);
+    expect(answerable.length).toBeGreaterThan(1);
+    expect(
+      Math.max(...unanswerable),
+      "no unanswerable pin sits above an answerable one — the overlap is being hidden",
+    ).toBeGreaterThan(Math.min(...answerable));
+    // `.first()`: there are two findings printed beside the chart now — the
+    // overlap, and the fact that nothing real is refused outright.
+    await expect(page.locator(".gate-overlap").first()).toContainText(/cannot answer/i);
+    await expect(page.locator(".gate-overlap").last()).toContainText(/refused outright/i);
+  });
+
+  test("the gate is operable from the keyboard", async ({ page }) => {
+    const slider = page.locator(".gate-slider");
+    await slider.focus();
+    const start = await page.locator(".gate-score").innerText();
+    await page.keyboard.press("ArrowRight");
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator(".gate-score")).not.toHaveText(start);
+  });
+
+  test("the depth control opens and closes every deep block", async ({ page }) => {
+    const control = page.locator(".depth-option");
+    await expect(control).toHaveCount(2);
+
+    await page.getByRole("button", { name: /full technical/i }).click();
+    const total = await page.locator("details.deep").count();
+    await expect(page.locator("details.deep[open]")).toHaveCount(total);
+
+    await page.getByRole("button", { name: /plain english/i }).click();
+    await expect(page.locator("details.deep[open]")).toHaveCount(0);
+  });
+
+  test("plain mode collapses content but never removes it", async ({ page }) => {
+    /** The whole feature rests on this. Hiding the deep half would make the
+     *  page's own claim about layered depth false, on the page that exists to
+     *  explain the project — and would take it out of ctrl-F and the
+     *  accessibility tree (AC-C10). */
+    await page.getByRole("button", { name: /plain english/i }).click();
+    await expect(page.locator("details.deep[open]")).toHaveCount(0);
+
+    const text = await page.locator("body").textContent();
+    expect(text, "collapsing removed the deep content from the DOM").toContain(
+      "INSUFFICIENT_BELOW",
+    );
+
+    const hidden = await page.locator("details.deep").evaluateAll((nodes) =>
+      nodes.filter((n) => window.getComputedStyle(n).display === "none").length,
+    );
+    expect(hidden, "a deep block was display:none, which removes it from search").toBe(0);
+  });
+
+  test("the ambient video is decorative and silent", async ({ page }) => {
+    const media = page.locator(".kt-ground-video");
+    if ((await media.count()) === 0) return; // replaced by its poster, which is correct
+    await expect(page.locator(".kt-ground")).toHaveAttribute("aria-hidden", "true");
+    expect(await media.evaluate((v: HTMLVideoElement) => v.muted)).toBe(true);
+  });
+});
