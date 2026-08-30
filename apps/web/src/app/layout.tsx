@@ -111,6 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <span style={{ flex: 1 }} />
             {[
               ["/story", "Story"],
+              ["/handover", "Handover"],
               ["/console", "Console"],
               ["/data", "Data"],
               ["/architecture", "Architecture"],

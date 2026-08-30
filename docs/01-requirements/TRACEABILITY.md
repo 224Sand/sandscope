@@ -88,6 +88,7 @@ directions.
 | FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one` | 3,9 | Done |
 | FR-031 | The synthetic dataset published in full | S9-DATA | `apps/web/e2e/data_and_council.spec.ts`, `TestDatasetSummaryIsCurrent` | 9 | Done |
 | FR-032 | The governance record published | S9-GOV | `apps/web/e2e/data_and_council.spec.ts` | 9 | Done |
+| FR-033 | Handover document serving non-technical and architect readers alike | S9-KT | `apps/web/e2e/handover.spec.ts` | 9 | Done |
 
 ---
 
@@ -106,7 +107,7 @@ directions.
 | 8 Release | Hardening, deployment | 2 |
 
 Counts are per sprint; a requirement satisfied across two sprints is counted in
-each, so the column sums above the 60 unique requirements.
+each, so the column sums above the 61 unique requirements.
 
 ## Orphan check
 

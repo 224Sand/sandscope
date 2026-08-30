@@ -676,3 +676,133 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   .map-node rect { transition: none; }
 }
+
+/* ══════════════════════════════════════════ the handover surface (FR-033)
+   One document, two readers. The prose is the whole thing for a
+   non-technical reader; `.deep` blocks carry the parameters and failure
+   modes for an architect. Native <details>, so it works with JavaScript off
+   and is keyboard-operable without any work — and every word stays in the
+   DOM for search and for a screen reader (AC-C10). */
+.kt { max-width: 78ch; }
+.kt-section { margin-bottom: var(--s9); }
+.kt-section > h3 {
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--s5);
+  padding-bottom: var(--s3);
+  border-bottom: 1px solid var(--line);
+}
+.kt-section > p { color: var(--text-2); font-size: 1.0625rem; margin-bottom: var(--s4); max-width: 68ch; }
+.kt-section > p strong { color: var(--text); }
+.kt-section > ul { color: var(--text-2); font-size: 1.0625rem; max-width: 68ch; padding-left: var(--s5); margin-bottom: var(--s5); }
+.kt-section > ul li { margin-bottom: var(--s2); }
+.kt-section > ul strong { color: var(--text); }
+.kt-h4 { font-size: 1rem; margin: var(--s6) 0 var(--s3); }
+
+/* the disclosure itself */
+.deep {
+  margin: var(--s5) 0 var(--s6);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 var(--radius, 10px) var(--radius, 10px) 0;
+  background: var(--surface);
+}
+.deep-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--s4) var(--s5);
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  color: var(--text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.deep-summary::-webkit-details-marker { display: none; }
+.deep-summary:hover { color: var(--accent); }
+.deep-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.deep-tag {
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: 999px;
+  padding: 2px var(--s2);
+  flex: none;
+}
+.deep-summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--text-3);
+  font-family: var(--mono);
+  flex: none;
+}
+.deep[open] .deep-summary::after { content: "−"; }
+.deep[open] .deep-summary { border-bottom: 1px solid var(--line); }
+.deep-body { padding: var(--s5); }
+.deep-body p { color: var(--text-2); font-size: 0.9375rem; margin: 0 0 var(--s4); max-width: 70ch; }
+.deep-body p:last-child { margin-bottom: 0; }
+.deep-body strong { color: var(--text); }
+.deep-body em { color: var(--text-2); }
+
+.kt-src { color: var(--text-3) !important; font-size: 0.75rem !important; margin-top: var(--s5) !important; }
+.kt-flow {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 10px);
+  padding: var(--s4);
+  font-size: 0.8125rem !important;
+  line-height: 2;
+  color: var(--text-2) !important;
+  overflow-x: auto;
+}
+
+.kt-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; margin: 0 0 var(--s4); display: block; overflow-x: auto; }
+.kt-table th, .kt-table td { text-align: left; padding: var(--s2) var(--s3); vertical-align: top; }
+.kt-table thead th {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+.kt-table tbody tr + tr td { border-top: 1px solid var(--line); }
+.kt-table td { color: var(--text-2); }
+
+.kt-code {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius, 10px);
+  padding: var(--s4);
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--text-2);
+  margin-bottom: var(--s4);
+}
+
+.kt-agenda { list-style: none; padding: 0; margin: 0 0 var(--s5); }
+.kt-agenda li {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: var(--s4);
+  padding: var(--s3) 0;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: 0.9375rem;
+}
+.kt-agenda li:first-child { border-top: none; }
+.kt-agenda .mono { color: var(--accent); font-size: 0.8125rem; }
+.kt-agenda strong { color: var(--text); }
+
+.kt-glossary { display: grid; gap: 0; margin: 0; }
+.kt-term { display: grid; grid-template-columns: 12rem minmax(0, 1fr); gap: var(--s4); padding: var(--s3) 0; border-top: 1px solid var(--line); }
+.kt-term:first-child { border-top: none; }
+.kt-term dt { color: var(--text); font-size: 0.8125rem; }
+.kt-term dd { margin: 0; color: var(--text-2); font-size: 0.9375rem; }
+@media (max-width: 640px) {
+  .kt-term { grid-template-columns: 1fr; gap: var(--s1); }
+  .kt-agenda li { grid-template-columns: 1fr; gap: var(--s1); }
+}

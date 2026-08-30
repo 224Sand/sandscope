@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-30T20:32:15.390Z",
+  "generatedAt": "2026-08-30T21:02:15.451Z",
   "repo": "224Sand/sandscope",
-  "sha": "4c091bd",
-  "commits": 92,
+  "sha": "edff843",
+  "commits": 93,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:44:15+05:30",
+  "lastCommit": "2026-08-31T02:03:00+05:30",
   "tests": {
     "total": 414,
     "files": 23
@@ -12,16 +12,16 @@
   "lines": {
     "agent": 5737,
     "tests": 4224,
-    "web": 4319,
+    "web": 4991,
     "tooling": 3384
   },
   "docs": {
     "files": "47",
-    "lines": 3642
+    "lines": 3644
   },
   "requirements": {
-    "total": 60,
-    "done": 60,
+    "total": 61,
+    "done": 61,
     "planned": 0,
     "rows": [
       {
@@ -501,6 +501,14 @@
         "requirement": "The governance record published",
         "story": "S9-GOV",
         "test": "apps/web/e2e/data_and_council.spec.ts",
+        "sprint": "9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-033",
+        "requirement": "Handover document serving non-technical and architect readers alike",
+        "story": "S9-KT",
+        "test": "apps/web/e2e/handover.spec.ts",
         "sprint": "9",
         "status": "Done"
       }
