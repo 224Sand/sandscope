@@ -225,6 +225,38 @@ def get_spans(conn: psycopg.Connection, run_id: str) -> list[dict[str, Any]]:
     ]
 
 
+def load_completed_run(conn: psycopg.Connection, run_id: str) -> dict[str, Any] | None:
+    """A finished run, in the shape a postmortem can be written from (FR-009).
+
+    Returns the verdict and the citations the run RESOLVED — the unresolved
+    ones are deliberately excluded here as well as in `scope_from_run`, so a
+    fabricated marker cannot reach a permanent record by either path.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT status, verdict FROM run WHERE id = %s",
+            (run_id,),
+        )
+        row = cur.fetchone()
+        if row is None:
+            return None
+        status, verdict = row
+
+        cur.execute(
+            """
+            SELECT claim_text, chunk_id, score FROM citation
+            WHERE run_id = %s ORDER BY ordinal ASC
+            """,
+            (run_id,),
+        )
+        citations = [
+            {"claim_text": claim, "chunk_id": chunk, "score": float(score), "resolved": True}
+            for claim, chunk, score in cur.fetchall()
+        ]
+
+    return {"status": status, "hypothesis": verdict or "", "citations": citations}
+
+
 def load_pending_approval(conn: psycopg.Connection, run_id: str) -> StoredRun | None:
     """The gated run, if it exists and is still undecided."""
     with conn.cursor() as cur:

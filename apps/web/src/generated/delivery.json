@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-08-30T00:07:13.077Z",
+  "generatedAt": "2026-08-30T00:13:27.105Z",
   "repo": "224Sand/sandscope",
-  "sha": "2e9e4a5",
-  "commits": 90,
+  "sha": "a540d79",
+  "commits": 91,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:33:31+05:30",
+  "lastCommit": "2026-08-30T05:37:13+05:30",
   "tests": {
-    "total": 393,
-    "files": 21
+    "total": 410,
+    "files": 22
   },
   "lines": {
-    "agent": 5517,
-    "tests": 3954,
+    "agent": 5737,
+    "tests": 4166,
     "web": 3893,
     "tooling": 3114
   },
@@ -21,8 +21,8 @@
   },
   "requirements": {
     "total": 58,
-    "done": 57,
-    "planned": 1,
+    "done": 58,
+    "planned": 0,
     "rows": [
       {
         "id": "VIS-001",
@@ -316,9 +316,9 @@
         "id": "FR-009",
         "requirement": "Postmortem drafting from a completed run",
         "story": "S3-RCA",
-        "test": "test_postmortem_cites_only_run_evidence",
-        "sprint": "3",
-        "status": "Planned"
+        "test": "TestPostmortemCitesOnlyRunEvidence::test_a_citation_the_run_never_made_is_marked_unresolved",
+        "sprint": "3,9",
+        "status": "Done"
       },
       {
         "id": "FR-010",

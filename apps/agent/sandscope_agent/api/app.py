@@ -30,6 +30,11 @@ from sandscope_agent.db import runs as run_store
 from sandscope_agent.db.engine import DatabaseNotConfiguredError, connect
 from sandscope_agent.orchestrator.budget import SpendGuard
 from sandscope_agent.orchestrator.graph import Dependencies, RunState, build_graph
+from sandscope_agent.orchestrator.postmortem import (
+    out_of_scope,
+    restrict_to_run_evidence,
+    scope_from_run,
+)
 from sandscope_agent.orchestrator.workloads import WORKLOADS, WorkloadInput
 from sandscope_agent.retrieval.corpus import chunk_corpus, load_corpus
 from sandscope_agent.retrieval.embedding import HashingEmbedder
@@ -439,6 +444,73 @@ def read_spans(run_id: str) -> dict[str, Any]:
     except DatabaseNotConfiguredError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
     return {"run_id": run_id, "spans": spans}
+
+
+@app.post("/v1/runs/{run_id}/postmortem", dependencies=[Depends(require_token)])
+def draft_postmortem(run_id: str) -> dict[str, Any]:
+    """Draft a postmortem from a completed run (FR-009).
+
+    Not a stream. The run being written up is already finished, so there is no
+    reasoning for a visitor to watch happen — and returning it whole means the
+    scope restriction below is applied before anything reaches the client,
+    rather than after they have already read a claim that gets retracted.
+    """
+    try:
+        with connect() as conn:
+            stored = run_store.load_completed_run(conn, run_id)
+    except DatabaseNotConfiguredError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+    if stored is None:
+        raise HTTPException(status_code=404, detail=f"no run {run_id!r}")
+
+    scope = scope_from_run(run_id, stored)
+    if scope.is_empty:
+        # A refused or failed run established nothing, so there is nothing to
+        # write up. Refusing here is the same posture as the evidence gate
+        # itself: a postmortem drafted from no evidence would be entirely
+        # invention, and the most confident-sounding output this system could
+        # possibly produce.
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                f"run {run_id!r} resolved no evidence (status {stored['status']!r}); "
+                "a postmortem drafted from nothing would be invention"
+            ),
+        )
+
+    events: list[RouterEvent] = []
+    deps = _dependencies(events)
+    state: RunState = {
+        "run_id": f"{run_id}-postmortem",
+        "workload": "postmortem",
+        "request": WorkloadInput(
+            subject=scope.subject or run_id,
+            body=scope.hypothesis,
+            context={"source_run": run_id},
+        ),
+        "events": [],
+    }
+    final: dict[str, Any] = {}
+    for update in build_graph(deps).stream(state, stream_mode="updates"):
+        for patch in update.values():
+            final.update(patch)
+
+    # The requirement, enforced rather than prompted for. Out-of-scope
+    # citations are marked, not deleted: a draft with the offending sentences
+    # removed looks perfectly grounded and is missing the parts that were not.
+    restricted = restrict_to_run_evidence(final.get("citations", []) or [], scope)
+    unsupported = out_of_scope(restricted)
+
+    return {
+        "run_id": run_id,
+        "status": final.get("status"),
+        "draft": final.get("hypothesis") or "",
+        "citations": restricted,
+        "out_of_scope": len(unsupported),
+        "evidence_scope": sorted(scope.chunk_ids),
+        "cost_usd": round(deps.guard.actual_usd, 6),
+    }
 
 
 @app.post("/v1/runs/{run_id}/approve", dependencies=[Depends(require_token)])

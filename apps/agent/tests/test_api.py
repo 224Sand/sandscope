@@ -374,9 +374,30 @@ class TestNoLocalState:
 
 
 class TestWorkloads:
-    def test_both_workloads_are_advertised(self, client: TestClient) -> None:
+    def test_every_workload_is_advertised(self, client: TestClient) -> None:
+        """Asserted against the registry rather than a hard-coded set.
+
+        This previously named the two workloads literally, so adding the
+        postmortem workload (FR-009) failed it — correctly, in that the
+        endpoint's output had changed, and uselessly, in that the only
+        possible fix was to retype the same list in a second place. What the
+        endpoint owes a caller is that it advertises everything the runtime
+        can actually run; that is the invariant, so that is what is checked.
+        """
+        from sandscope_agent.orchestrator.workloads import WORKLOADS
+
         names = {w["name"] for w in client.get("/v1/workloads", headers=auth()).json()["workloads"]}
-        assert names == {"incident_triage", "change_review"}
+        assert names == set(WORKLOADS)
+        # A guard on the guard: if the registry were ever empty, the assertion
+        # above would pass against an endpoint advertising nothing at all.
+        assert {"incident_triage", "change_review", "postmortem"} <= names
+
+    def test_each_advertised_workload_names_what_it_proposes(self, client: TestClient) -> None:
+        """`action_noun` is what an approval record reads as, so a blank one
+        produces a gate asking a human to approve an unnamed thing."""
+        workloads = client.get("/v1/workloads", headers=auth()).json()["workloads"]
+        for workload in workloads:
+            assert workload["action_noun"].strip(), f"{workload['name']} proposes an unnamed thing"
 
 
 class TestIncidentFeed:

@@ -163,9 +163,69 @@ class ChangeReview:
         return level, reason
 
 
+@dataclass(frozen=True, slots=True)
+class Postmortem:
+    """Draft a postmortem from a run that has already completed (FR-009).
+
+    A third workload rather than a second graph, for the reason this module
+    exists: the central claim of a control plane is that it is
+    workload-agnostic, and building a bespoke path for the third workload
+    would disprove exactly the thing the first two were meant to demonstrate.
+
+    The constraint that makes this workload different is not in the prompt. A
+    postmortem must cite ONLY what the original run actually found — the whole
+    point of writing one from a run rather than from memory is that it cannot
+    quietly acquire facts the run never established. Prompting for that would
+    make it a tendency; `postmortem.restrict_to_run_evidence` makes it a
+    property, enforced after the model has spoken.
+    """
+
+    name: str = "postmortem"
+    action_noun: str = "postmortem draft"
+
+    def build_query(self, request: WorkloadInput) -> str:
+        # The hypothesis the original run reached, plus its subject. Retrieval
+        # is expected to resurface the same material the run cited; anything it
+        # surfaces that the run did NOT cite is discarded downstream rather
+        # than trusted, so the query being imperfect is not a correctness risk.
+        return " ".join(
+            part
+            for part in (request.body, request.context.get("service", ""), "incident postmortem")
+            if part
+        )
+
+    def system_prompt(self) -> str:
+        return (
+            "You are drafting a postmortem for an incident that has already "
+            "been triaged. Use ONLY the evidence provided, all of which comes "
+            "from the completed run. Every factual claim must be cited as [n]. "
+            "State what happened, what the evidence supports about why, and "
+            "what remains unknown. Do not speculate about causes the evidence "
+            "does not establish, and do not recommend actions: this is a "
+            "record of what occurred, not a remediation plan."
+        )
+
+    def score_risk(self, proposal: str, request: WorkloadInput) -> tuple[RiskLevel, str]:
+        """A postmortem is a document, and always LOW.
+
+        Deliberately NOT `_base_risk`. That function matches destructive verbs
+        in the proposal text — and a postmortem's job is to describe what was
+        done, so an accurate one says "the pool was restarted" and would be
+        escalated to HIGH for correctly reporting a restart that already
+        happened. Gating a write-up behind human approval because it mentions
+        the action it is documenting would make the risk gate look arbitrary
+        and teach reviewers to click through it.
+
+        Writing a record touches nothing. The actions a postmortem describes
+        were gated when they were proposed, which is where the gate belongs.
+        """
+        return RiskLevel.LOW, "a postmortem records what happened and proposes no action"
+
+
 WORKLOADS: dict[str, Workload] = {
     "incident_triage": IncidentTriage(),
     "change_review": ChangeReview(),
+    "postmortem": Postmortem(),
 }
 
 
