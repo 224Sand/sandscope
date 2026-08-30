@@ -12,7 +12,9 @@
     "test:e2e": "playwright test",
     "test:e2e:desktop": "playwright test --project=desktop",
     "prebuild": "node scripts/prebuild.mjs",
-    "predev": "node scripts/prebuild.mjs"
+    "predev": "node scripts/prebuild.mjs",
+    "test:unit": "vitest run",
+    "test:unit:watch": "vitest"
   },
   "dependencies": {
     "@upstash/ratelimit": "^2.0.0",
@@ -27,7 +29,8 @@
     "@types/node": "^26.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "postcss": "^8.5.12",

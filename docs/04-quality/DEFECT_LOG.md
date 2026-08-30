@@ -36,6 +36,7 @@
 | D-023 | Sprint 9 | 9 | 2 | All 12 "read the decision" links on the public architecture surface pointed at the ADR *directory* rather than at a record: the href was built by concatenating a path ending `/adr/` with a filename the derived record never carried. Twelve dead links, each rendering as an ordinary underlined title. Found by the first e2e assertion that every decision link resolves to a `.md` | `derive-surfaces.mjs` omitted the ADR filename, and the page interpolated the missing field into a template literal — where `undefined` would have been visible but an absent property is simply empty string. Nothing checked that a rendered link had a destination | Fixed, guarded |
 | D-024 | Sprint 9 | 9 | 2 | The memory panel rendered the session id, which is read from `sessionStorage` during render — `""` on the server, a real id in the browser. Every page carrying the console threw React #418 (hydration mismatch) in production. Reached `main`; caught by CI, on a build CI made itself | A client-only value became RENDERED output. It had been read during render since Sprint 5 and was harmless while nothing displayed it, so the bug was introduced by the component that finally showed it, not by the code that computed it | Fixed, guarded |
 | D-025 | Sprint 9 | 9 | 2 | The local e2e suite reported green against a STALE build twice: Playwright's `reuseExistingServer: !process.env.CI` reused a server left running from an earlier build, so the run exercised the previous binary. It masked a fix that had not been rebuilt, then masked D-024 entirely — CI caught that one only because it builds from scratch | Playwright's documented default optimises for iteration speed and assumes the running server matches the working tree. For a suite whose whole purpose is to catch what `next build` cannot see, a local pass that does not exercise the current code is worse than no local run, because it is believed | Fixed |
+| D-026 | Sprint 9 | 9 | 3 | Two labels on the public architecture diagram were struck through by the dashed lines they sat on. The masking plates were sized in SVG user units, so a width that covered the text on macOS was too short on Linux and at mobile scale — the fix for the first version broke on a platform the first version happened to pass on | A mask sized in absolute units cannot track text whose width depends on the font the platform resolved. Only reachable by rendering on more than one platform, which is what the mobile project and Linux CI now do | Fixed, guarded |
 
 ## Where these were found, which is the finding
 
@@ -58,6 +59,7 @@
 | **Standing up a test runner where there had never been one** | **3** (D-021, D-022, D-023) |
 | The new e2e suite failing in CI on its own author's change | 1 (D-024) |
 | Asking why a local pass and a CI failure disagreed | 1 (D-025) |
+| Rendering the same page on a second platform | 1 (D-026) |
 | **Code review** | **0** |
 | **Unit tests written before the defect** | **0** |
 

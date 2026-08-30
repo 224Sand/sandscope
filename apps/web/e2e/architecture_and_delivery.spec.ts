@@ -226,31 +226,40 @@ test.describe("the architecture surface", () => {
     }
   });
 
-  test("the dashed-path labels are not struck through by their own lines", async ({ page }) => {
-    /** Each of the two return paths has a masking plate behind its label so
-     *  the dashes do not run through the words. Both plates were 4px narrower
-     *  than the text they covered, which struck out the last two characters
-     *  of each. Measured rather than eyeballed — at this size it looks fine
-     *  right up until someone tries to read it. */
-    const overruns = await page.getByTestId("system-map").evaluate((svg) => {
-      const bad: string[] = [];
-      for (const text of Array.from(svg.querySelectorAll("text"))) {
-        const content = text.textContent ?? "";
-        if (!content.includes("cache hit") && !content.includes("INSUFFICIENT")) continue;
-        const plate = text.previousElementSibling as SVGRectElement | null;
-        if (!plate) {
-          bad.push(`${content}: no masking plate`);
-          continue;
-        }
-        const box = (text as SVGTextElement).getBBox();
-        const plateEnd = Number(plate.getAttribute("x")) + Number(plate.getAttribute("width"));
-        if (box.x + box.width > plateEnd) {
-          bad.push(`${content}: text ends at ${box.x + box.width}, plate at ${plateEnd}`);
-        }
-      }
-      return bad;
-    });
-    expect(overruns, "a dashed line runs through its own label").toEqual([]);
+  test("the dashed-path labels mask their own lines at any font width", async ({ page }) => {
+    /** Each of the two return paths crosses its own label. The mask used to be
+     *  a fixed-width plate, which was wrong twice: 4px too short on macOS, and
+     *  then — once widened to fit there — too short again on Linux and at
+     *  mobile scale, because a plate sized in user units cannot track text
+     *  whose width depends on the font the platform resolved. CI caught what a
+     *  local run could not.
+     *
+     *  `paint-order: stroke` masks with the shape of the glyphs themselves, so
+     *  this asserts the technique rather than a measurement that is only true
+     *  on one machine. */
+    const labels = await page.getByTestId("system-map").evaluate((svg) =>
+      Array.from(svg.querySelectorAll("text"))
+        .filter((t) => {
+          const c = t.textContent ?? "";
+          return c.includes("cache hit") || c.includes("INSUFFICIENT");
+        })
+        .map((t) => {
+          const style = window.getComputedStyle(t);
+          return {
+            text: (t.textContent ?? "").trim().slice(0, 24),
+            paintOrder: style.paintOrder,
+            strokeWidth: Number.parseFloat(style.strokeWidth),
+            stroke: style.stroke,
+          };
+        }),
+    );
+
+    expect(labels.length, "the two return-path labels were not found").toBe(2);
+    for (const label of labels) {
+      expect(label.paintOrder, `${label.text}: no stroke-first paint order`).toContain("stroke");
+      expect(label.strokeWidth, `${label.text}: halo too thin to mask a line`).toBeGreaterThan(1);
+      expect(label.stroke, `${label.text}: halo is not painted`).not.toBe("none");
+    }
   });
 
   test("every decision listed here resolves to a real record", async ({ page }) => {

@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-29T23:56:12.623Z",
+  "generatedAt": "2026-08-30T00:03:30.827Z",
   "repo": "224Sand/sandscope",
-  "sha": "08d3847",
-  "commits": 88,
+  "sha": "e8e2df1",
+  "commits": 89,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:19:50+05:30",
+  "lastCommit": "2026-08-30T05:26:24+05:30",
   "tests": {
     "total": 393,
     "files": 21
@@ -12,17 +12,17 @@
   "lines": {
     "agent": 5517,
     "tests": 3954,
-    "web": 3712,
+    "web": 3893,
     "tooling": 3114
   },
   "docs": {
     "files": "47",
-    "lines": 3636
+    "lines": 3638
   },
   "requirements": {
     "total": 58,
-    "done": 55,
-    "planned": 3,
+    "done": 56,
+    "planned": 2,
     "rows": [
       {
         "id": "VIS-001",
@@ -84,9 +84,9 @@
         "id": "NFR-004",
         "requirement": "Public endpoint survives untrusted traffic without unbounded cost",
         "story": "S2-GUARD",
-        "test": "test_rate_limiter_denies_when_store_unreachable",
-        "sprint": "2",
-        "status": "Planned"
+        "test": "apps/web/src/lib/ratelimit.test.ts",
+        "sprint": "2,9",
+        "status": "Done"
       },
       {
         "id": "NFR-005",
@@ -491,7 +491,7 @@
     ]
   },
   "defects": {
-    "total": 25,
+    "total": 26,
     "severityOne": 7,
     "entries": [
       {
@@ -718,6 +718,15 @@
         "description": "The local e2e suite reported green against a STALE build twice: Playwright's `reuseExistingServer: !process.env.CI` reused a server left running from an earlier build, so the run exercised the previous binary. It masked a fix that had not been rebuilt, then masked D-024 entirely — CI caught that one only because it builds from scratch",
         "cause": "Playwright's documented default optimises for iteration speed and assumes the running server matches the working tree. For a suite whose whole purpose is to catch what `next build` cannot see, a local pass that does not exercise the current code is worse than no local run, because it is believed",
         "status": "Fixed"
+      },
+      {
+        "id": "D-026",
+        "found": "Sprint 9",
+        "sprint": "9",
+        "severity": "3",
+        "description": "Two labels on the public architecture diagram were struck through by the dashed lines they sat on. The masking plates were sized in SVG user units, so a width that covered the text on macOS was too short on Linux and at mobile scale — the fix for the first version broke on a platform the first version happened to pass on",
+        "cause": "A mask sized in absolute units cannot track text whose width depends on the font the platform resolved. Only reachable by rendering on more than one platform, which is what the mobile project and Linux CI now do",
+        "status": "Fixed, guarded"
       }
     ]
   },

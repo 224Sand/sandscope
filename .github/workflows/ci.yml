@@ -74,6 +74,12 @@ jobs:
       # explains the full reasoning).
       - name: Type check the e2e suite
         run: npm run typecheck:e2e
+      # Unit tests for the edge layer's library code. The rate limiter's most
+      # important behaviour -- failing CLOSED when its store is unreachable
+      # (ADR-0007) -- cannot be reached from a browser without arranging a real
+      # outage, so it is asserted here rather than in the e2e suite.
+      - name: Unit tests
+        run: npm run test:unit
       - name: Build
         run: npm run build
       - name: Audit dependencies

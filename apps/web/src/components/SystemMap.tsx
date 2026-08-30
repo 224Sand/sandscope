@@ -198,21 +198,44 @@ export default function SystemMap() {
         })}
 
         {/* The two paths that never reach a provider. Each label sits in its own
-            lane on the line it describes, masked by a panel-coloured plate so the
-            dashes do not run through the words.
-            Both plates were 4px too short to cover their text, so the dashes ran
-            through the last two characters of each label. Measured rather than
-            eyeballed, and asserted in the e2e suite, because a 4px overlap is
-            exactly the kind of thing that looks fine until someone reads it. */}
-        <path d="M480 34 L455 34 L455 286 L120 286 L120 130" fill="none" stroke="var(--grounded)"
-              strokeWidth="1" strokeDasharray="3 3" markerEnd="url(#a)" />
-        <rect x={128} y={278} width={174} height={15} rx={3} fill="var(--surface)" />
-        <text x={134} y={289} {...sub} fill="var(--grounded)">cache hit — no provider call</text>
+            lane on the line it describes, and masks the dashes with a halo
+            painted from its own glyphs rather than with a fixed-width plate.
 
-        <path d="M240 172 L215 172 L215 314 L120 314 L120 142" fill="none" stroke="var(--refused)"
-              strokeWidth="1" strokeDasharray="3 3" markerEnd="url(#a)" />
-        <rect x={128} y={306} width={202} height={15} rx={3} fill="var(--surface)" />
-        <text x={134} y={317} {...sub} fill="var(--refused)">INSUFFICIENT — nothing is emitted</text>
+            The plate version was wrong twice. First it was 4px too short and
+            the dashes struck through the last two characters. Widening it fixed
+            that on macOS and broke it on Linux and at mobile scale, because a
+            plate sized in user units cannot track text whose width depends on
+            the font the platform actually resolved — CI caught what a local run
+            could not. `paintOrder: stroke` draws a background-coloured stroke
+            under the fill, so the mask is the shape of the text at whatever
+            width it renders. */}
+        {(() => {
+          const halo = {
+            stroke: "var(--surface)",
+            // 5 rather than 3: the halo extends half its width either side of
+            // each glyph, so it must be wide enough to close the SPACES
+            // between words too. At 3 the dashes showed through the gaps and
+            // read as hyphens — "cache-hit — no-provider-call".
+            strokeWidth: 5,
+            strokeLinejoin: "round",
+            paintOrder: "stroke",
+          } as const;
+          return (
+            <>
+              <path d="M480 34 L455 34 L455 286 L120 286 L120 130" fill="none" stroke="var(--grounded)"
+                    strokeWidth="1" strokeDasharray="3 3" markerEnd="url(#a)" />
+              <text x={134} y={289} {...sub} {...halo} fill="var(--grounded)">
+                cache hit — no provider call
+              </text>
+
+              <path d="M240 172 L215 172 L215 314 L120 314 L120 142" fill="none" stroke="var(--refused)"
+                    strokeWidth="1" strokeDasharray="3 3" markerEnd="url(#a)" />
+              <text x={134} y={317} {...sub} {...halo} fill="var(--refused)">
+                INSUFFICIENT — nothing is emitted
+              </text>
+            </>
+          );
+        })()}
       </svg>
 
       {/* aria-live so a screen-reader user learns the selection did something.

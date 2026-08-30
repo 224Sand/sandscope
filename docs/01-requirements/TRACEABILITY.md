@@ -35,7 +35,7 @@ directions.
 | NFR-001 | Effort directed at delivery, not deliberation | S0-01 | Sprint velocity vs. committed points | 0 | Done |
 | NFR-002 | Zero infrastructure cost | S0-04 | `test_no_paid_service_in_deploy_manifest` | 0,6,7 | Done |
 | NFR-003 | First meaningful paint under 2.5s on cold 4G | S4-PERF | Lighthouse budget assertion in CI | 5 | Planned |
-| NFR-004 | Public endpoint survives untrusted traffic without unbounded cost | S2-GUARD | `test_rate_limiter_denies_when_store_unreachable` | 2 | Planned |
+| NFR-004 | Public endpoint survives untrusted traffic without unbounded cost | S2-GUARD | `apps/web/src/lib/ratelimit.test.ts` | 2,9 | Done |
 | NFR-005 | Runtime holds no persistent local state | S1-DATA | `TestNoLocalState::test_serving_requests_writes_nothing_to_the_package_directory` | 1,9 | Done |
 | DR-001 | Visual quality meets apple.com product-page standard | S4-UX | `apps/web/e2e/motion_and_reduced_motion.spec.ts` | 5,9 | Done |
 | FR-001 | Product name changeable without code changes | S0-06 | `check-config.mjs` slug-derivation invariant | 0 | Done |
