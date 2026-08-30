@@ -17,6 +17,7 @@ import { execFileSync } from "node:child_process";
 const scripts = [
   "../../scripts/derive-delivery.mjs",
   "../../scripts/derive-surfaces.mjs",
+  "../../scripts/derive-council.mjs",
 ];
 
 if (scripts.every((s) => existsSync(s))) {

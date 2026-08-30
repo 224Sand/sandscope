@@ -112,7 +112,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {[
               ["/story", "Story"],
               ["/console", "Console"],
+              ["/data", "Data"],
               ["/architecture", "Architecture"],
+              ["/council", "Council"],
               ["/reliability", "Reliability"],
               ["/delivery", "Delivery"],
               [`https://github.com/${config.repo}`, "Source"],

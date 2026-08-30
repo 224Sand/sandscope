@@ -1,0 +1,308 @@
+{
+  "roles": [
+    {
+      "role": "Business Analyst (BA)",
+      "owns": "Requirements elicitation, as-is/to-be flows, acceptance criteria",
+      "produces": "BRD, user stories, process flows, traceability matrix"
+    },
+    {
+      "role": "Product Manager (PM)",
+      "owns": "Vision, scope, prioritisation, success metrics",
+      "produces": "PRD, roadmap, release notes"
+    },
+    {
+      "role": "Technical Program Manager (TPM)",
+      "owns": "Charter, sprint plan, RACI, risks, dependencies, status",
+      "produces": "This charter, sprint plans, risk register, status reports"
+    },
+    {
+      "role": "Scrum Master (SM)",
+      "owns": "Ceremonies, impediment removal, velocity",
+      "produces": "Sprint reviews, retrospectives, burndown"
+    },
+    {
+      "role": "Solutions Architect / FDE",
+      "owns": "System design, integration design, deployment topology",
+      "produces": "Tech spec, ADRs, architecture diagrams, C4 models"
+    },
+    {
+      "role": "UX/UI Designer",
+      "owns": "Design system, layout, motion, accessibility",
+      "produces": "Design tokens, wireframes, motion spec"
+    },
+    {
+      "role": "Software Engineer (DEV)",
+      "owns": "Implementation",
+      "produces": "Source code"
+    },
+    {
+      "role": "SDET",
+      "owns": "Automated test suites",
+      "produces": "Unit, integration, contract, e2e tests"
+    },
+    {
+      "role": "QA Lead",
+      "owns": "Test strategy, Definition of Done, defect triage",
+      "produces": "Test plan, test report, defect log"
+    },
+    {
+      "role": "DevOps / SRE",
+      "owns": "CI/CD, environments, observability, incident response",
+      "produces": "Pipelines, Dockerfile, runbooks, SLOs"
+    },
+    {
+      "role": "Application Security Engineer (AppSec)",
+      "owns": "Threat model, SAST, DAST, dependency and secret scanning, supply chain, penetration testing, security release gate",
+      "produces": "Threat model, security pipelines, SBOM, pen-test findings, security sign-off"
+    },
+    {
+      "role": "Technical Writer",
+      "owns": "User-facing and internal documentation",
+      "produces": "READMEs, API docs, ADR polish"
+    }
+  ],
+  "stakeholders": [
+    {
+      "role": "Executive Sponsor",
+      "when": "Budget, vision, go/no-go, release authority",
+      "authority": "Absolute. Overrides all roles."
+    },
+    {
+      "role": "Product Owner (PO)",
+      "when": "Backlog priority, scope decisions, accept/reject stories",
+      "authority": "Owns the backlog. Sole accepter of stories."
+    },
+    {
+      "role": "Stakeholder / SME",
+      "when": "Domain constraints, business context, external facts",
+      "authority": "Advisory; becomes a requirement once logged."
+    },
+    {
+      "role": "UAT Tester",
+      "when": "Reviewing built increments against acceptance criteria",
+      "authority": "Can reject an increment back to the sprint."
+    },
+    {
+      "role": "Release Authority",
+      "when": "Production deployment approval",
+      "authority": "Deployment is blocked without it."
+    }
+  ],
+  "artifacts": [
+    {
+      "number": 1,
+      "title": "The Sprint 2 gate reported 0% false-answer rate. The real rate was 56.6%.",
+      "citations": [
+        {
+          "label": "D-001",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "The refusal gate marked 150 of 265 unanswerable questions as answerable — a 56.6% false-answer rate — on a sample where the Sprint 2 gate had reported 0%.",
+      "reactions": [
+        {
+          "role": "QA Lead",
+          "text": "The test set was written by the implementer, on 22 questions, and every one of"
+        },
+        {
+          "role": "Business Analyst",
+          "text": "A 0% error rate reported at a sprint gate is the kind of number that"
+        },
+        {
+          "role": "Technical Program Manager",
+          "text": "This is the one that actually changes how I'd read every other"
+        }
+      ],
+      "diverged": "QA and BA read this as a process gap in two different places (test"
+    },
+    {
+      "number": 2,
+      "title": "The semantic cache served a stale answer to a correction retry.",
+      "citations": [
+        {
+          "label": "D-006",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "A retry meant to correct an uncited answer instead received the previous, uncited answer from cache — similarity 0.886 against a 0.60 threshold.",
+      "reactions": [
+        {
+          "role": "Solutions Architect / FDE",
+          "text": "Both components — the retry logic and the cache — had correct,"
+        },
+        {
+          "role": "Developer",
+          "text": "From inside the retry code, this looks like it should have worked — the retry"
+        },
+        {
+          "role": "QA Lead",
+          "text": "This is the sharpest example in the whole log of why running the assembled system"
+        }
+      ],
+      "diverged": "the Architect and QA agree on the root cause but draw different"
+    },
+    {
+      "number": 3,
+      "title": "The console displayed output the governance layer had refused to emit.",
+      "citations": [
+        {
+          "label": "D-009",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "Rendering ignored the run outcome and displayed an assessment the system had already decided not to emit.",
+      "reactions": [
+        {
+          "role": "Application Security Engineer",
+          "text": "This is a governance-bypass bug wearing a UI-bug costume."
+        },
+        {
+          "role": "UX / UI Designer",
+          "text": "From a pure \"does this look right\" standpoint the page rendered fine —"
+        },
+        {
+          "role": "QA Lead",
+          "text": "Confirms the Designer's point from the test side — this wouldn't be caught by"
+        }
+      ],
+      "diverged": "none, really — this is a case where three roles converge on the same"
+    },
+    {
+      "number": 4,
+      "title": "Two guards that were built to confirm, not to detect.",
+      "citations": [
+        {
+          "label": "D-013",
+          "href": "DEFECT_LOG.md"
+        },
+        {
+          "label": "D-015",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "The rate-limit pen test sent 8 requests against a limit of 20 and accepted `all(c >= 400)` as a pass — so a completely dead service reported as correctly rate limited. The README figure-checker searched for values as substrings of the whole file, so `Commits | 54` silently changing to `99` still passed, because \"54\" also appears elsewhere in the same document.",
+      "reactions": [
+        {
+          "role": "QA Lead",
+          "text": "Both of these are the same defect, twice, in the same sprint, written by the same"
+        },
+        {
+          "role": "Scrum Master",
+          "text": "This is a process-health signal more than a testing one. The project's own"
+        },
+        {
+          "role": "Developer",
+          "text": "Both bugs are easy to write by accident — a loose assertion, a naive string"
+        }
+      ],
+      "diverged": "QA and Developer treat this as a technique problem (test the"
+    },
+    {
+      "number": 5,
+      "title": "Sprints 6 and 7 were worked and shipped without ever being opened.",
+      "citations": [
+        {
+          "label": "D-016",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "No planning ceremony, no plan document — the sprint numbers existed only inside defect-log entries — and a Sprint 5 retrospective had already committed, in writing, to raising exactly this as an impediment if it happened. It happened anyway.",
+      "reactions": [
+        {
+          "role": "Scrum Master",
+          "text": "This is the one I'd flag hardest. It's not that the process broke — it's"
+        },
+        {
+          "role": "Technical Program Manager",
+          "text": "From a planning standpoint, work that happens outside a named"
+        },
+        {
+          "role": "Executive Sponsor",
+          "text": "The part I'd actually want to know: was the *work* good despite the"
+        }
+      ],
+      "diverged": "Scrum Master reads this as the more serious failure (a broken"
+    },
+    {
+      "number": 6,
+      "title": "ADR-0003 recorded a pricing claim that was never checked.",
+      "citations": [
+        {
+          "label": "D-017",
+          "href": "DEFECT_LOG.md"
+        },
+        {
+          "label": "ADR-0003",
+          "href": "../03-architecture/adr/0003-agent-runtime-on-hugging-face-spaces.md"
+        },
+        {
+          "label": "ADR-0012",
+          "href": "../03-architecture/adr/0012-agent-runtime-on-northflank.md"
+        }
+      ],
+      "what": "ADR-0003 placed the agent runtime on Hugging Face Docker Spaces \"because it is free.\" Docker Spaces moved behind a paid plan; only Static Spaces remain free, and a Static Space can't run the FastAPI runtime. Three sprints of deployment work targeted a platform that turned out to be impossible at $0.",
+      "reactions": [
+        {
+          "role": "Solutions Architect / FDE",
+          "text": "The choice itself was reasonable at the time it was made. The"
+        },
+        {
+          "role": "Executive Sponsor",
+          "text": "Zero infrastructure cost was a constraint I set at the very start of"
+        },
+        {
+          "role": "DevOps / SRE",
+          "text": "From where I sit, the practical cost wasn't the ADR being wrong — ADRs get"
+        }
+      ],
+      "diverged": "the Architect frames this as a documentation discipline problem"
+    },
+    {
+      "number": 7,
+      "title": "CI never built the web app; a major framework bump reported 10/10 green while broken.",
+      "citations": [
+        {
+          "label": "D-018",
+          "href": "DEFECT_LOG.md"
+        }
+      ],
+      "what": "No CI job had ever run `next build`. A Dependabot PR taking Next.js from 15 to 16 reported every check green while the production build failed on all seven pages (Turbopack refuses an import path that Webpack tolerated).",
+      "reactions": [
+        {
+          "role": "QA Lead",
+          "text": "This is the purest instance in the log of a check that measures its own existence"
+        },
+        {
+          "role": "DevOps / SRE",
+          "text": "From a pipeline-design standpoint, this is a coverage gap that's invisible"
+        },
+        {
+          "role": "Developer",
+          "text": "As the person who'd have merged that PR on the strength of a green check suite,"
+        }
+      ],
+      "diverged": "no real disagreement here either — all three converge on \"the"
+    },
+    {
+      "number": 8,
+      "title": "A three-state chip design, decided this session, over the false-answer budget bar.",
+      "citations": [],
+      "what": "`apps/web/src/components/BudgetBar.tsx` originally rendered a two-state chip (`clear`/`not clear` of budget) for the false-answer rate. The measured rate was 4.7% against a 5% budget — passing on the point estimate while its 95% confidence interval (2.9–7.6) crossed the budget line. The two-state chip read \"within budget\" for a result that was genuinely more ambiguous than that.",
+      "reactions": [
+        {
+          "role": "Business Analyst",
+          "text": "\"Within budget\" and \"the confidence interval is clear of budget\" are two"
+        },
+        {
+          "role": "UX / UI Designer",
+          "text": "From a pure readability standpoint, a three-state chip is a harder design"
+        },
+        {
+          "role": "Technical Program Manager",
+          "text": "This one didn't cost a sprint or get logged as a defect — it was"
+        }
+      ],
+      "diverged": "BA and Designer are in real tension here — BA wants maximum"
+    }
+  ]
+}

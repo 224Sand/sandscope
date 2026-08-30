@@ -86,6 +86,8 @@ directions.
 | FR-028 | Trained, calibrated evidence-sufficiency classifier | S3-MODEL | `TestTheClassifierIsNotInTheLivePath::test_the_evidence_gate_does_not_import_the_classifier` | 3,9 | Done |
 | FR-029 | Cross-encoder re-ranker trained in PyTorch, served via ONNX | S3-RERANK | `test_onnx_matches_torch_on_the_recorded_sample` | 3 | Done |
 | FR-030 | Approximate nearest neighbour benchmark | S3-ANN | `TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one` | 3,9 | Done |
+| FR-031 | The synthetic dataset published in full | S9-DATA | `apps/web/e2e/data_and_council.spec.ts`, `TestDatasetSummaryIsCurrent` | 9 | Done |
+| FR-032 | The governance record published | S9-GOV | `apps/web/e2e/data_and_council.spec.ts` | 9 | Done |
 
 ---
 
@@ -104,7 +106,7 @@ directions.
 | 8 Release | Hardening, deployment | 2 |
 
 Counts are per sprint; a requirement satisfied across two sprints is counted in
-each, so the column sums above the 58 unique requirements.
+each, so the column sums above the 60 unique requirements.
 
 ## Orphan check
 

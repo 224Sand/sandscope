@@ -1,0 +1,447 @@
+{
+  "corpus": {
+    "byKind": {
+      "arch": 2,
+      "pm": 4,
+      "pol": 4,
+      "rb": 9
+    },
+    "chunks": 87,
+    "documents": 19,
+    "files": [
+      {
+        "chunks": 5,
+        "id": "arch-deployment-and-change-flow",
+        "title": "Deployment topology and change flow",
+        "words": 275
+      },
+      {
+        "chunks": 4,
+        "id": "arch-estate-overview",
+        "title": "Estate overview and dependency topology",
+        "words": 245
+      },
+      {
+        "chunks": 6,
+        "id": "pm-2026-04-pricing-config-rollout",
+        "title": "Pricing rounding change applied to all regions at once",
+        "words": 290
+      },
+      {
+        "chunks": 5,
+        "id": "pm-2026-05-orders-db-saturation",
+        "title": "Checkout unavailable for 34 minutes \u2014 orders-db pool exhaustion",
+        "words": 319
+      },
+      {
+        "chunks": 5,
+        "id": "pm-2026-06-sessions-cache-flush",
+        "title": "Latency spike after sessions-cache key prefix change",
+        "words": 283
+      },
+      {
+        "chunks": 5,
+        "id": "pm-2026-07-fraud-scoring-restart-loop",
+        "title": "fraud-scoring restart loop masked a memory leak for nine days",
+        "words": 321
+      },
+      {
+        "chunks": 3,
+        "id": "pol-change-management",
+        "title": "Change management and rollback",
+        "words": 192
+      },
+      {
+        "chunks": 4,
+        "id": "pol-change-risk-classification",
+        "title": "Change risk classification",
+        "words": 361
+      },
+      {
+        "chunks": 3,
+        "id": "pol-data-freshness",
+        "title": "Data freshness commitments",
+        "words": 175
+      },
+      {
+        "chunks": 3,
+        "id": "pol-incident-severity",
+        "title": "Incident severity and paging policy",
+        "words": 256
+      },
+      {
+        "chunks": 5,
+        "id": "rb-cache-stampede",
+        "title": "Cache stampede on sessions-cache",
+        "words": 355
+      },
+      {
+        "chunks": 4,
+        "id": "rb-change-rollback",
+        "title": "Rolling back a production change",
+        "words": 283
+      },
+      {
+        "chunks": 5,
+        "id": "rb-database-connection-pool",
+        "title": "Connection pool exhaustion on orders-db",
+        "words": 387
+      },
+      {
+        "chunks": 4,
+        "id": "rb-memory-pressure",
+        "title": "Heap growth and collection pauses",
+        "words": 370
+      },
+      {
+        "chunks": 5,
+        "id": "rb-query-amplification",
+        "title": "Query amplification after deploy",
+        "words": 298
+      },
+      {
+        "chunks": 5,
+        "id": "rb-search-shard-imbalance",
+        "title": "Search shard imbalance on catalog-search",
+        "words": 306
+      },
+      {
+        "chunks": 5,
+        "id": "rb-stream-consumer-lag",
+        "title": "Consumer group lag on events-bus",
+        "words": 336
+      },
+      {
+        "chunks": 5,
+        "id": "rb-timeout-and-retry",
+        "title": "Synchronous timeout cascade",
+        "words": 383
+      },
+      {
+        "chunks": 6,
+        "id": "rb-tls-certificate",
+        "title": "TLS certificate expiry at the edge",
+        "words": 324
+      }
+    ],
+    "words": 5759
+  },
+  "estate": {
+    "byTier": {
+      "0": 7,
+      "1": 6,
+      "2": 4,
+      "3": 2
+    },
+    "dependencies": 27,
+    "region": [
+      "eu-west-1"
+    ],
+    "rows": [
+      {
+        "id": "svc-edge-gateway",
+        "name": "edge-gateway",
+        "runtime": "go1.23",
+        "team": "Platform Edge",
+        "tier": 0
+      },
+      {
+        "id": "svc-checkout-api",
+        "name": "checkout-api",
+        "runtime": "java21",
+        "team": "Commerce",
+        "tier": 0
+      },
+      {
+        "id": "svc-payments-gateway",
+        "name": "payments-gateway",
+        "runtime": "java21",
+        "team": "Payments",
+        "tier": 0
+      },
+      {
+        "id": "svc-identity",
+        "name": "identity-service",
+        "runtime": "go1.23",
+        "team": "Identity",
+        "tier": 0
+      },
+      {
+        "id": "svc-catalog-api",
+        "name": "catalog-api",
+        "runtime": "node20",
+        "team": "Commerce",
+        "tier": 0
+      },
+      {
+        "id": "svc-order-orchestrator",
+        "name": "order-orchestrator",
+        "runtime": "java21",
+        "team": "Commerce",
+        "tier": 1
+      },
+      {
+        "id": "svc-inventory",
+        "name": "inventory-service",
+        "runtime": "go1.23",
+        "team": "Supply",
+        "tier": 1
+      },
+      {
+        "id": "svc-pricing",
+        "name": "pricing-engine",
+        "runtime": "rust1.82",
+        "team": "Commerce",
+        "tier": 1
+      },
+      {
+        "id": "svc-fraud-scoring",
+        "name": "fraud-scoring",
+        "runtime": "python3.12",
+        "team": "Risk",
+        "tier": 1
+      },
+      {
+        "id": "svc-notifications",
+        "name": "notification-service",
+        "runtime": "node20",
+        "team": "Growth",
+        "tier": 1
+      },
+      {
+        "id": "svc-search-indexer",
+        "name": "search-indexer",
+        "runtime": "python3.12",
+        "team": "Commerce",
+        "tier": 2
+      },
+      {
+        "id": "svc-recommendations",
+        "name": "recommendation-service",
+        "runtime": "python3.12",
+        "team": "Growth",
+        "tier": 2
+      },
+      {
+        "id": "svc-config",
+        "name": "config-service",
+        "runtime": "go1.23",
+        "team": "Platform Edge",
+        "tier": 2
+      },
+      {
+        "id": "svc-orders-db",
+        "name": "orders-db",
+        "runtime": "postgres16",
+        "team": "Data Platform",
+        "tier": 0
+      },
+      {
+        "id": "svc-sessions-cache",
+        "name": "sessions-cache",
+        "runtime": "redis7",
+        "team": "Data Platform",
+        "tier": 0
+      },
+      {
+        "id": "svc-events-bus",
+        "name": "events-bus",
+        "runtime": "kafka3.8",
+        "team": "Data Platform",
+        "tier": 1
+      },
+      {
+        "id": "svc-catalog-search",
+        "name": "catalog-search",
+        "runtime": "opensearch2",
+        "team": "Data Platform",
+        "tier": 2
+      },
+      {
+        "id": "svc-analytics-etl",
+        "name": "analytics-etl",
+        "runtime": "python3.12",
+        "team": "Data Platform",
+        "tier": 3
+      },
+      {
+        "id": "svc-reporting-batch",
+        "name": "reporting-batch",
+        "runtime": "python3.12",
+        "team": "Data Platform",
+        "tier": 3
+      }
+    ],
+    "runtimes": [
+      "go1.23",
+      "java21",
+      "kafka3.8",
+      "node20",
+      "opensearch2",
+      "postgres16",
+      "python3.12",
+      "redis7",
+      "rust1.82"
+    ],
+    "services": 19,
+    "teams": [
+      "Commerce",
+      "Data Platform",
+      "Growth",
+      "Identity",
+      "Payments",
+      "Platform Edge",
+      "Risk",
+      "Supply"
+    ]
+  },
+  "faults": [
+    {
+      "id": "fault-pool-exhaustion",
+      "name": "Connection pool exhaustion",
+      "runbook": "rb-database-connection-pool",
+      "severity": 1,
+      "signals": [
+        "db.pool.wait_ms",
+        "db.pool.available",
+        "db.active_connections"
+      ],
+      "summary": "Callers hold connections longer than the pool can recycle them. Wait time climbs first, available connections reach zero, and every upstream caller then times out together."
+    },
+    {
+      "id": "fault-cache-stampede",
+      "name": "Cache stampede after mass eviction",
+      "runbook": "rb-cache-stampede",
+      "severity": 2,
+      "signals": [
+        "cache.hit_ratio",
+        "cache.evictions_per_s",
+        "cache.memory_used_ratio"
+      ],
+      "summary": "A mass eviction empties the working set, every request misses at once, and the traffic that the cache was absorbing lands on the origin in a single wave."
+    },
+    {
+      "id": "fault-consumer-lag",
+      "name": "Consumer group lag growth",
+      "runbook": "rb-stream-consumer-lag",
+      "severity": 2,
+      "signals": [
+        "stream.consumer.lag",
+        "stream.consumer.throughput"
+      ],
+      "summary": "Consumers fall behind producers. Nothing errors, so alerting on error rate sees a healthy system while downstream data quietly goes stale."
+    },
+    {
+      "id": "fault-memory-leak",
+      "name": "Heap growth with escalating pause time",
+      "runbook": "rb-memory-pressure",
+      "severity": 2,
+      "signals": [
+        "process.memory.rss_mb",
+        "runtime.gc.pause_ms",
+        "process.restarts"
+      ],
+      "summary": "Resident memory climbs monotonically across a deploy window. Collection pauses lengthen as the heap fills, and the process is eventually restarted by the platform, which resets the graph and hides the trend."
+    },
+    {
+      "id": "fault-timeout-cascade",
+      "name": "Synchronous timeout cascade",
+      "runbook": "rb-timeout-and-retry",
+      "severity": 1,
+      "signals": [
+        "http.client.timeout_rate",
+        "http.client.p99_ms"
+      ],
+      "summary": "One slow synchronous dependency occupies caller threads until the caller itself runs out. Retries multiply the load on the already-slow dependency, so the system degrades faster the harder it tries to recover."
+    },
+    {
+      "id": "fault-cert-expiry",
+      "name": "TLS certificate expiry",
+      "runbook": "rb-tls-certificate",
+      "severity": 1,
+      "signals": [
+        "tls.handshake_failures_per_s",
+        "tls.certificate_days_remaining"
+      ],
+      "summary": "A certificate reaches its expiry. Failure is total and instant at the moment of expiry rather than gradual, which is what distinguishes it from a capacity problem on the same graph."
+    },
+    {
+      "id": "fault-n-plus-one",
+      "name": "Query amplification after deploy",
+      "runbook": "rb-query-amplification",
+      "severity": 2,
+      "signals": [
+        "db.queries_per_request",
+        "db.query_rate"
+      ],
+      "summary": "Request volume is unchanged but query volume is not. A change replaced a batched read with a per-item read, so cost scales with result size rather than with traffic."
+    },
+    {
+      "id": "fault-shard-imbalance",
+      "name": "Search shard imbalance",
+      "runbook": "rb-search-shard-imbalance",
+      "severity": 3,
+      "signals": [
+        "search.query.p99_ms",
+        "search.shard.max_docs_ratio"
+      ],
+      "summary": "Documents concentrate on one shard. Mean latency stays acceptable and the tail does not, so a dashboard built on averages shows nothing wrong."
+    }
+  ],
+  "questions": {
+    "answerable": 396,
+    "mechanisms": [
+      {
+        "count": 214,
+        "example": "what is the connection pool ceiling for events-bus",
+        "id": "property_documented_for_another_entity",
+        "label": "unanswerable",
+        "note": "The sharpest trick in the set. Takes a property the corpus documents for ONE service and asks it of a different service. Retrieval happily returns the passage about the wrong service, so a weak system answers confidently with a real number that is about something else."
+      },
+      {
+        "count": 152,
+        "example": "cache.evictions_per_s is climbing on sessions-cache, what is happening",
+        "id": "symptom_from_fault_signal",
+        "label": "answerable",
+        "note": "Takes a real metric from a fault pattern and asks about it the way an on-call engineer would. Answerable because the runbook for that fault is in the corpus."
+      },
+      {
+        "count": 127,
+        "example": "what are the environments",
+        "id": "question_from_any_section_heading",
+        "label": "answerable",
+        "note": "Turns a heading in a document into the question that heading answers. Answerable by construction \u2014 the section IS the answer."
+      },
+      {
+        "count": 93,
+        "example": "what was the impact of pricing rounding change applied to all regions at once",
+        "id": "section_from_runbook_heading",
+        "label": "answerable",
+        "note": "The same idea narrowed to runbooks, where headings are procedural steps."
+      },
+      {
+        "count": 86,
+        "example": "what is the expected process.memory.rss_mb baseline on edge-gateway",
+        "id": "entity_cannot_exhibit_this_fault",
+        "label": "unanswerable",
+        "note": "Asks about a fault a given service physically cannot have \u2014 a memory-leak metric on a gateway that does not run that way. Plausible-sounding, ungrounded."
+      },
+      {
+        "count": 24,
+        "example": "what severity is a tier 0 service being unavailable",
+        "id": "policy_value_lookup",
+        "label": "answerable",
+        "note": "Asks for a specific number a policy states \u2014 a severity level, an escalation timer. The hardest answerable kind, because a near-miss reads as correct."
+      },
+      {
+        "count": 19,
+        "example": "the disk is full on the host, what should I do",
+        "id": "topic_absent_from_corpus",
+        "label": "unanswerable",
+        "note": "Topics deliberately left out of the corpus entirely, listed in GAPS.md. Absence is VERIFIED against the text, not assumed."
+      }
+    ],
+    "total": 715,
+    "unanswerable": 319
+  }
+}

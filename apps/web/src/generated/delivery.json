@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-08-30T00:13:27.105Z",
+  "generatedAt": "2026-08-30T20:32:15.390Z",
   "repo": "224Sand/sandscope",
-  "sha": "a540d79",
-  "commits": 91,
+  "sha": "4c091bd",
+  "commits": 92,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:37:13+05:30",
+  "lastCommit": "2026-08-30T05:44:15+05:30",
   "tests": {
-    "total": 410,
-    "files": 22
+    "total": 414,
+    "files": 23
   },
   "lines": {
     "agent": 5737,
-    "tests": 4166,
-    "web": 3893,
-    "tooling": 3114
+    "tests": 4224,
+    "web": 4319,
+    "tooling": 3384
   },
   "docs": {
     "files": "47",
-    "lines": 3638
+    "lines": 3642
   },
   "requirements": {
-    "total": 58,
-    "done": 58,
+    "total": 60,
+    "done": 60,
     "planned": 0,
     "rows": [
       {
@@ -486,6 +486,22 @@
         "story": "S3-ANN",
         "test": "TestRecallAtK::test_exact_search_against_its_own_ground_truth_is_always_one",
         "sprint": "3,9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-031",
+        "requirement": "The synthetic dataset published in full",
+        "story": "S9-DATA",
+        "test": "apps/web/e2e/data_and_council.spec.ts, TestDatasetSummaryIsCurrent",
+        "sprint": "9",
+        "status": "Done"
+      },
+      {
+        "id": "FR-032",
+        "requirement": "The governance record published",
+        "story": "S9-GOV",
+        "test": "apps/web/e2e/data_and_council.spec.ts",
+        "sprint": "9",
         "status": "Done"
       }
     ]

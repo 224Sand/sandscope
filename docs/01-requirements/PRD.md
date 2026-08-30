@@ -93,6 +93,8 @@ starting point and it is not evidence that any threshold is correct.
 | **FR-028** | Trained evidence-sufficiency classifier | Calibrated probabilistic classifier over engineered retrieval features, measured against the heuristic baseline and reported either way | Must |
 | **FR-029** | Cross-encoder re-ranker | Fine-tuned offline in PyTorch, exported to ONNX, served without the training framework | Should |
 | **FR-030** | Approximate nearest neighbour benchmark | pgvector HNSW against IVFFlat, exact search and a managed vector store, on recall@k, latency percentiles, build time and memory | Should |
+| **FR-031** | The synthetic dataset published in full | Corpus inventory, the invented estate, the fault patterns, and every question-generation mechanism with a worked example — including what the corpus deliberately omits | Must |
+| **FR-032** | The governance record published | The role charter, the authority model, and every role reaction from the council review, each citing a real artefact | Must |
 
 ### 4.3 Experience surface
 
