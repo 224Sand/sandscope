@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-30T00:03:30.827Z",
+  "generatedAt": "2026-08-30T00:07:13.077Z",
   "repo": "224Sand/sandscope",
-  "sha": "e8e2df1",
-  "commits": 89,
+  "sha": "2e9e4a5",
+  "commits": 90,
   "firstCommit": "2026-08-20T04:21:57+05:30",
-  "lastCommit": "2026-08-30T05:26:24+05:30",
+  "lastCommit": "2026-08-30T05:33:31+05:30",
   "tests": {
     "total": 393,
     "files": 21
@@ -21,8 +21,8 @@
   },
   "requirements": {
     "total": 58,
-    "done": 56,
-    "planned": 2,
+    "done": 57,
+    "planned": 1,
     "rows": [
       {
         "id": "VIS-001",
@@ -76,9 +76,9 @@
         "id": "NFR-003",
         "requirement": "First meaningful paint under 2.5s on cold 4G",
         "story": "S4-PERF",
-        "test": "Lighthouse budget assertion in CI",
-        "sprint": "5",
-        "status": "Planned"
+        "test": "apps/web/e2e/performance_budget.spec.ts",
+        "sprint": "5,9",
+        "status": "Done"
       },
       {
         "id": "NFR-004",

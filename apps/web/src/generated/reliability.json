@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-30T00:02:33.885Z",
-  "sha": "e8e2df1",
+  "generatedAt": "2026-08-30T00:06:24.951Z",
+  "sha": "2e9e4a5",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,7 +90,7 @@
     }
   },
   "defects": {
-    "total": 25,
+    "total": 26,
     "severity1": 7,
     "caughtByReview": 0,
     "rows": [
@@ -293,6 +293,14 @@
         "severity": "2",
         "description": "The local e2e suite reported green against a STALE build twice: Playwright's `reuseExistingServer: !process.env.CI` reused a server left running from an earlier build, so the run exercised the previous binary. It masked a fix that had not been rebuilt, then masked D-024 entirely — CI caught that one only because it builds from scratch",
         "rootCause": "Playwright's documented default optimises for iteration speed and assumes the running server matches the working tree. For a suite whose whole purpose is to catch what `next build` cannot see, a local pass that does not exercise the current code is worse than no local run, because it is believed"
+      },
+      {
+        "id": "D-026",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "3",
+        "description": "Two labels on the public architecture diagram were struck through by the dashed lines they sat on. The masking plates were sized in SVG user units, so a width that covered the text on macOS was too short on Linux and at mobile scale — the fix for the first version broke on a platform the first version happened to pass on",
+        "rootCause": "A mask sized in absolute units cannot track text whose width depends on the font the platform resolved. Only reachable by rendering on more than one platform, which is what the mobile project and Linux CI now do"
       }
     ]
   },
