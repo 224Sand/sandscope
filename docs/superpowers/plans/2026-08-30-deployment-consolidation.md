@@ -2,15 +2,23 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make the public site update itself on push, and delete the duplicate project that has been silently building every commit into somewhere nobody can reach.
+**Goal:** Make `sandscope-web.vercel.app` update itself on every push, by moving it onto the project that already does — rather than teaching the manual project a trick the other one already knows.
 
-**Architecture:** Two Vercel projects exist for one application. `sandscope` is connected to GitHub and auto-deploys, but sits behind an SSO wall so every route 302s to a login page. `sandscope-web` is the public URL with SSO correctly off, but is not connected to the repo — so it only updates when someone runs a CLI command by hand, which is why the site went eight days stale carrying an entire sprint's work. Consolidate onto `sandscope-web`, connect it, then remove the decoy.
+**Architecture:** Two Vercel projects exist for one application, and the one that looked broken is the good one.
+
+`sandscope` is connected to GitHub on `main` and auto-deploys. Its `ssoProtection` is `all_except_custom_domains`, which sounds like a wall and is not: it applies to per-deploy hash URLs and **exempts the clean alias**, so `https://sandscope-five.vercel.app` has been publicly reachable and self-updating the whole time.
+
+`sandscope` — the public URL everyone has — is NOT connected to the repository, so it only updates when someone runs a CLI command by hand. That is why the site went eight days stale carrying an entire sprint's work.
+
+**Correction, recorded because the first version of this plan had it backwards.** The original diagnosis tested `https://sandscope-l0m4blqhm-sand224ai-8475s-projects.vercel.app`, got a 302, and concluded the project was unreachable. That was the hash URL, which IS behind SSO. The alias was never tested. A 302 on one URL was generalised to a project, and the plan was then built on it.
+
+So consolidate the other way: keep the project that already auto-deploys, and move the known alias onto it.
 
 **Tech Stack:** Vercel CLI 59.10.0, the Vercel REST API v9/v10, a Node guard script. No new dependencies.
 
 ## Global Constraints
 
-- **Parts of this need the Vercel dashboard and cannot be automated from here.** Those steps are written as instructions for a human and say so explicitly. Do not fabricate a CLI equivalent.
+- Everything here is doable from the CLI and API. An earlier version of this plan required dashboard access; that was a consequence of the wrong diagnosis, not of the platform.
 - Never print, commit or echo the Vercel token. It lives at `~/Library/Application Support/com.vercel.cli/auth.json`.
 - Deleting a project is irreversible. Task 4 does not run without an explicit confirmation from the person executing it.
 - The public URL `https://sandscope-web.vercel.app` must keep working throughout. If any step breaks it, stop and restore before continuing.
@@ -74,84 +82,118 @@ nobody noticed."
 
 ---
 
-### Task 2: Connect `sandscope-web` to the repository
+### Task 2: Move the known alias onto the auto-deploying project
 
-**This step requires the Vercel dashboard.** Connecting a git repository needs an OAuth grant between Vercel and GitHub; there is no CLI or API path that can establish it from here, and pretending otherwise would waste your time.
+`sandscope` already builds every push and is already public at
+`sandscope-five.vercel.app`. The only thing it lacks is the domain everyone has
+been given. Moving an alias is an API call, so unlike the original version of
+this task it needs no dashboard access.
+
+A domain can only be attached to one project at a time, so this is a remove
+then an add. The gap between them is the only moment the public URL is down —
+seconds, but real, so do it deliberately rather than in a loop.
 
 **Files:**
-- None in the repository. This is a platform change, verified from here.
+- None in the repository. Platform change, verified from here.
 
 **Interfaces:**
 - Consumes: ADR-0014 from Task 1.
-- Produces: `sandscope-web` auto-deploying from `main`. Task 3's guard depends on it.
+- Produces: `sandscope-web.vercel.app` served by the `sandscope` project, auto-deploying from `main`. Task 3's guard depends on it.
 
-- [ ] **Step 1: Connect it (human, in the browser)**
+- [ ] **Step 1: Confirm both projects are currently serving the same commit**
 
-1. Open https://vercel.com/sand224ai-8475s-projects/sandscope-web/settings/git
-2. Under **Connected Git Repository**, connect `224Sand/sandscope`
-3. Set **Production Branch** to `main`
-4. Set **Root Directory** to `apps/web`
-
-Root Directory matters and has bitten this project before: `vercel.json` was moved into `apps/web/` precisely because a dashboard Root Directory setting would not persist. If it refuses to save again, stop — do not work around it — and record what happened, because that is the same platform bug returning.
-
-- [ ] **Step 2: Verify the connection took, from here**
+Moving the alias while the target is behind would publish a regression.
 
 ```bash
 cd /Users/sand224/sandscope
 TOKEN=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.env.HOME+'/Library/Application Support/com.vercel.cli/auth.json','utf8')).token)")
-curl -s -H "Authorization: Bearer $TOKEN" \
-  "https://api.vercel.com/v9/projects/prj_JrUlnSI8FI4tBHz7J7v2FpvhxpUi?teamId=team_7oOLBvkP2XbqNVY1qlKBMi6e" \
-  | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const p=JSON.parse(d);
-console.log('git link :', p.link ? p.link.type+':'+p.link.org+'/'+p.link.repo : 'NOT CONNECTED');
-console.log('branch   :', p.link && p.link.productionBranch);
-console.log('root dir :', p.rootDirectory);
-console.log('sso      :', JSON.stringify(p.ssoProtection));});"
+T=team_7oOLBvkP2XbqNVY1qlKBMi6e
+curl -s -H "Authorization: Bearer $TOKEN" "https://api.vercel.com/v9/projects?teamId=$T" | node -e "
+let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const j=JSON.parse(d);
+for (const p of j.projects.filter(p=>p.name.startsWith('sandscope'))) {
+  const prod=(p.targets&&p.targets.production)||{};
+  console.log(p.name, '| sha', ((prod.meta&&prod.meta.githubCommitSha)||'cli').slice(0,8));
+}});"
+git rev-parse --short HEAD
 ```
 
-Expected: `git link : github:224Sand/sandscope`, `branch : main`, `root dir : apps/web`, `sso : null`.
+Expected: both projects on the same SHA, and that SHA is `HEAD`. If `sandscope`
+is behind, push first and wait for its build before continuing.
 
-If `sso` is anything other than `null`, connecting re-enabled Deployment Protection. Disable it before continuing, or the public URL starts 302ing to a login wall:
+- [ ] **Step 2: Detach the domain from `sandscope-web`**
 
 ```bash
-curl -s -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"ssoProtection": null}' \
-  "https://api.vercel.com/v9/projects/prj_JrUlnSI8FI4tBHz7J7v2FpvhxpUi?teamId=team_7oOLBvkP2XbqNVY1qlKBMi6e" \
-  | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log('sso now:', JSON.stringify(JSON.parse(d).ssoProtection)))"
+cd /Users/sand224/sandscope
+TOKEN=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.env.HOME+'/Library/Application Support/com.vercel.cli/auth.json','utf8')).token)")
+T=team_7oOLBvkP2XbqNVY1qlKBMi6e
+curl -s -X DELETE -H "Authorization: Bearer $TOKEN" \
+  "https://api.vercel.com/v9/projects/sandscope-web/domains/sandscope-web.vercel.app?teamId=$T" \
+  | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>console.log(d||'(empty response = removed)'))"
 ```
 
-- [ ] **Step 3: Prove auto-deploy works with a real push**
+- [ ] **Step 3: Attach it to `sandscope` immediately**
 
-Make a trivial, honest change — do not push an empty commit, because an empty commit does not prove a build ran:
+```bash
+cd /Users/sand224/sandscope
+TOKEN=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.env.HOME+'/Library/Application Support/com.vercel.cli/auth.json','utf8')).token)")
+T=team_7oOLBvkP2XbqNVY1qlKBMi6e
+curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"sandscope-web.vercel.app"}' \
+  "https://api.vercel.com/v10/projects/sandscope/domains?teamId=$T" \
+  | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const r=JSON.parse(d);
+console.log(r.error ? 'ERROR: '+r.error.message : 'attached: '+r.name+' verified='+r.verified);});"
+```
+
+If this errors with the domain still in use, Step 2 did not take — re-run it and
+confirm before retrying. Do NOT leave the domain detached from both.
+
+- [ ] **Step 4: Verify the public URL works and is fresh**
+
+```bash
+for p in / /handover /data /council /architecture /console /reliability /delivery /story; do
+  printf "  %-14s %s\n" "$p" "$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 20 https://sandscope-web.vercel.app$p)"
+done
+curl -s https://sandscope-web.vercel.app/handover | grep -oE '6[0-9]/6[0-9]' | head -1
+```
+
+Expected: nine 200s, and the current requirement count. DNS and edge caches can
+lag a minute; if a route 404s, wait 60s and re-run before concluding anything.
+
+- [ ] **Step 5: Prove auto-deploy now reaches the public URL**
+
+This is the whole point of the task, and it is the one thing worth proving with
+a real push rather than an assertion.
 
 ```bash
 cd /Users/sand224/sandscope
 node scripts/derive-delivery.mjs
 git add apps/web/src/generated/delivery.json
-git commit -m "chore: refresh the derived record to verify auto-deploy"
+git commit -m "chore: refresh the derived record to verify auto-deploy reaches the public URL"
 git push origin main
 ```
 
-- [ ] **Step 4: Watch the deployment appear without running a CLI deploy**
+Then wait and check, without running any CLI deploy:
 
 ```bash
-cd /Users/sand224/sandscope
-SHA=$(git rev-parse --short HEAD)
 for i in $(seq 1 20); do
-  OUT=$(npx vercel ls sandscope-web 2>/dev/null | grep -m1 "Production")
-  echo "$OUT"
-  echo "$OUT" | grep -q "Ready" && break
   sleep 20
+  CODE=$(curl -s -o /dev/null -w '%{http_code}' https://sandscope-web.vercel.app/handover)
+  echo "attempt $i: $CODE"
+  [ "$CODE" = "200" ] && break
 done
-curl -s -o /dev/null -w "public URL: %{http_code}\n" https://sandscope-web.vercel.app/handover
 ```
 
-Expected: a deployment created within a minute or two of the push, without you running `vercel --prod`. If nothing appears after ~7 minutes, the connection did not take — return to Step 1.
+Expected: the deployment appears without anyone running `vercel --prod`. If
+nothing changes after ~7 minutes, the alias is attached but the project's
+production branch is not building — check `git link` and `productionBranch` from
+Task 1's command.
 
-- [ ] **Step 5: Commit nothing; record the result**
+- [ ] **Step 6: Record the outcome in the ADR**
 
-There is nothing to commit here beyond Step 3's push. Note in the ADR whether auto-deploy was confirmed working, with the date.
-
----
+Add the date auto-deploy was confirmed working, and note that
+`sandscope-five.vercel.app` remains as a second alias on the same project.
+Leaving it is harmless — it is the same deployment — and removing it would
+break any link already shared.
 
 ### Task 3: Guard against the site going stale again
 
@@ -307,7 +349,7 @@ Proven by setting the local count to 999 and watching it fail."
 
 ---
 
-### Task 4: Delete the decoy project
+### Task 4: Retire the now-unused project
 
 **Irreversible.** Do not run this without explicit confirmation from the Release Authority.
 
@@ -318,16 +360,36 @@ Proven by setting the local count to 999 and watching it fail."
 
 ```bash
 cd /Users/sand224/sandscope
-grep -rn "sandscope-five\|sandscope\.vercel\.app" --include='*.ts' --include='*.tsx' --include='*.md' --include='*.json' --include='*.yml' . 2>/dev/null | grep -v node_modules | grep -v "sandscope-web"
+# Anything still pointing at the project being deleted, rather than the domain.
+# The DOMAIN sandscope-web.vercel.app survives — it moved in Task 2 — so
+# references to it are fine. What must not survive is a reference to the
+# project by name in tooling.
+grep -rn "sandscope-web" --include='*.yml' --include='*.json' --include='*.mjs' . 2>/dev/null \
+  | grep -v node_modules | grep -v "sandscope-web.vercel.app"
+cat apps/web/.vercel/project.json 2>/dev/null
 ```
 
-Expected: no results. Any hit is a reference that will break — fix it before deleting.
+Expected: no results from the grep. `.vercel/project.json` WILL still point at
+`sandscope-web` — that is the local CLI link, and it must be re-linked to
+`sandscope` before deleting, or the next `vercel` command in that directory
+fails:
+
+```bash
+cd /Users/sand224/sandscope/apps/web
+rm -rf .vercel
+npx vercel link --yes --project sandscope
+cat .vercel/project.json
+```
 
 - [ ] **Step 2: Ask for confirmation**
 
 Stop here and put the decision to the person running this plan, in these words:
 
-> `sandscope` (prj_p8fzZirVgAMTXCxAbD08fmaov7EY) is the SSO-walled duplicate. Deleting it is permanent and removes its deployment history. `sandscope-web` is unaffected. Delete it?
+> `sandscope-web` (prj_JrUlnSI8FI4tBHz7J7v2FpvhxpUi) is now serving nothing — its domain moved to `sandscope` in Task 2 and it was never connected to the repository. Deleting it is permanent and removes its deployment history. The live site is unaffected. Delete it?
+
+Note this is the OPPOSITE project from the one the first version of this plan
+proposed deleting. That version had the diagnosis backwards; deleting on the
+old instruction would have removed the only project that auto-deploys.
 
 Do not proceed on an assumed yes. Deleting a Vercel project is exactly the class of action that needs a person to say the word.
 
@@ -335,7 +397,7 @@ Do not proceed on an assumed yes. Deleting a Vercel project is exactly the class
 
 ```bash
 cd /Users/sand224/sandscope
-npx vercel project rm sandscope
+npx vercel project rm sandscope-web
 ```
 
 - [ ] **Step 4: Verify the public site is untouched**
