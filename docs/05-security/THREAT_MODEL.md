@@ -120,3 +120,50 @@ attacker obtains a wrong sentence" rather than "the attacker obtains an action".
 That is a design decision with a cost: the product proposes and never executes,
 which makes the demonstration less impressive than it could be. It is also why
 this threat model is short.
+
+---
+
+## Re-tested against the deployed surface — 2026-08-31 (S8-THREAT)
+
+The assessment above was made against a design. This section records which
+threats have now been tested against the **running** system, which cannot be
+tested from here, and which remain deliberately accepted.
+
+Added as a dated section rather than edited in place. The original was a
+design-time judgement and remains a true record of what was believed then;
+overwriting it would destroy the comparison that makes a re-test worth doing.
+
+| Threat | Status | Evidence |
+|---|---|---|
+| **T-1** unbounded spend | **Verified** | The limiter was observed refusing a live request: `{"error":"limit_exceeded"}`. See `PENTEST_RESULTS.md` |
+| **T-3** runtime called directly | **Verified** | `GET /v1/providers` on the public runtime returns `401` |
+| **T-9** IP correlation | **Verified** | No `x-forwarded-for`, `x-real-ip` or `client-ip` header echoed in any live response |
+| **T-12** token reaches the browser | **Verified** | Zero occurrences of the token name in the delivered page; P-2 passes against production |
+| **T-15** injection via the body | **Verified** | P-5 passes against production — a crafted body does not override grounding |
+| **T-4** injection via the corpus | Deferred | The corpus is build-time seeded and immutable at runtime; there is no path to inject one remotely, so there is nothing to test from outside |
+| **T-11** model triggers an action | Deferred | Structural: no tool executes against any real system. Testable only by adding one, which is the thing being avoided |
+| **T-16** secret in a trace attribute | Deferred | The exporter uses an allowlist. Confirming a negative remotely would need a secret to plant |
+| **T-2** key exfiltration | Deferred | Covered by the secret scanner in CI, which now runs with a root argument and has a test proving it catches a planted credential |
+| **T-6** chaos degrades others | **Verified by design change** | Injection is scoped per RUN, not per session — the router is built inside the stream handler and discarded. There is no state to leak |
+| **T-14** SSE exhaustion | **Accepted** | Unchanged. Medium residual, stated at design time and still true |
+| **T-17** approval forged | **Accepted** | Unchanged. Demo-grade identity, recorded as such |
+| **T-5, T-7, T-8, T-10, T-13** | Unchanged | No new evidence either way; the design-time assessment stands |
+
+### One thing the re-test changed
+
+**T-1 is verified by a different route than intended.** The probe that tries to
+*trigger* the limit cannot run against a hosted target — every probe shares one
+address behind the edge, so it would be testing the harness's own machine.
+
+What verified T-1 instead was the limiter refusing a normal request, observed
+directly. Watching a control engage is better evidence than a test that has to
+manufacture the conditions for it, and in this case it is the only evidence
+available. Recorded because the method matters as much as the verdict.
+
+### What would change these
+
+The five Deferred rows all need something the deployment deliberately lacks: a
+mutable corpus, a real tool, a plantable secret. Each would be testable in a
+system that had those, and each is deferred precisely because this one does
+not. That is worth stating rather than leaving as an untested row that reads
+like an oversight.
