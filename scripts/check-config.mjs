@@ -6,14 +6,28 @@
  * to validate one 12-key file. If the schema ever needs $ref, allOf or oneOf,
  * replace this with ajv and say so in an ADR.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+// An optional root lets the guard be pointed at a fixture and observed to
+// FAIL, which is Definition of Done item 9. A guard that has only ever been
+// run against a passing tree has not been tested.
+const here = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const root = resolve(process.argv[2] ?? here);
 const errors = [];
 
-const schema = JSON.parse(readFileSync(resolve(root, "schemas/product.config.schema.json"), "utf8"));
+// The config under test comes from `root`. The schema is the guard's own
+// contract rather than fixture data, so a fixture that supplies only a
+// product.config.json still validates: prefer a schema under `root` when the
+// tree being checked ships one, otherwise fall back to the one beside this
+// script.
+const rootSchema = resolve(root, "schemas/product.config.schema.json");
+const schemaPath = existsSync(rootSchema)
+  ? rootSchema
+  : resolve(here, "schemas/product.config.schema.json");
+
+const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
 const config = JSON.parse(readFileSync(resolve(root, "product.config.json"), "utf8"));
 
 for (const key of schema.required ?? []) {

@@ -45,7 +45,7 @@ export function CitedClaim() {
           fontSize: "0.8125rem",
         }}
       >
-        <span className="mono" style={{ color: "var(--text-3)" }}>
+        <span className="mono dim">
           rb-database-connection-pool#02
         </span>
         <p style={{ margin: "var(--s2) 0 0" }}>
@@ -177,7 +177,7 @@ export function Budget() {
             <th style={{ paddingBottom: "var(--s2)", fontWeight: 450 }}>actual</th>
           </tr>
         </thead>
-        <tbody style={{ color: "var(--text-2)" }}>
+        <tbody className="muted">
           {[
             ["mistral", "$0.000603", "$0.000475"],
             ["mistral", "$0.000626", "$0.000407"],

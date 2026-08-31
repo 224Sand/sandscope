@@ -16,13 +16,13 @@ export default function Architecture() {
   const { adrs, providers, counts } = data;
 
   return (
-    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap surface">
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / ARCHITECTURE
         </p>
         <h2 style={{ marginBottom: "var(--s4)" }}>Decisions, and what they cost</h2>
-        <p style={{ color: "var(--text-2)" }}>
+        <p className="muted">
           {counts.adrs} architecture decision records, {counts.accepted} accepted. Each one
           names the alternative it rejected and what the choice gives up, because a decision
           record that lists only advantages is marketing. Two of these were written after
@@ -71,10 +71,10 @@ export default function Architecture() {
           {providers.map((p, i) => (
             <li key={p} style={{ display: "flex", alignItems: "center", gap: "var(--s3)" }}>
               <span className="chip chip--neutral">
-                <span className="mono" style={{ color: "var(--text-3)" }}>{i + 1}</span>
+                <span className="mono dim">{i + 1}</span>
                 &nbsp;{p}
               </span>
-              {i < providers.length - 1 && <span style={{ color: "var(--text-3)" }}>→</span>}
+              {i < providers.length - 1 && <span className="dim">→</span>}
             </li>
           ))}
         </ol>
@@ -90,7 +90,7 @@ export default function Architecture() {
                   href={`https://github.com/${config.repo}/blob/main/docs/03-architecture/adr/${a.file}`}
                   style={{ color: "var(--text)", fontSize: "1.0625rem", fontWeight: 590, letterSpacing: "-0.01em" }}
                 >
-                  <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>ADR-{a.id}</span>
+                  <span className="mono dim finer">ADR-{a.id}</span>
                   {"  "}{a.title}
                 </a>
                 <span className={`chip ${a.status === "Accepted" ? "chip--grounded" : "chip--neutral"}`}>{a.status}</span>

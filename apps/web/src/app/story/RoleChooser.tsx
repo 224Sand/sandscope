@@ -92,7 +92,7 @@ export default function RoleChooser() {
           }}
         >
           <h3 style={{ fontSize: "1.5rem" }}>{active.role}</h3>
-          <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+          <span className="mono dim finest">
             {active.short}
           </span>
         </header>

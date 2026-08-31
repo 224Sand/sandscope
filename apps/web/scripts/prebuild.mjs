@@ -18,6 +18,7 @@ const scripts = [
   "../../scripts/derive-delivery.mjs",
   "../../scripts/derive-surfaces.mjs",
   "../../scripts/derive-council.mjs",
+  "../../scripts/fill-project-record.mjs",
 ];
 
 if (scripts.every((s) => existsSync(s))) {

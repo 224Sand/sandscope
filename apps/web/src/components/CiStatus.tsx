@@ -22,11 +22,11 @@ export default function CiStatus() {
   }, []);
 
   if (runs === null) {
-    return <p className="mono" style={{ color: "var(--text-3)" }}>reading GitHub…</p>;
+    return <p className="mono dim">reading GitHub…</p>;
   }
   if (failed && runs.length === 0) {
     return (
-      <p className="mono" style={{ color: "var(--text-3)" }}>
+      <p className="mono dim">
         GitHub is unreachable. Everything else on this page is derived from the
         repository and does not depend on it.
       </p>
@@ -57,13 +57,13 @@ export default function CiStatus() {
               >
                 {running ? "running" : ok ? "pass" : "fail"}
               </span>
-              <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+              <span className="mono dim finest">
                 {run.sha}
               </span>
               <span style={{ fontSize: "0.875rem", color: "var(--text-2)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {run.title}
               </span>
-              <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+              <span className="mono dim finest">
                 {run.name}
               </span>
             </a>

@@ -19,8 +19,13 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative, resolve } from "node:path";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const SELF = resolve(root, "scripts/check-secrets.mjs");
+// An optional root lets the guard be pointed at a fixture and observed to
+// FAIL, which is Definition of Done item 9. A guard that has only ever been
+// run against a passing tree has not been tested.
+const root = resolve(process.argv[2] ?? resolve(dirname(fileURLToPath(import.meta.url)), ".."));
+// Own path, not a path built from `root` -- the self-skip must keep working
+// when the scanner is pointed somewhere other than its own repository.
+const SELF = fileURLToPath(import.meta.url);
 
 const SKIP_DIRS = new Set([
   ".git", "node_modules", ".next", "dist", "build", "out",

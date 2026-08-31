@@ -40,7 +40,7 @@ export default function DataPage() {
   const answerablePct = Math.round((questions.answerable / questions.total) * 100);
 
   return (
-    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap surface">
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / DATA
@@ -97,8 +97,8 @@ export default function DataPage() {
                     {file.id}
                   </td>
                   <td>{file.title}</td>
-                  <td className="mono" style={{ color: "var(--text-3)" }}>{file.words}</td>
-                  <td className="mono" style={{ color: "var(--text-3)" }}>{file.chunks}</td>
+                  <td className="mono dim">{file.words}</td>
+                  <td className="mono dim">{file.chunks}</td>
                 </tr>
               ))}
             </tbody>
@@ -169,10 +169,10 @@ export default function DataPage() {
                       tier {service.tier}
                     </span>
                   </td>
-                  <td className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+                  <td className="mono dim finest">
                     {service.runtime}
                   </td>
-                  <td style={{ color: "var(--text-2)" }}>{service.team}</td>
+                  <td className="muted">{service.team}</td>
                 </tr>
               ))}
             </tbody>
@@ -198,7 +198,7 @@ export default function DataPage() {
                   sev {fault.severity}
                 </span>
                 <strong style={{ fontSize: "0.9375rem" }}>{fault.name}</strong>
-                <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+                <span className="mono dim finest">
                   {fault.runbook}
                 </span>
               </div>
@@ -240,7 +240,7 @@ export default function DataPage() {
                 <span className={mechanism.label === "answerable" ? "chip chip--grounded" : "chip chip--refused"}>
                   {mechanism.label}
                 </span>
-                <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+                <span className="mono dim finest">
                   {mechanism.id.replace(/_/g, " ")}
                 </span>
               </div>

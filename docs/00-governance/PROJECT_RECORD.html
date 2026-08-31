@@ -233,8 +233,8 @@
         <div class="metaitem"><dt>Repository</dt><dd>224Sand/sandscope</dd></div>
         <div class="metaitem"><dt>Span</dt><dd>2026-08-20 → 2026-08-22</dd></div>
         <div class="metaitem"><dt>Sprints</dt><dd>9 planned (0–8) · 8 closed</dd></div>
-        <div class="metaitem"><dt>Requirements</dt><dd>61 total · 61 done</dd></div>
-        <div class="metaitem"><dt>Defects logged</dt><dd>18 · 6 severity-1</dd></div>
+        <div class="metaitem"><dt>Requirements</dt><dd><span data-figure="requirements.total">61</span> total · <span data-figure="requirements.done">61</span> done</dd></div>
+        <div class="metaitem"><dt>Defects logged</dt><dd><span data-figure="defects.total">26</span> · <span data-figure="defects.severityOne">7</span> severity-1</dd></div>
         <div class="metaitem"><dt>Budget</dt><dd>$0 infra, tested</dd></div>
       </dl>
     </header>
@@ -243,7 +243,7 @@
       <h2><span class="num">0</span> Status, plainly</h2>
       <div class="callout callout--blocked">
         <p>
-          <strong>Every requirement now has a test.</strong> All 61 are <span class="mono">Done</span> — each names a test that exists and passes in CI.
+          <strong>Every requirement now has a test.</strong> All <span data-figure="requirements.total">61</span> are <span class="mono">Done</span> — each names a test that exists and passes in CI.
           Both halves are deployed and verified connected — the agent runtime on a public host,
           and the web application at
           <a href="https://sandscope-web.vercel.app">sandscope-web.vercel.app</a>, whose BFF
@@ -529,7 +529,7 @@ flowchart LR
     <section id="open">
       <h2><span class="num">10</span> What's still open</h2>
       <ul class="plain">
-        <li class="panel"><strong>All 61 requirements are Done</strong>, each naming a test that passes. <code>docs/01-requirements/TRACEABILITY.md</code> names each one and the test it's waiting on.</li>
+        <li class="panel"><strong>All <span data-figure="requirements.total">61</span> requirements are Done</strong>, each naming a test that passes. <code>docs/01-requirements/TRACEABILITY.md</code> names each one and the test it's waiting on.</li>
         <li class="panel"><strong>Sprint 8 (Hardening &amp; Release) is open</strong> — deployment landed (both S8-HOST and S8-VERCEL done); the remainder is pen tests against the public URLs, the threat-model review, and observability, per <code>SPRINT_08_PLAN.md</code>.</li>
       </ul>
     </section>
@@ -537,7 +537,9 @@ flowchart LR
     <footer>
       Every figure above is read from the repository at the commit this record was written
       against. Where a number here and the repository disagree, the repository is correct —
-      this document does not regenerate itself the way <code>/delivery</code> does.
+      the counted figures are filled from <code>delivery.json</code> by
+      <code>scripts/fill-project-record.mjs</code> and CI fails if they drift; the prose
+      around them is still written by hand.
     </footer>
   </main>
 </div>

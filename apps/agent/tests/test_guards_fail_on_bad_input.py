@@ -175,6 +175,55 @@ class GuardsFailOnKnownBadInput(unittest.TestCase):
                 run("check-workflow-shell.mjs", cwd=Path(tmp)), "comment inside a backslash"
             )
 
+    def test_secret_scan_catches_a_credential_in_a_committed_file(self) -> None:
+        """DoD item 4. A scanner that has never seen a secret has never been
+        tested against one, and this is the guard whose failure is least
+        recoverable: a leaked key is public the moment the push lands."""
+        with tempfile.TemporaryDirectory() as tmp:
+            planted = Path(tmp) / "apps/web/src/lib/leak.ts"
+            planted.parent.mkdir(parents=True)
+            # Assembled from fragments for exactly the reason check-secrets.mjs
+            # assembles its own patterns: this file is itself one of the
+            # committable files the scanner reads, so a fixture written as a
+            # literal would fail the repository's secret gate on every run.
+            planted_credential = "sk" + "-live-0123456789abcdef0123456789abcdef"
+            planted.write_text(f'export const KEY = "{planted_credential}";\n')
+            subprocess.run([str(GIT), "init", "-q"], cwd=tmp, check=True)  # noqa: S603
+            subprocess.run([str(GIT), "add", "-A"], cwd=tmp, check=True)  # noqa: S603
+
+            self.assertGuardFails(run("check-secrets.mjs", tmp), "leak.ts")
+
+    def test_config_guard_catches_a_slug_that_does_not_derive(self) -> None:
+        """FR-001. The product name is authored in exactly one place and the
+        slug is derived from it; a hand-edited slug that disagrees is how a
+        rename half-lands."""
+        with tempfile.TemporaryDirectory() as tmp:
+            (Path(tmp) / "product.config.json").write_text(
+                json.dumps(
+                    {
+                        "name": "SandScope",
+                        "slug": "something-else",
+                        "wordmark": "SANDSCOPE",
+                        "repo": "224Sand/sandscope",
+                    }
+                )
+            )
+            self.assertGuardFails(run("check-config.mjs", tmp), "slug")
+
+    def test_docs_guard_catches_a_requirement_with_no_test(self) -> None:
+        """Charter section 11: a requirement with no test is a defect in the
+        process. The guard must refuse an EMPTY Test cell, not only a wrong
+        one."""
+        with tempfile.TemporaryDirectory() as tmp:
+            reqs = Path(tmp) / "docs/01-requirements"
+            reqs.mkdir(parents=True)
+            (reqs / "TRACEABILITY.md").write_text(
+                "| ID | Requirement | Story | Test | Sprint | Status |\n"
+                "|---|---|---|---|---|---|\n"
+                "| FR-998 | A thing with no test | S1 |  | 1 | Planned |\n"
+            )
+            self.assertGuardFails(run("check-docs.mjs", tmp), "FR-998")
+
 
 if __name__ == "__main__":
     unittest.main()

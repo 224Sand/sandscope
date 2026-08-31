@@ -96,7 +96,7 @@ export default function BudgetBar({
 
       <p className="mono" style={{ fontSize: "0.8125rem", color: "var(--text-2)", marginTop: "var(--s3)" }}>
         {(rate * 100).toFixed(1)}%{" "}
-        <span style={{ color: "var(--text-3)" }}>
+        <span className="dim">
           95% CI [{(ci[0] * 100).toFixed(1)}, {(ci[1] * 100).toFixed(1)}]
           {counts ? ` · ${counts}` : ""}
         </span>

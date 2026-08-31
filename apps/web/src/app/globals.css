@@ -986,3 +986,19 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* ═══════════════════════════════════════════ shared layout and text roles
+   Extracted from inline style objects. These were repeated across seven page
+   roots and eighteen components, which meant changing the page rhythm or a
+   text tone required editing every file that had happened to pick the same
+   token — the opposite of what a token system is for.
+
+   Named by ROLE rather than by value: `.muted` is "supporting text", not
+   "text-2", so a palette change moves one declaration. */
+.surface { padding-top: var(--s8); padding-bottom: var(--s10); }
+
+.muted  { color: var(--text-2); }
+.dim    { color: var(--text-3); }
+.fine   { font-size: 0.875rem; }
+.finer  { font-size: 0.8125rem; }
+.finest { font-size: 0.75rem; }

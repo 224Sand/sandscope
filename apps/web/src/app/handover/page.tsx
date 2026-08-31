@@ -60,7 +60,7 @@ export default function Handover() {
   const roleReactions = council.artifacts.reduce((n, a) => n + a.reactions.length, 0);
 
   return (
-    <main className="voice-proof wrap kt" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap kt surface">
       {/* Ambient ground. Poster-first, muted, decorative, and replaced by the
           still below 768px or under reduced motion (DESIGN_SYSTEM §5). It sits
           behind the opening only — a reader scanning for a threshold does not

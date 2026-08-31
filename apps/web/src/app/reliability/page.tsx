@@ -17,7 +17,7 @@ export const metadata = { title: `Reliability — ${config.name}` };
 function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div>
-      <dt style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>{label}</dt>
+      <dt className="dim finer">{label}</dt>
       <dd className="mono" style={{ margin: "var(--s1) 0 0", fontSize: "1.375rem" }}>{value}</dd>
       {sub && <p style={{ color: "var(--text-3)", fontSize: "0.75rem", margin: "var(--s1) 0 0" }}>{sub}</p>}
     </div>
@@ -35,13 +35,13 @@ export default function Reliability() {
   const lift = model.auc - model.baselineAuc;
 
   return (
-    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap surface">
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / RELIABILITY
         </p>
         <h2 style={{ marginBottom: "var(--s4)" }}>Measured, including where it fails</h2>
-        <p style={{ color: "var(--text-2)" }}>
+        <p className="muted">
           An agent that answers everything is not useful; the hard part is knowing when to
           decline. These are the measured error rates of that decision, the thresholds that
           produce them, and the checks that are still failing. The failing ones are published

@@ -17,7 +17,7 @@ export const metadata = { title: `Delivery — ${config.name}` };
 function Stat({ label, value, note }: { label: string; value: string | number; note?: string }) {
   return (
     <div>
-      <dt style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>{label}</dt>
+      <dt className="dim finer">{label}</dt>
       <dd className="mono" style={{ margin: "var(--s1) 0 0", fontSize: "1.5rem", color: "var(--text)" }}>
         {value}
       </dd>
@@ -33,13 +33,13 @@ export default function Delivery() {
   const code = loc.agent + loc.tests + loc.web + loc.tooling;
 
   return (
-    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap surface">
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / DELIVERY
         </p>
         <h2 style={{ marginBottom: "var(--s4)" }}>The record, not the claim</h2>
-        <p style={{ color: "var(--text-2)" }}>
+        <p className="muted">
           Every number on this page is derived from the repository at build time or read
           live from the GitHub API. None is typed by hand. The defects are published
           including the ones that were embarrassing, because a delivery record containing
@@ -159,7 +159,7 @@ export default function Delivery() {
                     <td className="mono" style={{ fontSize: "0.75rem", color: "var(--text-2)" }}>
                       {row.test}
                     </td>
-                    <td className="mono" style={{ color: "var(--text-3)" }}>{row.sprint}</td>
+                    <td className="mono dim">{row.sprint}</td>
                     <td>
                       <span
                         className={
@@ -185,9 +185,9 @@ export default function Delivery() {
               key={sprint.number}
               style={{ display: "grid", gridTemplateColumns: "4ch 1fr 8ch 1fr", gap: "var(--s3)", padding: "var(--s2) 0", borderBottom: "1px solid var(--line)" }}
             >
-              <span className="mono" style={{ color: "var(--text-3)" }}>{sprint.number}</span>
+              <span className="mono dim">{sprint.number}</span>
               <span style={{ color: "var(--text)" }}>{sprint.name}</span>
-              <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>{sprint.release}</span>
+              <span className="mono dim finer">{sprint.release}</span>
               <span className="mono" style={{ color: "var(--text-2)", fontSize: "0.8125rem" }}>{sprint.velocity}</span>
             </li>
           ))}

@@ -383,7 +383,7 @@ export default function Console() {
             {retrieval?.degraded && <span className="chip chip--refused">retrieval degraded</span>}
           </div>
           {retrieval?.top_documents && (
-            <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>
+            <p className="mono dim finer">
               searched: {retrieval.top_documents.join(" · ")}
             </p>
           )}
@@ -490,7 +490,7 @@ export default function Console() {
               {/* Neither button is the primary action. A gate where one choice is
                   styled as the obvious one is not a gate. */}
               {decision ? (
-                <p className="mono" style={{ color: "var(--text-2)" }}>{decision}</p>
+                <p className="mono muted">{decision}</p>
               ) : (
                 /* Neither button is the primary action. A gate where one choice
                    is styled as the obvious one is not a gate. */
@@ -554,7 +554,7 @@ export default function Console() {
               ["provider events", result.providers.length],
             ].map(([label, value]) => (
               <div key={label as string}>
-                <dt style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>{label}</dt>
+                <dt className="dim finer">{label}</dt>
                 <dd className="mono" style={{ margin: "var(--s1) 0 0", fontSize: "1.125rem" }}>
                   {String(value)}
                 </dd>
@@ -577,7 +577,7 @@ export default function Console() {
       <section className="panel" data-testid="memory-panel">
         <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)" }}>
           <h3>Session memory</h3>
-          <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem" }}>
+          <span className="mono dim finest">
             {mounted ? sessionId.current : ""}
           </span>
         </header>
@@ -594,9 +594,9 @@ export default function Console() {
             {memoryError}
           </p>
         ) : memory === null ? (
-          <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>reading…</p>
+          <p className="mono dim finer">reading…</p>
         ) : memory.length === 0 ? (
-          <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>
+          <p className="mono dim finer">
             Nothing stored yet. Run a triage and it will appear here.
           </p>
         ) : (

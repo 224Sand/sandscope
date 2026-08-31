@@ -52,9 +52,13 @@ Append to `apps/agent/tests/test_guards_fail_on_bad_input.py`, matching the help
         with tempfile.TemporaryDirectory() as tmp:
             planted = Path(tmp) / "apps/web/src/lib/leak.ts"
             planted.parent.mkdir(parents=True)
-            planted.write_text(
-                'export const KEY = "sk-live-0123456789abcdef0123456789abcdef";\n'
-            )
+            # Built by concatenation so this PLAN FILE does not itself contain
+            # a scannable credential. The first draft wrote the literal, and
+            # check-secrets.mjs flagged this document the moment the guard
+            # gained the root argument that let it scan a wider tree. The guard
+            # was right; the plan was the defect.
+            fake = "sk-" + "live-" + ("0123456789abcdef" * 2)
+            planted.write_text(f'export const KEY = "{fake}";\n')
             subprocess.run([str(GIT), "init", "-q"], cwd=tmp, check=True)  # noqa: S603
             subprocess.run([str(GIT), "add", "-A"], cwd=tmp, check=True)  # noqa: S603
 

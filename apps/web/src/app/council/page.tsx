@@ -24,7 +24,7 @@ export default function CouncilPage() {
   const voices = new Set(council.artifacts.flatMap((a) => a.reactions.map((r) => r.role)));
 
   return (
-    <main className="voice-proof wrap" style={{ paddingTop: "var(--s8)", paddingBottom: "var(--s10)" }}>
+    <main className="voice-proof wrap surface">
       <header style={{ marginBottom: "var(--s7)" }}>
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / COUNCIL
@@ -61,7 +61,7 @@ export default function CouncilPage() {
               {council.roles.map((role) => (
                 <tr key={role.role}>
                   <td style={{ whiteSpace: "nowrap", fontWeight: 590 }}>{role.role}</td>
-                  <td style={{ color: "var(--text-2)" }}>{role.owns}</td>
+                  <td className="muted">{role.owns}</td>
                   <td style={{ color: "var(--text-3)", fontSize: "0.875rem" }}>{role.produces}</td>
                 </tr>
               ))}
@@ -88,7 +88,7 @@ export default function CouncilPage() {
               {council.stakeholders.map((role) => (
                 <tr key={role.role}>
                   <td style={{ whiteSpace: "nowrap", fontWeight: 590 }}>{role.role}</td>
-                  <td style={{ color: "var(--text-2)" }}>{role.when}</td>
+                  <td className="muted">{role.when}</td>
                   <td style={{ color: "var(--text-3)", fontSize: "0.875rem" }}>{role.authority}</td>
                 </tr>
               ))}
@@ -111,7 +111,7 @@ export default function CouncilPage() {
           {council.artifacts.map((artifact) => (
             <article key={artifact.number} className="panel">
               <div style={{ display: "flex", gap: "var(--s3)", alignItems: "baseline", flexWrap: "wrap", marginBottom: "var(--s3)" }}>
-                <span className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem" }}>
+                <span className="mono dim finer">
                   {String(artifact.number).padStart(2, "0")}
                 </span>
                 <h4 style={{ fontSize: "1.0625rem", margin: 0, flex: 1, minWidth: "16rem" }}>

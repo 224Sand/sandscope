@@ -30,6 +30,8 @@ jobs:
         run: node scripts/check-sprints.mjs
       - name: README check (stated figures match the derived record)
         run: node scripts/check-readme.mjs
+      - name: Project record check (figures match the derived record)
+        run: node scripts/fill-project-record.mjs --check
       - name: Traceability check (no requirement claims more than it can show)
         run: node scripts/check-traceability.mjs
       - name: Workflow shell check (guards D-011)
