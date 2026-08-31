@@ -25,11 +25,11 @@ export default function CouncilPage() {
 
   return (
     <main className="voice-proof wrap surface">
-      <header style={{ marginBottom: "var(--s7)" }}>
+      <header className="mb-7">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / COUNCIL
         </p>
-        <h2 style={{ marginBottom: "var(--s4)" }}>One person, twelve roles, and a rule that made it work</h2>
+        <h2 className="mb-4">One person, twelve roles, and a rule that made it work</h2>
         <p style={{ color: "var(--text-2)", fontSize: "1.0625rem", maxWidth: "70ch" }}>
           This was built by one person directing an AI through a written charter of named delivery
           roles. That arrangement collapses into a single agreeable voice unless something stops
@@ -45,9 +45,9 @@ export default function CouncilPage() {
       </header>
 
       {/* ------------------------------------------------------------- roster */}
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>The delivery roster</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)", maxWidth: "70ch" }}>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">The delivery roster</h3>
+        <p className="lede-p">
           {council.roles.length} roles, each owning something specific and producing something
           named. A role that owns nothing produces nothing, and a role that produces nothing is a
           label rather than a function.
@@ -71,9 +71,9 @@ export default function CouncilPage() {
       </section>
 
       {/* -------------------------------------------------------- stakeholders */}
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>Where the human sits</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)", maxWidth: "70ch" }}>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">Where the human sits</h3>
+        <p className="lede-p">
           The person directing this is not a spectator on it. Every message they send is classified
           into one of these roles on receipt, because the same sentence carries different authority
           depending on which hat it arrives under — &ldquo;the font looks wrong&rdquo; is an
@@ -98,8 +98,8 @@ export default function CouncilPage() {
       </section>
 
       {/* --------------------------------------------------------- the review */}
-      <section style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>The review, artefact by artefact</h3>
+      <section className="mb-6">
+        <h3 className="mb-3">The review, artefact by artefact</h3>
         <p style={{ color: "var(--text-2)", marginBottom: "var(--s6)", maxWidth: "70ch" }}>
           Each entry is a real defect or decision from this repository, with what every role
           actually said about it. A role that had nothing genuine to say about a given artefact is
@@ -154,7 +154,7 @@ export default function CouncilPage() {
 
       {/* ------------------------------------------------------------ the tool */}
       <section className="panel">
-        <h3 style={{ marginBottom: "var(--s3)" }}>The review process became a tool</h3>
+        <h3 className="mb-3">The review process became a tool</h3>
         <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
           Partway through, it became clear the discipline above was worth extracting: pick the
           methodology first, because Scrum has no Change Control Board and Waterfall has no

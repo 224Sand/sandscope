@@ -1002,3 +1002,27 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .fine   { font-size: 0.875rem; }
 .finer  { font-size: 0.8125rem; }
 .finest { font-size: 0.75rem; }
+
+/* ────────────────────────────────────────────────────── spacing utilities
+   `marginBottom: var(--sN)` was the single most repeated inline object in the
+   codebase. These are the only utility-shaped classes in the system, and they
+   earn it: vertical rhythm between siblings is genuinely a layout concern
+   with no semantic name worth inventing. */
+.mb-2 { margin-bottom: var(--s2); }
+.mb-3 { margin-bottom: var(--s3); }
+.mb-4 { margin-bottom: var(--s4); }
+.mb-5 { margin-bottom: var(--s5); }
+.mb-6 { margin-bottom: var(--s6); }
+.mb-7 { margin-bottom: var(--s7); }
+
+/* A section's opening paragraph: supporting tone, measured line length, and
+   space before what follows. Repeated verbatim across six surfaces. */
+.lede-p { color: var(--text-2); margin-bottom: var(--s5); max-width: 70ch; }
+
+/* The stat row used on /delivery, /data and /reliability. */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--s5);
+  margin: 0;
+}

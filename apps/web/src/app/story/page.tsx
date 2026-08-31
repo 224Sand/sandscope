@@ -140,10 +140,10 @@ export default function Story() {
 
         {/* ------------------------------------------------------ the chooser */}
         <section className="reveal">
-          <h2 className="story-h2" style={{ marginBottom: "var(--s3)" }}>
+          <h2 className="story-h2 mb-3" >
             Whose story do you want?
           </h2>
-          <p className="story-p" style={{ marginBottom: "var(--s6)" }}>
+          <p className="story-p mb-6" >
             A project is never one narrative. Pick a role to follow their thread — what they
             owned, what they produced, and the one moment where their particular worry turned out
             to be the right one.

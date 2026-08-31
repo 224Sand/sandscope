@@ -79,11 +79,11 @@ export default function Handover() {
         <div className="kt-ground-scrim" />
       </div>
 
-      <header style={{ marginBottom: "var(--s7)" }}>
+      <header className="mb-7">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / HANDOVER
         </p>
-        <h2 style={{ marginBottom: "var(--s4)" }}>Everything, at whatever depth you need</h2>
+        <h2 className="mb-4">Everything, at whatever depth you need</h2>
         <p style={{ color: "var(--text-2)", fontSize: "1.0625rem", maxWidth: "70ch" }}>
           One document for two readers. The prose reads end to end in plain language and assumes
           nothing — that is the whole handover for someone who does not write code. Wherever there

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-31T09:47:56.971Z",
-  "sha": "5f3901a",
+  "generatedAt": "2026-08-31T10:00:12.993Z",
+  "sha": "16df078",
   "providers": [
     "groq",
     "gemini",
@@ -125,10 +125,19 @@
       "date": "2026-08-29",
       "context": "Sprint 3 trained an evidence-sufficiency classifier: gradient boosting over 12 retrieval features, 715 labelled examples, cross-validated AUC 0.808 against a 0.609 baseline, exported to ONNX and served without scikit-learn (ADR-0009). It has its own unit tests, its own ONNX-parity test, and a panel on `/reliability`.",
       "consequences": "Positive. The published 4.7% false-answer rate continues to describe what the service actually does. The reliability surface stops implying that a model serves traffic when it does not. The measurement is committed and re-runnable, so this decision can be overturned by evidence rather than by opinion."
+    },
+    {
+      "id": "0014",
+      "file": "0014-one-vercel-project-connected-to-git.md",
+      "title": "One Vercel project, connected to git",
+      "status": "Accepted",
+      "date": "2026-08-31",
+      "context": "Two Vercel projects existed for one application, and the arrangement hid a staleness failure for eight days.",
+      "consequences": "Positive. The public site cannot silently go stale; a push is a deploy. One project to look at rather than two, one of which was a decoy. No manual step to forget."
     }
   ],
   "counts": {
-    "adrs": 13,
-    "accepted": 12
+    "adrs": 14,
+    "accepted": 13
   }
 }

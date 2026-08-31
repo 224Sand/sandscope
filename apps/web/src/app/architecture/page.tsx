@@ -17,11 +17,11 @@ export default function Architecture() {
 
   return (
     <main className="voice-proof wrap surface">
-      <header style={{ marginBottom: "var(--s7)" }}>
+      <header className="mb-7">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / ARCHITECTURE
         </p>
-        <h2 style={{ marginBottom: "var(--s4)" }}>Decisions, and what they cost</h2>
+        <h2 className="mb-4">Decisions, and what they cost</h2>
         <p className="muted">
           {counts.adrs} architecture decision records, {counts.accepted} accepted. Each one
           names the alternative it rejected and what the choice gives up, because a decision
@@ -36,8 +36,8 @@ export default function Architecture() {
       </p>
 
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s5)" }}>Request path</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-5">Request path</h3>
         {/* Scrolls inside its own box below ~700px rather than scaling its
             labels down to an unreadable size. See globals.css. */}
         <div className="scroll-x">
@@ -53,8 +53,8 @@ export default function Architecture() {
         </p>
       </section>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>Provider order</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">Provider order</h3>
         <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
           Fixed, not adaptive. A provider that rate-limits is disabled for a bounded interval
           rather than the process lifetime, and the clock is injected so expiry is tested
@@ -81,7 +81,7 @@ export default function Architecture() {
       </section>
 
       <section>
-        <h3 style={{ marginBottom: "var(--s5)" }}>Decision records</h3>
+        <h3 className="mb-5">Decision records</h3>
         <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s4)" }}>
           {adrs.map((a) => (
             <li key={a.id} className="panel">

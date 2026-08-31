@@ -34,11 +34,11 @@ export default function Delivery() {
 
   return (
     <main className="voice-proof wrap surface">
-      <header style={{ marginBottom: "var(--s7)" }}>
+      <header className="mb-7">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / DELIVERY
         </p>
-        <h2 style={{ marginBottom: "var(--s4)" }}>The record, not the claim</h2>
+        <h2 className="mb-4">The record, not the claim</h2>
         <p className="muted">
           Every number on this page is derived from the repository at build time or read
           live from the GitHub API. None is typed by hand. The defects are published
@@ -50,8 +50,8 @@ export default function Delivery() {
         </p>
       </header>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s5)" }}>Continuous integration, live</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-5">Continuous integration, live</h3>
         <CiStatus />
         <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", marginTop: "var(--s4)" }}>
           Every push runs governance gates, lint, strict type checking, the offline suite,
@@ -61,9 +61,9 @@ export default function Delivery() {
         </p>
       </section>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s5)" }}>Scale</h3>
-        <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "var(--s5)", margin: 0 }}>
+      <section className="panel mb-6" >
+        <h3 className="mb-5">Scale</h3>
+        <dl className="stat-grid">
           <Stat label="commits" value={record.commits} />
           <Stat
             label="test functions"
@@ -77,8 +77,8 @@ export default function Delivery() {
         </dl>
       </section>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>Defects</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">Defects</h3>
         <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
           {record.defects.total} found and fixed during the build, {record.defects.severityOne} of
           them severity one. Every one is guarded by a regression test. <strong>None was found
@@ -115,14 +115,14 @@ export default function Delivery() {
         </div>
       </section>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>Requirements</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">Requirements</h3>
         <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
           {record.requirements.total} requirements, each traced to a story and a named test.
           A requirement with no test fails the build — the gate refuses to pass rather than
           warning, so the traceability matrix cannot quietly go stale.
         </p>
-        <dl style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "var(--s5)", margin: 0 }}>
+        <dl className="stat-grid">
           <Stat label="total" value={record.requirements.total} />
           <Stat label="delivered" value={record.requirements.done} />
           <Stat label="planned" value={record.requirements.planned} />
@@ -177,8 +177,8 @@ export default function Delivery() {
         </details>
       </section>
 
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s5)" }}>Sprints</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-5">Sprints</h3>
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
           {record.sprints.map((sprint) => (
             <li
@@ -207,7 +207,7 @@ export default function Delivery() {
           derived from the markdown at build time, so they cannot drift from
           the files they summarise. */}
       <section className="panel">
-        <h3 style={{ marginBottom: "var(--s3)" }}>Architecture decisions</h3>
+        <h3 className="mb-3">Architecture decisions</h3>
         <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
           {record.adrs.length} records. Each is immutable once accepted — a reversal is a new
           record that supersedes it, never an edit — and each carries what it cost, because a

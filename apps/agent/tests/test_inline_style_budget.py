@@ -19,7 +19,7 @@ WEB = ROOT / "apps/web/src"
 
 #: Lowered by each extraction pass. Never raised. If a change genuinely needs
 #: a new inline style, extract two others in the same commit.
-INLINE_STYLE_BUDGET = 353
+INLINE_STYLE_BUDGET = 286
 
 
 def count_inline_styles() -> int:

@@ -44,7 +44,7 @@ export default function Trace({
 
   return (
     <section className="panel">
-      <h3 style={{ marginBottom: "var(--s2)" }}>Trace</h3>
+      <h3 className="mb-2">Trace</h3>
       <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", marginBottom: "var(--s5)" }}>
         {spans.length} spans · {totalMs.toFixed(0)}ms total ·{" "}
         {spans.filter((s) => DETERMINISTIC.has(s.name)).length} nodes decided without a model call

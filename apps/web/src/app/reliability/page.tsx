@@ -36,11 +36,11 @@ export default function Reliability() {
 
   return (
     <main className="voice-proof wrap surface">
-      <header style={{ marginBottom: "var(--s7)" }}>
+      <header className="mb-7">
         <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
           {config.wordmark} / RELIABILITY
         </p>
-        <h2 style={{ marginBottom: "var(--s4)" }}>Measured, including where it fails</h2>
+        <h2 className="mb-4">Measured, including where it fails</h2>
         <p className="muted">
           An agent that answers everything is not useful; the hard part is knowing when to
           decline. These are the measured error rates of that decision, the thresholds that
@@ -57,8 +57,8 @@ export default function Reliability() {
 
 
       {/* ---------------------------------------------------------- the gate */}
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
-        <h3 style={{ marginBottom: "var(--s3)" }}>The refusal decision</h3>
+      <section className="panel mb-6" >
+        <h3 className="mb-3">The refusal decision</h3>
         <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s6)" }}>
           Two thresholds, not chosen by taste. They are read off the ROC curve against
           asymmetric error budgets — answering a question the corpus cannot support is worse
@@ -84,7 +84,7 @@ export default function Reliability() {
           />
         </div>
 
-        <hr className="hairline" style={{ marginBottom: "var(--s5)" }} />
+        <hr className="hairline mb-5"  />
 
         <dl style={grid("170px")}>
           <Metric
@@ -132,7 +132,7 @@ export default function Reliability() {
       {/* ------------------------------------------------------------ models */}
       <div style={{ ...grid("340px"), marginBottom: "var(--s6)" }}>
         <section className="panel">
-          <h3 style={{ marginBottom: "var(--s4)" }}>Sufficiency classifier</h3>
+          <h3 className="mb-4">Sufficiency classifier</h3>
           {/* ADR-0013. This panel used to sit beside the live gate's error
               rates with nothing distinguishing them, which read as though the
               model served traffic. It does not, and the reason is a
@@ -164,7 +164,7 @@ export default function Reliability() {
         </section>
 
         <section className="panel">
-          <h3 style={{ marginBottom: "var(--s4)" }}>Cross-encoder re-ranker</h3>
+          <h3 className="mb-4">Cross-encoder re-ranker</h3>
           <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
             {reranker.baseModel} fine-tuned on {reranker.trainingPairs} pairs. Both metrics
             ship: document-level was already {reranker.documentLevelMrr.toFixed(3)} and hid
@@ -180,7 +180,7 @@ export default function Reliability() {
       </div>
 
       {/* ----------------------------------------------------------- defects */}
-      <section className="panel" style={{ marginBottom: "var(--s6)" }}>
+      <section className="panel mb-6" >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)", marginBottom: "var(--s3)" }}>
           <h3>Defects</h3>
           <span className="chip chip--neutral">
@@ -217,7 +217,7 @@ export default function Reliability() {
 
       {/* ------------------------------------------------------ postmortems */}
       <section className="panel">
-        <h3 style={{ marginBottom: "var(--s4)" }}>Postmortems</h3>
+        <h3 className="mb-4">Postmortems</h3>
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s4)" }}>
           {postmortems.map((p) => (
             <li key={p.file}>

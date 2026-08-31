@@ -269,7 +269,7 @@ export default function Console() {
   return (
     <div style={{ display: "grid", gap: "var(--s5)" }}>
       <section className="panel">
-        <h3 style={{ marginBottom: "var(--s4)" }}>Choose a scenario</h3>
+        <h3 className="mb-4">Choose a scenario</h3>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s2)", marginBottom: "var(--s4)" }}>
           {PRESETS.map((option) => (
             <button
@@ -341,7 +341,7 @@ export default function Console() {
 
       {events.length > 0 && (
         <section className="panel">
-          <h3 style={{ marginBottom: "var(--s4)" }}>Execution</h3>
+          <h3 className="mb-4">Execution</h3>
           <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
             {events.map((event, index) => (
               <li
@@ -412,7 +412,7 @@ export default function Console() {
             <h3 style={{ margin: 0 }}>{rejected ? "Draft — not emitted" : "Assessment"}</h3>
           </div>
           {rejected && (
-            <div style={{ marginBottom: "var(--s5)" }}>
+            <div className="mb-5">
               <span className="chip chip--blocked">escalated after 3 attempts</span>
               <p style={{ marginTop: "var(--s3)", color: "var(--text-2)" }}>
                 {uncited.length} claim{uncited.length === 1 ? "" : "s"} still carried no
@@ -477,7 +477,7 @@ export default function Console() {
               risk?.risk === "high" || risk?.risk === "critical" ? "var(--blocked)" : "var(--line)",
           }}
         >
-          <h3 style={{ marginBottom: "var(--s3)" }}>Proposed {risk?.risk === "critical" ? "action" : "remediation"}</h3>
+          <h3 className="mb-3">Proposed {risk?.risk === "critical" ? "action" : "remediation"}</h3>
           <pre className="mono" style={{ whiteSpace: "pre-wrap", margin: 0 }}>{proposal}</pre>
           {(risk?.risk === "high" || risk?.risk === "critical") && (
             <>
@@ -527,7 +527,7 @@ export default function Console() {
 
       {result && (
         <section className="panel">
-          <h3 style={{ marginBottom: "var(--s4)" }}>Run</h3>
+          <h3 className="mb-4">Run</h3>
           <dl
             style={{
               display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
