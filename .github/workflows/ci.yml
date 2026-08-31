@@ -40,6 +40,10 @@ jobs:
         run: node scripts/check-workflow-shell.mjs
       - name: Secret scan (Definition of Done item 4)
         run: node scripts/check-secrets.mjs
+      # DESIGN_SYSTEM.md section 5 has claimed "a budget, enforced in CI" since
+      # Sprint 6. Nothing here had ever looked at a media file until Sprint 9.
+      - name: Motion budget (committed clips are within 7s / 4.5MB)
+        run: node scripts/check-media.mjs
 
   # The web application was never built in CI until Sprint 8.
   #

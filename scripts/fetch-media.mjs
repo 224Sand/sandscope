@@ -19,11 +19,23 @@ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "no
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { BUDGET } from "./media-budget.mjs";
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = resolve(root, "apps/web/public/media");
 
-/** DESIGN_SYSTEM.md section 5. Enforced here, not remembered. */
-const BUDGET = { seconds: 4, bytes: 2.5 * 1024 * 1024, width: 1920 };
+/**
+ * The budget lives in scripts/media-budget.mjs so this script and the CI check
+ * cannot drift apart -- two copies of a number is how the old 4s / 2.5MB
+ * ceiling ended up stated in three places and enforced in none.
+ *
+ * Relaxed from 4s / 2.5MB. Four seconds is short enough that an ambient
+ * background visibly restarts while a reader is still in the paragraph it sits
+ * behind, and the loop point becomes the thing you notice. The extra headroom
+ * also pays for CRF 24 instead of 26, which is where the near-black gradients
+ * on this page stop banding. It is a relaxation, not an abandonment: a clip
+ * that cannot make 7s at 4.5MB is still refused.
+ */
 /** Scrubbing needs frequent keyframes or seeking stutters visibly. */
 const KEYFRAME_INTERVAL = 6;
 
@@ -69,9 +81,11 @@ function transcode(input, output, startSeconds) {
     "-y", "-ss", String(startSeconds), "-i", input,
     "-t", String(BUDGET.seconds),
     "-vf", `scale=${BUDGET.width}:-2,format=yuv420p`,
-    // CRF 26 with a slow preset: the page is dark and near-black gradients band
-    // badly at higher CRF, which is exactly where a cheap encode shows.
-    "-c:v", "libx264", "-preset", "slow", "-crf", "26",
+    // CRF 24 with a slow preset: the page is dark and near-black gradients band
+    // badly at higher CRF, which is exactly where a cheap encode shows. 26 was
+    // chosen under the old 2.5MB ceiling; the raised budget buys the two points
+    // back rather than buying more seconds alone.
+    "-c:v", "libx264", "-preset", "slow", "-crf", "24",
     "-g", String(KEYFRAME_INTERVAL), "-keyint_min", String(KEYFRAME_INTERVAL),
     "-sc_threshold", "0",
     // No audio at all. The clip is muted by design and the track would be bytes
@@ -96,16 +110,31 @@ async function main() {
   mkdirSync(outDir, { recursive: true });
   const manifest = [];
 
+  const cached = JSON.parse(
+    existsSync(resolve(outDir, "CREDITS.json"))
+      ? readFileSync(resolve(outDir, "CREDITS.json"), "utf8")
+      : "[]",
+  );
+
   for (const clip of CLIPS) {
-    const { url, credit, link } = await sourceUrl(clip.id);
     const raw = resolve(outDir, `.${clip.name}.source.mp4`);
     const mp4 = resolve(outDir, `${clip.name}.mp4`);
     const jpg = resolve(outDir, `${clip.name}.jpg`);
 
-    if (!existsSync(raw)) {
-      process.stdout.write(`fetching ${clip.name} (pexels ${clip.id})…\n`);
-      const response = await fetch(url);
-      writeFileSync(raw, Buffer.from(await response.arrayBuffer()));
+    // Only reach for the network when the source is genuinely absent. Changing
+    // an encode setting should not require an API key: the sources are cached,
+    // and a re-encode that cannot run offline is a re-encode nobody does.
+    let credit = cached.find((c) => c.name === clip.name)?.credit;
+    let link = cached.find((c) => c.name === clip.name)?.source;
+    if (!existsSync(raw) || !credit || !link) {
+      const found = await sourceUrl(clip.id);
+      credit = found.credit;
+      link = found.link;
+      if (!existsSync(raw)) {
+        process.stdout.write(`fetching ${clip.name} (pexels ${clip.id})…\n`);
+        const response = await fetch(found.url);
+        writeFileSync(raw, Buffer.from(await response.arrayBuffer()));
+      }
     }
 
     transcode(raw, mp4, clip.startSeconds);

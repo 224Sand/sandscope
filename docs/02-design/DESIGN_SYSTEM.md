@@ -121,8 +121,22 @@ is what makes the reference standard feel unhurried.
 
 ### Scroll-scrubbed video
 
-Encoded as H.264, 1920×1080, 30fps, **under 4 seconds per scene, under 2.5 MB**.
-A budget, enforced in CI: a scene that exceeds it does not merge.
+Encoded as H.264, 1920×1080, 30fps, CRF 24, **under 7 seconds per scene, under
+4.5 MB**. A budget, enforced in CI by `scripts/check-media.mjs`: a clip that
+exceeds it does not merge.
+
+Relaxed from 4s / 2.5MB in Sprint 9. Four seconds is short enough that an
+ambient background visibly restarts while a reader is still inside the
+paragraph it sits behind, and the loop point becomes the thing you notice
+instead of the writing. The extra headroom also pays for CRF 24 rather than 26,
+which is where this page's near-black gradients stop banding. It is a
+relaxation, not an abandonment — the ceiling still refuses clips, and the
+largest committed file sits at 4.03 MB against it.
+
+Until Sprint 9 the sentence above said "enforced in CI" while no workflow had
+ever opened a media file; the budget lived inside `fetch-media.mjs`, which runs
+on a laptop when somebody chooses to. The check now reads the committed
+artefacts, because the encoder is not what ships.
 
 Requirements that are not negotiable:
 - `preload="auto"`, `muted`, `playsInline`, no `autoplay`
