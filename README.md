@@ -108,7 +108,7 @@ defect count, and including the numbers in this README.
 | Tests | 423 across 24 files |
 | Requirements | 61, of which 61 `Done` and each names a test that exists |
 | Defects logged | 26, of which 7 severity 1 |
-| ADRs | 13 |
+| ADRs | 14 |
 
 **Not one defect was caught by code review, and not one by a unit test written
 before it.** Every single one was caught by *executing* something — the
