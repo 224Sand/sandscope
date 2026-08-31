@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-31T10:00:12.979Z",
-  "sha": "16df078",
+  "generatedAt": "2026-08-31T10:54:54.746Z",
+  "sha": "6e37659",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,7 +90,7 @@
     }
   },
   "defects": {
-    "total": 26,
+    "total": 28,
     "severity1": 7,
     "caughtByReview": 0,
     "rows": [
@@ -301,6 +301,22 @@
         "severity": "3",
         "description": "Two labels on the public architecture diagram were struck through by the dashed lines they sat on. The masking plates were sized in SVG user units, so a width that covered the text on macOS was too short on Linux and at mobile scale — the fix for the first version broke on a platform the first version happened to pass on",
         "rootCause": "A mask sized in absolute units cannot track text whose width depends on the font the platform resolved. Only reachable by rendering on more than one platform, which is what the mobile project and Linux CI now do"
+      },
+      {
+        "id": "D-027",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "2",
+        "description": "The public architecture diagram asserted three things about the system that were not true. The arrow pointing at **Upstash had no source node** — its tail began in empty space, because the only caller is the edge rate limiter and the node was drawn in the runtime's data column. The node was labelled **`redis · vector`**; Upstash Vector appears exactly once in the repository, in `training/benchmark_vector_store.py`, as the managed-store comparison arm for ADR-0011, and has never served a request. And an edge left the **Provider chain for Neon**, which never opens a database connection — nothing in `router.py` imports the db module. Reported by the Product Owner reading the deployed page",
+        "rootCause": "Same class as D-022 and D-019: a diagram is prose that nobody proofreads. The SVG is valid and renders without complaint, so a type check, a build and a screenshot all pass while it is wrong about the system. Nothing had ever asserted that an arrow starts and ends on a box"
+      },
+      {
+        "id": "D-028",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "3",
+        "description": "The role tabs on the story surface gave **no hover feedback at all once selected**: `.role-tab:hover` and `.role-tab[data-on=\"true\"]` have identical specificity (0,2,0), so the later rule took back both `color` and `background` and the pointer sat over a control that showed no sign of being one. Selection was also carried by **colour alone** — `color`, `background` and `border-color`, every one of which a forced-colors mode overrides — so in Windows High Contrast the chosen role was indistinguishable from the other ten, and the page could not tell you whose story you were reading. The global `:focus-visible` additionally set `border-radius: 4px`, squaring off the 999px pill for keyboard users only. Reported by the Product Owner",
+        "rootCause": "An equal-specificity collision reads as a working rule in review; only the cascade order decides it, and nothing in the suite exercised hover-on-selected. The stylesheet carried no `forced-colors` block anywhere, so every `data-on` control on the site shared the second half of this"
       }
     ]
   },

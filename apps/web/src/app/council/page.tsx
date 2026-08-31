@@ -26,16 +26,16 @@ export default function CouncilPage() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / COUNCIL
         </p>
         <h2 className="mb-4">One person, twelve roles, and a rule that made it work</h2>
-        <p style={{ color: "var(--text-2)", fontSize: "1.0625rem", maxWidth: "70ch" }}>
+        <p className="lede-lg">
           This was built by one person directing an AI through a written charter of named delivery
           roles. That arrangement collapses into a single agreeable voice unless something stops
           it, and one rule does most of that work:
         </p>
-        <div className="pull" style={{ margin: "var(--s5) 0" }}>A role may not sign off its own work.</div>
+        <div className="pull rule-y" >A role may not sign off its own work.</div>
         <p style={{ color: "var(--text-2)", maxWidth: "70ch" }}>
           The evidence that it held is below: {reactions} reactions from {voices.size} different
           roles across {council.artifacts.length} real decisions and defects, every one citing an
@@ -60,9 +60,9 @@ export default function CouncilPage() {
             <tbody>
               {council.roles.map((role) => (
                 <tr key={role.role}>
-                  <td style={{ whiteSpace: "nowrap", fontWeight: 590 }}>{role.role}</td>
+                  <td className="strong-label">{role.role}</td>
                   <td className="muted">{role.owns}</td>
-                  <td style={{ color: "var(--text-3)", fontSize: "0.875rem" }}>{role.produces}</td>
+                  <td className="dim fine-2">{role.produces}</td>
                 </tr>
               ))}
             </tbody>
@@ -87,9 +87,9 @@ export default function CouncilPage() {
             <tbody>
               {council.stakeholders.map((role) => (
                 <tr key={role.role}>
-                  <td style={{ whiteSpace: "nowrap", fontWeight: 590 }}>{role.role}</td>
+                  <td className="strong-label">{role.role}</td>
                   <td className="muted">{role.when}</td>
-                  <td style={{ color: "var(--text-3)", fontSize: "0.875rem" }}>{role.authority}</td>
+                  <td className="dim fine-2">{role.authority}</td>
                 </tr>
               ))}
             </tbody>
@@ -107,7 +107,7 @@ export default function CouncilPage() {
           committee producing filler.
         </p>
 
-        <div style={{ display: "grid", gap: "var(--s5)" }}>
+        <div className="stack-5">
           {council.artifacts.map((artifact) => (
             <article key={artifact.number} className="panel">
               <div style={{ display: "flex", gap: "var(--s3)", alignItems: "baseline", flexWrap: "wrap", marginBottom: "var(--s3)" }}>
@@ -155,14 +155,14 @@ export default function CouncilPage() {
       {/* ------------------------------------------------------------ the tool */}
       <section className="panel">
         <h3 className="mb-3">The review process became a tool</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="para">
           Partway through, it became clear the discipline above was worth extracting: pick the
           methodology first, because Scrum has no Change Control Board and Waterfall has no
           retrospective, and a role set chosen before a methodology produces a committee that
           cannot decide anything. Then name a role before each action rather than after, so it
           constrains the work instead of labelling it.
         </p>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="para">
           That became <strong>role-council</strong>, an open-source skill that runs this review over
           any repository&rsquo;s real history — mining defect logs, decision records and commits
           rather than inventing opinions. Everything on this page is its first real output, run
@@ -174,13 +174,13 @@ export default function CouncilPage() {
           conflict is exactly as useless as manufactured consensus.
         </p>
         <div style={{ display: "flex", gap: "var(--s4)", flexWrap: "wrap" }}>
-          <a className="mono" style={{ fontSize: "0.8125rem" }} href="https://github.com/224Sand/role-council">
+          <a className="mono finer"  href="https://github.com/224Sand/role-council">
             github.com/224Sand/role-council →
           </a>
-          <a className="mono" style={{ fontSize: "0.8125rem" }} href={`https://github.com/${config.repo}/blob/main/docs/00-governance/WAYS_OF_WORKING.md`}>
+          <a className="mono finer"  href={`https://github.com/${config.repo}/blob/main/docs/00-governance/WAYS_OF_WORKING.md`}>
             the charter →
           </a>
-          <a className="mono" style={{ fontSize: "0.8125rem" }} href={`https://github.com/${config.repo}/blob/main/docs/00-governance/COUNCIL_RETROSPECTIVE.md`}>
+          <a className="mono finer"  href={`https://github.com/${config.repo}/blob/main/docs/00-governance/COUNCIL_RETROSPECTIVE.md`}>
             the full retrospective →
           </a>
         </div>

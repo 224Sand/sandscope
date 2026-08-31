@@ -43,7 +43,7 @@ export default function BudgetBar({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)" }}>
+      <div className="row-between">
         <h3 style={{ fontSize: "1rem" }}>{label}</h3>
         <span className={`chip chip--${tone}`}>{state}</span>
       </div>

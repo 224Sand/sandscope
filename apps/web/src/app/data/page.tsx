@@ -42,24 +42,24 @@ export default function DataPage() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / DATA
         </p>
         <h2 className="mb-4">Everything here is invented. Here is all of it.</h2>
-        <p style={{ color: "var(--text-2)", fontSize: "1.0625rem", maxWidth: "70ch" }}>
+        <p className="lede-lg">
           There is no real company behind {config.wordmark}. The services, the documents, the
           incidents and the metrics were all authored for this project. That is stated on every
           other surface in one sentence — this page is the inventory behind the sentence, because a
           claim of &ldquo;synthetic&rdquo; that cannot be inspected is just a claim.
         </p>
-        <p style={{ color: "var(--text-3)", fontSize: "0.9375rem", marginTop: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="dim body-sm mt-4 measure">
           No document, service or question below was written by a language model. The estate
           topology is hand-authored; the telemetry and incidents are generated from a seed, so any
           run can be reproduced exactly rather than described.
         </p>
       </header>
 
-      <section className="reveal-scale story-stats" style={{ marginBottom: "var(--s8)" }}>
+      <section className="reveal-scale story-stats mb-8" >
         <Stat value={String(corpus.documents)} label="Documents" note={`${corpus.chunks} passages`} />
         <Stat value={String(estate.services)} label="Services" note={`${estate.dependencies} dependencies`} />
         <Stat value={String(faults.length)} label="Fault patterns" note="each with a runbook" />
@@ -90,7 +90,7 @@ export default function DataPage() {
             <tbody>
               {corpus.files.map((file) => (
                 <tr key={file.id}>
-                  <td style={{ whiteSpace: "nowrap", color: "var(--text-3)" }}>
+                  <td className="nowrap dim">
                     {KIND_LABEL[file.id.split("-")[0] ?? ""] ?? "—"}
                   </td>
                   <td className="mono" style={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}>
@@ -109,13 +109,13 @@ export default function DataPage() {
       {/* -------------------------------------------------------------- gaps */}
       <section className="panel" style={{ marginBottom: "var(--s6)", borderColor: "color-mix(in srgb, var(--refused) 35%, var(--line))" }}>
         <h3 className="mb-3">What the corpus deliberately does NOT cover</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="para">
           The most load-bearing file in the dataset is a list of things it leaves out. Without
           verified gaps, &ldquo;correct refusal&rdquo; cannot be measured at all — every refusal
           would count as a mistake, and the refusal threshold could be set to zero without any test
           noticing.
         </p>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="para">
           Twelve topics are absent outright: disk exhaustion, DNS failures, data retention, on-call
           rotas, disaster recovery, feature flags and more. Six more are the harder case —{" "}
           <strong>partially</strong> covered, where retrieval happily returns adjacent material. A
@@ -151,7 +151,7 @@ export default function DataPage() {
           graph produces plausible names and an implausible shape, and incident causality is only
           interesting when the topology is.
         </p>
-        <p style={{ color: "var(--text-3)", fontSize: "0.875rem", marginBottom: "var(--s5)" }}>
+        <p className="dim fine-2 mb-5">
           Tier 0 is on the customer&rsquo;s critical path right now. Tier 3 can be down for an hour
           before anyone outside the owning team notices.
         </p>
@@ -190,14 +190,14 @@ export default function DataPage() {
           services in its blast radius move later, attenuated by distance in the dependency graph.
           That time ordering is the diagnostic signal the agent has to reason from.
         </p>
-        <div style={{ display: "grid", gap: "var(--s3)" }}>
+        <div className="stack-3">
           {faults.map((fault) => (
             <div key={fault.id} style={{ borderTop: "1px solid var(--line)", paddingTop: "var(--s3)" }}>
               <div style={{ display: "flex", gap: "var(--s3)", alignItems: "baseline", flexWrap: "wrap" }}>
                 <span className={fault.severity === 1 ? "chip chip--blocked" : "chip chip--neutral"}>
                   sev {fault.severity}
                 </span>
-                <strong style={{ fontSize: "0.9375rem" }}>{fault.name}</strong>
+                <strong className="body-sm">{fault.name}</strong>
                 <span className="mono dim finest">
                   {fault.runbook}
                 </span>
@@ -216,7 +216,7 @@ export default function DataPage() {
       {/* --------------------------------------------------------- questions */}
       <section className="panel">
         <h3 className="mb-3">The {questions.total} questions</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="para">
           Every threshold in the refusal gate is set against these. {questions.answerable} have an
           answer in the corpus and {questions.unanswerable} deliberately do not — and the label is{" "}
           <strong>true by construction</strong> rather than assigned by a person or a model. An
@@ -230,7 +230,7 @@ export default function DataPage() {
           correction in the gap list above.
         </p>
 
-        <div style={{ display: "grid", gap: "var(--s5)" }}>
+        <div className="stack-5">
           {questions.mechanisms.map((mechanism) => (
             <div key={mechanism.id} style={{ borderTop: "1px solid var(--line)", paddingTop: "var(--s4)" }}>
               <div style={{ display: "flex", gap: "var(--s3)", alignItems: "baseline", flexWrap: "wrap", marginBottom: "var(--s2)" }}>

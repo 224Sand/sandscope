@@ -105,10 +105,10 @@ export default function Home() {
       />
 
       <section className="wrap" style={{ paddingBlock: "var(--s9)", borderTop: "1px solid var(--line)" }}>
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s4)" }}>
+        <p className="mono dim mb-4" >
           A NOTE ON WHAT THIS IS
         </p>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
+        <p className="para-mb5">
           {config.name} is a demonstration product built to production standards on
           synthetic data. The engineering is real — the services, the failover, the
           retrieval, the evaluation, the pipeline. The customers are simulated, and

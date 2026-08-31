@@ -47,7 +47,7 @@ export default function Scene({
   media?: string;
 }) {
   return (
-    <section className="scene" style={{ borderTop: "1px solid var(--line)" }}>
+    <section className="scene hairline-top" >
       {media && (
         /* Poster-first, video lazily. The clip is decoration: it must never
            delay the text, and it is muted/inert so it cannot demand attention
@@ -84,7 +84,7 @@ export default function Scene({
         }}
       >
         <div>
-          <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s4)" }}>
+          <p className="mono dim mb-4" >
             {kicker.toUpperCase()}
           </p>
           <h2 style={{ marginBottom: "var(--s5)", maxWidth: "18ch" }}>{heading}</h2>

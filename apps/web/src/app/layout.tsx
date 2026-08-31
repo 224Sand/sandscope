@@ -108,7 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Mark size={20} />
               <span>{config.wordmark}</span>
             </a>
-            <span style={{ flex: 1 }} />
+            <span className="grow" />
             {[
               ["/story", "Story"],
               ["/handover", "Handover"],

@@ -80,17 +80,17 @@ export default function Handover() {
       </div>
 
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / HANDOVER
         </p>
         <h2 className="mb-4">Everything, at whatever depth you need</h2>
-        <p style={{ color: "var(--text-2)", fontSize: "1.0625rem", maxWidth: "70ch" }}>
+        <p className="lede-lg">
           One document for two readers. The prose reads end to end in plain language and assumes
           nothing — that is the whole handover for someone who does not write code. Wherever there
           is more to say, a <strong>deeper</strong> block underneath carries the parameters, the
           formulas, the tradeoffs and the failure modes.
         </p>
-        <p style={{ color: "var(--text-3)", fontSize: "0.9375rem", marginTop: "var(--s4)", maxWidth: "70ch" }}>
+        <p className="dim body-sm mt-4 measure">
           Writing for the middle would patronise one reader and starve the other. Writing two
           documents would guarantee one of them goes stale. Nothing below is hidden from search or
           from a screen reader — the disclosure is native, and works with JavaScript off.
@@ -99,7 +99,7 @@ export default function Handover() {
 
       <DepthControl />
 
-      <section className="reveal-scale story-stats" style={{ marginBottom: "var(--s8)" }}>
+      <section className="reveal-scale story-stats mb-8" >
         <Stat value={`${delivery.requirements.done}/${delivery.requirements.total}`} label="Requirements" note="each names a passing test" />
         <Stat value={pct(gate.falseAnswer.rate)} label="False answers" note={`budget ${pct(gate.falseAnswer.budget)}`} />
         <Stat value={String(delivery.defects.total)} label="Defects published" note={`${delivery.defects.severityOne} severity 1`} />

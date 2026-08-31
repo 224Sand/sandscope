@@ -267,7 +267,7 @@ export default function Console() {
   const retrieval = events.find((e) => e.node === "retrieve");
 
   return (
-    <div style={{ display: "grid", gap: "var(--s5)" }}>
+    <div className="stack-5">
       <section className="panel">
         <h3 className="mb-4">Choose a scenario</h3>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s2)", marginBottom: "var(--s4)" }}>
@@ -285,7 +285,7 @@ export default function Console() {
             </button>
           ))}
         </div>
-        <p className="mono" style={{ color: "var(--text-2)", marginBottom: "var(--s4)" }}>
+        <p className="mono muted mb-4" >
           {preset.body}
         </p>
         {/* FR-011. The reliability claim on the landing page is deterministic
@@ -335,14 +335,14 @@ export default function Console() {
       {error && (
         <section className="panel" style={{ borderColor: "var(--blocked)" }}>
           <span className="chip chip--blocked">error</span>
-          <p style={{ marginTop: "var(--s3)", color: "var(--text-2)" }}>{error}</p>
+          <p className="mt-3-muted">{error}</p>
         </section>
       )}
 
       {events.length > 0 && (
         <section className="panel">
           <h3 className="mb-4">Execution</h3>
-          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
+          <ol className="plain-list">
             {events.map((event, index) => (
               <li
                 key={`${event.node}-${index}`}
@@ -358,7 +358,7 @@ export default function Console() {
                 <span style={{ minWidth: "16ch", fontWeight: 500 }}>
                   {NODE_LABEL[event.node] ?? event.node}
                 </span>
-                <span className="mono" style={{ color: "var(--text-2)", fontSize: "0.8125rem" }}>
+                <span className="mono muted finer" >
                   {event.node === "retrieve" && `${event.hits} passages${event.degraded ? " · degraded" : ""}`}
                   {event.node === "assess_evidence" && event.rationale}
                   {event.node === "adjudicate" && event.rationale}
@@ -377,7 +377,7 @@ export default function Console() {
 
       {evidence && (
         <section className="panel">
-          <div style={{ display: "flex", gap: "var(--s2)", flexWrap: "wrap", marginBottom: "var(--s4)" }}>
+          <div className="row-wrap mb-4">
             {verdictChip(evidence.verdict)}
             {riskChip(risk?.risk)}
             {retrieval?.degraded && <span className="chip chip--refused">retrieval degraded</span>}
@@ -408,13 +408,13 @@ export default function Console() {
           className="panel"
           style={{ borderLeft: `2px solid ${rejected ? "var(--blocked)" : "var(--grounded)"}` }}
         >
-          <div style={{ display: "flex", gap: "var(--s2)", flexWrap: "wrap", marginBottom: "var(--s4)" }}>
+          <div className="row-wrap mb-4">
             <h3 style={{ margin: 0 }}>{rejected ? "Draft — not emitted" : "Assessment"}</h3>
           </div>
           {rejected && (
             <div className="mb-5">
               <span className="chip chip--blocked">escalated after 3 attempts</span>
-              <p style={{ marginTop: "var(--s3)", color: "var(--text-2)" }}>
+              <p className="mt-3-muted">
                 {uncited.length} claim{uncited.length === 1 ? "" : "s"} still carried no
                 citation, so this was <strong>not emitted</strong>. It is shown because
                 hiding it would be worse than labelling it.
@@ -437,11 +437,11 @@ export default function Console() {
 
           {citations.length > 0 && (
             <>
-              <hr className="hairline" style={{ margin: "var(--s5) 0" }} />
+              <hr className="hairline rule-y"/>
               <h3 style={{ marginBottom: "var(--s3)", fontSize: "1rem" }}>
                 Evidence ({citations.length} claims cited)
               </h3>
-              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
+              <ul className="plain-list">
                 {citations.map((citation, index) => (
                   <li key={index}>
                     <button
@@ -454,7 +454,7 @@ export default function Console() {
                         padding: "var(--s3)",
                       }}
                     >
-                      <span className="mono" style={{ fontSize: "0.8125rem", color: "var(--text-2)" }}>
+                      <span className="mono muted finer" >
                         {citation.resolved ? citation.chunk_id : "UNRESOLVED CITATION"}
                       </span>
                       <div style={{ marginTop: "var(--s1)", fontSize: "0.9375rem" }}>
@@ -481,8 +481,8 @@ export default function Console() {
           <pre className="mono" style={{ whiteSpace: "pre-wrap", margin: 0 }}>{proposal}</pre>
           {(risk?.risk === "high" || risk?.risk === "critical") && (
             <>
-              <hr className="hairline" style={{ margin: "var(--s5) 0" }} />
-              <p style={{ color: "var(--text-2)", marginBottom: "var(--s4)" }}>
+              <hr className="hairline rule-y"/>
+              <p className="muted mb-4">
                 This action is above the risk threshold. The run has stopped and nothing
                 proceeds until a human decides. Approving starts a new run carrying the
                 decision — the approval step cannot auto-proceed.
@@ -562,7 +562,7 @@ export default function Console() {
             ))}
           </dl>
           {result.providers.length > 0 && (
-            <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.8125rem", marginTop: "var(--s4)" }}>
+            <p className="mono note" >
               {result.providers.map((p) => `${p.provider}:${p.event}`).join("  ")}
             </p>
           )}
@@ -575,7 +575,7 @@ export default function Console() {
           than mirrored from this tab's own runs: the two differ exactly when
           persistence failed, which is the case worth seeing. */}
       <section className="panel" data-testid="memory-panel">
-        <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)" }}>
+        <header className="row-between">
           <h3>Session memory</h3>
           <span className="mono dim finest">
             {mounted ? sessionId.current : ""}

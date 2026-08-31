@@ -383,11 +383,43 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   color: var(--text-2);
   transition: color var(--t-quick), border-color var(--t-quick), background var(--t-quick);
 }
-.role-tab:hover { color: var(--text); border-color: #34343b; }
+.role-tab:hover { color: var(--text); border-color: #34343b; background: var(--surface-2); }
 .role-tab[data-on="true"] {
   color: var(--ground);
   background: var(--text);
   border-color: var(--text);
+}
+
+/* Hovering the SELECTED tab did nothing at all. `.role-tab:hover` and
+   `.role-tab[data-on="true"]` have identical specificity (0,2,0), so the
+   later rule won and took back both `color` and `background` — the pointer
+   was over a control that gave no sign it was a control. Dimming the pill
+   is the affordance; black on 88% white still measures ~17:1. */
+.role-tab[data-on="true"]:hover {
+  background: color-mix(in srgb, var(--text) 88%, var(--ground));
+  border-color: color-mix(in srgb, var(--text) 88%, var(--ground));
+}
+
+/* The global :focus-visible sets `border-radius: 4px`, which beat the pill's
+   999px and squared the button off for keyboard users only. */
+.role-tab:focus-visible { border-radius: 999px; }
+
+/* Selection was carried by colour ALONE — `color`, `background` and
+   `border-color`, every one of which a forced-colors mode overrides. In
+   Windows High Contrast the selected tab was indistinguishable from the other
+   ten, so the page could not tell you whose story you were reading. The
+   system colour keywords are the supported way to say "this one is chosen"
+   in a palette the user controls. `.map-node` is already safe: it carries a
+   stroke-width change, which is a shape rather than a colour. */
+@media (forced-colors: active) {
+  .role-tab[data-on="true"],
+  .chaos-item[data-on="true"],
+  .depth-option[data-on="true"],
+  .gate-question[data-on="true"] {
+    background: Highlight;
+    color: HighlightText;
+    border-color: Highlight;
+  }
 }
 
 .role-panel { padding: var(--s6); }
@@ -1026,3 +1058,69 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
   gap: var(--s5);
   margin: 0;
 }
+
+/* ═════════════════════════════════════════ the rest of the extraction
+   Everything below replaced a repeated inline object. What deliberately
+   REMAINS inline is the handful of styles computed at render time — a bar's
+   width from a duration, a marker's position from a score. Those are data
+   expressed as CSS, not design decisions, and moving them here is impossible
+   rather than merely awkward. Each is commented at its site. */
+
+/* type scale, by role */
+.body-sm   { font-size: 0.9375rem; }
+.eyebrow-p { color: var(--text-3); margin-bottom: var(--s3); }
+.note      { color: var(--text-3); font-size: 0.8125rem; margin-top: var(--s4); }
+.footnote  { margin-top: var(--s3); color: var(--text-3); font-size: 0.75rem; }
+.measure   { max-width: 70ch; }
+.lede-lg   { color: var(--text-2); font-size: 1.0625rem; max-width: 70ch; }
+.para      { color: var(--text-2); margin-bottom: var(--s4); max-width: 70ch; }
+.para-sm   { color: var(--text-2); font-size: 0.9375rem; margin-bottom: var(--s5); }
+.para-mb5  { color: var(--text-2); margin-bottom: var(--s5); }
+
+/* semantic text colours, so a component never reaches for the token directly */
+.ink       { color: var(--text); }
+.ok        { color: var(--grounded); }
+.warn-text { color: var(--refused); }
+.bad       { color: var(--blocked); }
+
+/* lists that are structure rather than prose */
+.plain-list      { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.plain-list--4   { gap: var(--s4); }
+.plain-list--3   { gap: var(--s3); }
+.stack-5         { display: grid; gap: var(--s5); }
+
+/* tables. `.data-table` is the shared shell; cell padding is a role, not a value */
+.scroll-x-auto { overflow-x: auto; }
+.data-table    { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.data-table th { text-align: left; color: var(--text-3); font-weight: 450; padding: var(--s2) var(--s3) var(--s2) 0; }
+.data-table td { padding: var(--s3) var(--s3) var(--s3) 0; vertical-align: top; }
+.cell-tight    { padding: var(--s2) var(--s3) var(--s2) 0; }
+.cell          { padding: var(--s3) var(--s3) var(--s3) 0; }
+.nowrap        { white-space: nowrap; }
+.strong-label  { white-space: nowrap; font-weight: 590; }
+
+.rule-y { margin: var(--s5) 0; }
+.mb-8   { margin-bottom: var(--s8); }
+.mt-3-muted { margin-top: var(--s3); color: var(--text-2); }
+
+/* ── structural rows and remaining atoms ────────────────────────────────
+   The tail of the extraction. Most of what was left composes from atoms
+   already defined above (`dim fine`, `muted finer`); these are the few
+   shapes that genuinely repeat and had no name. */
+.row-between { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); }
+.row-wrap    { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.row-gap3    { display: flex; align-items: center; gap: var(--s3); }
+.stack-3     { display: grid; gap: var(--s3); }
+.grow        { flex: 1; }
+.hairline-top{ border-top: 1px solid var(--line); }
+.tight-0     { margin: var(--s1) 0 0; }
+.mt-4        { margin-top: var(--s4); }
+.mt-6        { margin-top: var(--s6); }
+.rule-4      { margin: var(--s4) 0; }
+.rule-65     { margin: var(--s6) 0 var(--s5); }
+.th-pad      { padding-bottom: var(--s2); font-weight: 450; }
+.chip-pad    { padding: var(--s2) var(--s3); font-weight: 500; }
+.fine-2      { font-size: 0.875rem; }
+.accent-text { color: var(--accent); }
+.data-table--640 { min-width: 640px; }
+.data-table--sm  { font-size: 0.75rem; }

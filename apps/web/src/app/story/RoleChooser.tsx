@@ -114,7 +114,7 @@ export default function RoleChooser() {
 
         <p className="role-mandate">{active.mandate}</p>
 
-        <hr className="hairline" style={{ margin: "var(--s6) 0 var(--s5)" }} />
+        <hr className="hairline rule-65"/>
 
         <p className="mono role-timeline-label">
           Their thread — {active.moments.length} moment{active.moments.length === 1 ? "" : "s"} across the build

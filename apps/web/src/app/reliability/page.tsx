@@ -19,7 +19,7 @@ function Metric({ label, value, sub }: { label: string; value: string; sub?: str
     <div>
       <dt className="dim finer">{label}</dt>
       <dd className="mono" style={{ margin: "var(--s1) 0 0", fontSize: "1.375rem" }}>{value}</dd>
-      {sub && <p style={{ color: "var(--text-3)", fontSize: "0.75rem", margin: "var(--s1) 0 0" }}>{sub}</p>}
+      {sub && <p className="dim finest tight-0">{sub}</p>}
     </div>
   );
 }
@@ -37,7 +37,7 @@ export default function Reliability() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / RELIABILITY
         </p>
         <h2 className="mb-4">Measured, including where it fails</h2>
@@ -84,7 +84,7 @@ export default function Reliability() {
           />
         </div>
 
-        <hr className="hairline mb-5"  />
+        <hr className="hairline mb-5"/>
 
         <dl style={grid("170px")}>
           <Metric
@@ -110,16 +110,16 @@ export default function Reliability() {
         className="panel"
         style={{ marginBottom: "var(--s6)", borderColor: "color-mix(in srgb, var(--refused) 30%, var(--line))" }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)", marginBottom: "var(--s3)" }}>
+        <div className="row-between mb-3">
           <h3>What is still weak</h3>
           <span className="chip chip--refused">{weaknesses.length} open</span>
         </div>
-        <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
+        <p className="para-sm">
           These checks run on every push and are <strong>expected to fail</strong>. They exist
           to keep known limitations visible rather than letting a green suite imply the
           problem was solved. A passing probe suite would mean it had stopped looking.
         </p>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s4)" }}>
+        <ul className="plain-list plain-list--4">
           {weaknesses.map((w) => (
             <li key={w.name} style={{ borderLeft: "2px solid var(--refused)", paddingLeft: "var(--s4)" }}>
               <p className="mono" style={{ fontSize: "0.8125rem", color: "var(--refused)" }}>{w.name}</p>
@@ -141,13 +141,13 @@ export default function Reliability() {
           <p className="mono" style={{ fontSize: "0.6875rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--refused)", marginBottom: "var(--s3)" }}>
             offline artefact · not in the request path
           </p>
-          <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
+          <p className="para-sm">
             Gradient boosting over {model.features} retrieval features, trained offline and
             shipped as {model.format.toUpperCase()}. It ships <em>uncalibrated</em>: Platt
             scaling collapsed cross-validated AUC from {model.auc.toFixed(3)} to 0.599, and
             isotonic broke ONNX parity because a step function does not survive float32.
           </p>
-          <p style={{ color: "var(--text-3)", fontSize: "0.875rem", marginBottom: "var(--s5)" }}>
+          <p className="dim fine-2 mb-5">
             It does not decide anything a visitor sees. Used as a gate it refuses{" "}
             <strong>56.8%</strong> of answerable questions against a 10% budget; a two-sided
             band tuned to fix that measured 4.7% false answers on one pass and{" "}
@@ -165,7 +165,7 @@ export default function Reliability() {
 
         <section className="panel">
           <h3 className="mb-4">Cross-encoder re-ranker</h3>
-          <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
+          <p className="para-sm">
             {reranker.baseModel} fine-tuned on {reranker.trainingPairs} pairs. Both metrics
             ship: document-level was already {reranker.documentLevelMrr.toFixed(3)} and hid
             the entire effect — measuring at the level a citation actually points at is what
@@ -181,33 +181,33 @@ export default function Reliability() {
 
       {/* ----------------------------------------------------------- defects */}
       <section className="panel mb-6" >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)", marginBottom: "var(--s3)" }}>
+        <div className="row-between mb-3">
           <h3>Defects</h3>
           <span className="chip chip--neutral">
             {defects.total} logged · {defects.severity1} severity 1
           </span>
         </div>
-        <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
+        <p className="para-sm">
           Not one was caught by code review, and not one by a unit test written before it.
           Every single one was caught by executing something — the assembled system, a
           measurement over a large labelled set, or a container in CI. That distribution is
           the finding, more than any individual defect.
         </p>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem", minWidth: 640 }}>
+        <div className="scroll-x-auto">
+          <table className="data-table data-table--640">
             <thead>
-              <tr style={{ textAlign: "left", color: "var(--text-3)" }}>
-                <th style={{ padding: "var(--s2) var(--s3) var(--s2) 0", fontWeight: 500 }}>ID</th>
-                <th style={{ padding: "var(--s2) var(--s3)", fontWeight: 500 }}>Sev</th>
-                <th style={{ padding: "var(--s2) var(--s3)", fontWeight: 500 }}>Defect</th>
+              <tr>
+                <th>ID</th>
+                <th>Sev</th>
+                <th>Defect</th>
               </tr>
             </thead>
             <tbody>
               {defects.rows.map((d) => (
-                <tr key={d.id} style={{ borderTop: "1px solid var(--line)", verticalAlign: "top" }}>
-                  <td className="mono" style={{ padding: "var(--s3) var(--s3) var(--s3) 0", color: "var(--text-2)", whiteSpace: "nowrap" }}>{d.id}</td>
-                  <td className="mono" style={{ padding: "var(--s3)", color: d.severity === "1" ? "var(--blocked)" : "var(--text-3)" }}>{d.severity}</td>
-                  <td style={{ padding: "var(--s3)", color: "var(--text-2)" }}>{d.description}</td>
+                <tr key={d.id} className="hairline-top">
+                  <td className="mono muted nowrap">{d.id}</td>
+                  <td className="mono" style={{ color: d.severity === "1" ? "var(--blocked)" : "var(--text-3)" }}>{d.severity}</td>
+                  <td className="muted">{d.description}</td>
                 </tr>
               ))}
             </tbody>
@@ -218,12 +218,12 @@ export default function Reliability() {
       {/* ------------------------------------------------------ postmortems */}
       <section className="panel">
         <h3 className="mb-4">Postmortems</h3>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s4)" }}>
+        <ul className="plain-list plain-list--4">
           {postmortems.map((p) => (
             <li key={p.file}>
               <a
                 href={`https://github.com/${config.repo}/blob/main/docs/06-operations/postmortems/${p.file}`}
-                style={{ color: "var(--text)" }}
+                className="ink"
               >
                 {p.title}
               </a>
@@ -233,7 +233,7 @@ export default function Reliability() {
         </ul>
       </section>
 
-      <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem", marginTop: "var(--s6)" }}>
+      <p className="mono dim finest mt-6" >
         derived at {data.generatedAt} from {data.sha}
       </p>
     </main>

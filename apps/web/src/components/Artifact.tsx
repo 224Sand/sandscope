@@ -31,10 +31,10 @@ export function CitedClaim() {
   return (
     <Frame label="RUN-1A0229ED51D · VERIFY">
       <p className="mono" style={{ fontSize: "0.8125rem", lineHeight: 1.7, margin: 0 }}>
-        <span style={{ color: "var(--text)" }}>
+        <span className="ink">
           `db.pool.wait_ms` rose before `db.query.p99_ms`, indicating the pool was the cause
         </span>{" "}
-        <span style={{ color: "var(--grounded)" }}>[4]</span>
+        <span className="ok">[4]</span>
       </p>
       <div
         style={{
@@ -67,7 +67,7 @@ export function Refusal() {
       <p style={{ marginTop: "var(--s3)", color: "var(--text-3)", fontSize: "0.8125rem" }}>
         only 20% of the question&rsquo;s terms appear in the retrieved material
       </p>
-      <hr className="hairline" style={{ margin: "var(--s4) 0" }} />
+      <hr className="hairline rule-4"/>
       <p className="mono" style={{ fontSize: "0.75rem", color: "var(--text-3)", margin: 0 }}>
         false-answer rate 0.047 [0.029, 0.076] over 319 unanswerable questions
       </p>
@@ -111,9 +111,9 @@ export function Waterfall() {
           </div>
         ))}
       </div>
-      <p style={{ marginTop: "var(--s3)", color: "var(--text-3)", fontSize: "0.75rem" }}>
-        <span style={{ color: "var(--grounded)" }}>■</span> 5 nodes decided by typed rules,
-        13.4ms combined · <span style={{ color: "var(--accent)" }}>■</span> 2 model calls, 14.0s
+      <p className="footnote">
+        <span className="ok">■</span> 5 nodes decided by typed rules,
+        13.4ms combined · <span className="accent-text">■</span> 2 model calls, 14.0s
       </p>
     </Frame>
   );
@@ -132,7 +132,7 @@ export function Failover() {
             key={provider}
             style={{ display: "grid", gridTemplateColumns: "9ch 11ch 1fr", gap: "var(--s2)" }}
           >
-            <span style={{ color: "var(--text)" }}>{provider}</span>
+            <span className="ink">{provider}</span>
             <span style={{ color: colour }}>{event}</span>
             {/* Wraps rather than clipping. A detail column that overflows its
                 frame reads as a broken layout, and the detail is the part that
@@ -141,7 +141,7 @@ export function Failover() {
           </li>
         ))}
       </ul>
-      <p style={{ marginTop: "var(--s3)", color: "var(--text-3)", fontSize: "0.75rem" }}>
+      <p className="footnote">
         A 429 disables a provider for a bounded window. An exhausted quota disables
         it for the process. Conflating them strands the pipeline on its slowest fallback.
       </p>
@@ -156,7 +156,7 @@ export function Approval() {
       <p className="mono" style={{ fontSize: "0.8125rem", marginTop: "var(--s3)", color: "var(--text)" }}>
         Restart the orders-db connection pool on the Tier 0 path.
       </p>
-      <hr className="hairline" style={{ margin: "var(--s4) 0" }} />
+      <hr className="hairline rule-4"/>
       <p className="mono" style={{ fontSize: "0.75rem", color: "var(--text-3)", margin: 0, lineHeight: 1.7 }}>
         decision recorded → continuation run-5138840639d1
         <br />
@@ -169,12 +169,12 @@ export function Approval() {
 export function Budget() {
   return (
     <Frame label="SPEND LEDGER">
-      <table className="mono" style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.75rem" }}>
+      <table className="mono data-table data-table--sm">
         <thead>
-          <tr style={{ color: "var(--text-3)", textAlign: "left" }}>
-            <th style={{ paddingBottom: "var(--s2)", fontWeight: 450 }}>provider</th>
-            <th style={{ paddingBottom: "var(--s2)", fontWeight: 450 }}>reserved</th>
-            <th style={{ paddingBottom: "var(--s2)", fontWeight: 450 }}>actual</th>
+          <tr className="dim">
+            <th className="th-pad">provider</th>
+            <th className="th-pad">reserved</th>
+            <th className="th-pad">actual</th>
           </tr>
         </thead>
         <tbody className="muted">
@@ -183,7 +183,7 @@ export function Budget() {
             ["mistral", "$0.000626", "$0.000407"],
             ["mistral", "$0.000638", "$0.000364"],
           ].map((row, index) => (
-            <tr key={index} style={{ borderTop: "1px solid var(--line)" }}>
+            <tr key={index} className="hairline-top">
               {row.map((cell, cellIndex) => (
                 <td key={cellIndex} style={{ padding: "var(--s2) 0" }}>{cell}</td>
               ))}
@@ -191,7 +191,7 @@ export function Budget() {
           ))}
         </tbody>
       </table>
-      <p style={{ marginTop: "var(--s3)", color: "var(--text-3)", fontSize: "0.75rem" }}>
+      <p className="footnote">
         Reserved before the call at the price of the most expensive provider that could
         serve it, reconciled after. Ratio 1.50x — a bound, not an estimate.
       </p>

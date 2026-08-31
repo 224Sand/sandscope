@@ -7,7 +7,7 @@ export default function ConsolePage() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / CONSOLE
         </p>
         <h2 className="mb-4">Watch it reason</h2>

@@ -34,7 +34,7 @@ export default function CiStatus() {
   }
 
   return (
-    <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
+    <ul className="plain-list">
       {runs.map((run) => {
         const ok = run.conclusion === "success";
         const running = run.status !== "completed";

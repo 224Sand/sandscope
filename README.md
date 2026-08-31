@@ -107,7 +107,7 @@ defect count, and including the numbers in this README.
 |---|---|
 | Tests | 423 across 24 files |
 | Requirements | 61, of which 61 `Done` and each names a test that exists |
-| Defects logged | 26, of which 7 severity 1 |
+| Defects logged | 28, of which 7 severity 1 |
 | ADRs | 14 |
 
 **Not one defect was caught by code review, and not one by a unit test written
@@ -122,7 +122,8 @@ not evidence of anything.
 ## Security
 
 CodeQL · Semgrep · Trivy · gitleaks · pip-audit · npm audit · CycloneDX SBOM ·
-OWASP ZAP · 6 scripted penetration tests, all green.
+OWASP ZAP · 6 scripted penetration tests — **4 pass, 2 skip** against a public
+target, each skip recorded with its reason rather than counted as a pass.
 
 The security pipeline found real problems, including in itself: a shell
 injection in a workflow input, four RCE advisories that never reach the serving

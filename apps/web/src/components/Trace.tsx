@@ -60,7 +60,7 @@ export default function Trace({
               key={`${span.name}-${index}`}
               style={{ display: "grid", gridTemplateColumns: "15ch 1fr 9ch", gap: "var(--s3)", alignItems: "center" }}
             >
-              <span style={{ fontSize: "0.8125rem", color: "var(--text-2)" }}>
+              <span className="muted finer">
                 {LABEL[span.name] ?? span.name}
               </span>
               <div style={{ position: "relative", height: 20, background: "var(--surface-2)", borderRadius: 4 }}>
@@ -100,22 +100,22 @@ export default function Trace({
         })}
       </div>
 
-      <p style={{ color: "var(--text-3)", fontSize: "0.75rem", marginTop: "var(--s4)" }}>
-        <span style={{ color: "var(--grounded)" }}>■</span> decided by a typed rule, no tokens spent
+      <p className="dim finest mt-4">
+        <span className="ok">■</span> decided by a typed rule, no tokens spent
         {"   "}
-        <span style={{ color: "var(--accent)" }}>■</span> model call
+        <span className="accent-text">■</span> model call
       </p>
 
       {ledger.length > 0 && (
         <>
-          <hr className="hairline" style={{ margin: "var(--s5) 0" }} />
+          <hr className="hairline rule-y"/>
           <h3 style={{ fontSize: "1rem", marginBottom: "var(--s3)" }}>Spend ledger</h3>
-          <div style={{ overflowX: "auto" }}>
-            <table className="mono" style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+          <div className="scroll-x-auto">
+            <table className="mono data-table" >
               <thead>
-                <tr style={{ color: "var(--text-3)", textAlign: "left" }}>
+                <tr className="dim">
                   {["provider", "model", "in", "out", "estimated", "actual"].map((h) => (
-                    <th key={h} style={{ padding: "var(--s2) var(--s3) var(--s2) 0", fontWeight: 450 }}>
+                    <th key={h} className="cell-tight">
                       {h}
                     </th>
                   ))}
@@ -123,17 +123,17 @@ export default function Trace({
               </thead>
               <tbody>
                 {ledger.map((entry, index) => (
-                  <tr key={index} style={{ borderTop: "1px solid var(--line)", color: "var(--text-2)" }}>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0" }}>
-                      {entry.cache_hit ? <span style={{ color: "var(--grounded)" }}>cache</span> : entry.provider}
+                  <tr key={index} className="hairline-top muted">
+                    <td className="cell-tight">
+                      {entry.cache_hit ? <span className="ok">cache</span> : entry.provider}
                     </td>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0" }}>{entry.model}</td>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0" }}>{entry.tokens_in}</td>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0" }}>{entry.tokens_out}</td>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0" }}>
+                    <td className="cell-tight">{entry.model}</td>
+                    <td className="cell-tight">{entry.tokens_in}</td>
+                    <td className="cell-tight">{entry.tokens_out}</td>
+                    <td className="cell-tight">
                       ${entry.estimated_usd.toFixed(6)}
                     </td>
-                    <td style={{ padding: "var(--s2) var(--s3) var(--s2) 0", color: "var(--text)" }}>
+                    <td className="ink cell-tight">
                       ${entry.actual_usd.toFixed(6)}
                     </td>
                   </tr>

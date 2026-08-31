@@ -22,7 +22,7 @@ function Stat({ label, value, note }: { label: string; value: string | number; n
         {value}
       </dd>
       {note && (
-        <p style={{ color: "var(--text-3)", fontSize: "0.75rem", margin: "var(--s1) 0 0" }}>{note}</p>
+        <p className="dim finest tight-0">{note}</p>
       )}
     </div>
   );
@@ -35,7 +35,7 @@ export default function Delivery() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / DELIVERY
         </p>
         <h2 className="mb-4">The record, not the claim</h2>
@@ -45,7 +45,7 @@ export default function Delivery() {
           including the ones that were embarrassing, because a delivery record containing
           only successes is not evidence of anything.
         </p>
-        <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem", marginTop: "var(--s4)" }}>
+        <p className="mono dim finest mt-4" >
           derived at {record.generatedAt} from {record.sha}
         </p>
       </header>
@@ -53,7 +53,7 @@ export default function Delivery() {
       <section className="panel mb-6" >
         <h3 className="mb-5">Continuous integration, live</h3>
         <CiStatus />
-        <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", marginTop: "var(--s4)" }}>
+        <p className="note">
           Every push runs governance gates, lint, strict type checking, the offline suite,
           integration tests against a real Postgres with pgvector, a statistics suite
           checked against scikit-learn and scipy, a smoke test of the assembled system,
@@ -79,35 +79,35 @@ export default function Delivery() {
 
       <section className="panel mb-6" >
         <h3 className="mb-3">Defects</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
+        <p className="para-mb5">
           {record.defects.total} found and fixed during the build, {record.defects.severityOne} of
           them severity one. Every one is guarded by a regression test. <strong>None was found
           by code review.</strong>
         </p>
-        <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.8125rem" }}>
+        <div className="scroll-x-auto">
+          <table className="data-table">
             <thead>
-              <tr style={{ color: "var(--text-3)", textAlign: "left" }}>
+              <tr className="dim">
                 {["id", "sev", "what broke", "root cause"].map((h) => (
-                  <th key={h} style={{ padding: "var(--s2) var(--s3) var(--s2) 0", fontWeight: 450 }}>{h}</th>
+                  <th key={h}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {record.defects.entries.map((defect) => (
-                <tr key={defect.id} style={{ borderTop: "1px solid var(--line)", color: "var(--text-2)" }}>
-                  <td className="mono" style={{ padding: "var(--s3) var(--s3) var(--s3) 0", whiteSpace: "nowrap" }}>
+                <tr key={defect.id} className="hairline-top muted">
+                  <td className="mono nowrap">
                     {defect.id}
                   </td>
-                  <td style={{ padding: "var(--s3) var(--s3) var(--s3) 0" }}>
+                  <td>
                     <span style={{ color: defect.severity === "1" ? "var(--blocked)" : "var(--text-3)" }}>
                       {defect.severity}
                     </span>
                   </td>
-                  <td style={{ padding: "var(--s3) var(--s3) var(--s3) 0", color: "var(--text)" }}>
+                  <td className="ink">
                     {defect.description}
                   </td>
-                  <td style={{ padding: "var(--s3) var(--s3) var(--s3) 0" }}>{defect.cause}</td>
+                  <td>{defect.cause}</td>
                 </tr>
               ))}
             </tbody>
@@ -117,7 +117,7 @@ export default function Delivery() {
 
       <section className="panel mb-6" >
         <h3 className="mb-3">Requirements</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
+        <p className="para-mb5">
           {record.requirements.total} requirements, each traced to a story and a named test.
           A requirement with no test fails the build — the gate refuses to pass rather than
           warning, so the traceability matrix cannot quietly go stale.
@@ -133,12 +133,12 @@ export default function Delivery() {
             gave them no way to ask WHICH, or what test any one rests on —
             which is the only question that makes the claim checkable. Every
             row is derived from TRACEABILITY.md at build time. */}
-        <hr className="hairline" style={{ margin: "var(--s6) 0 var(--s5)" }} />
+        <hr className="hairline rule-65"/>
         <details className="matrix-details">
           <summary className="matrix-summary">
             Show all {record.requirements.total} requirements, with the test each one names
           </summary>
-          <div className="tablewrap" style={{ marginTop: "var(--s4)" }}>
+          <div className="tablewrap mt-4" >
             <table className="matrix-table">
               <thead>
                 <tr>
@@ -152,7 +152,7 @@ export default function Delivery() {
               <tbody>
                 {record.requirements.rows.map((row) => (
                   <tr key={row.id}>
-                    <td className="mono" style={{ whiteSpace: "nowrap", color: "var(--text-3)" }}>
+                    <td className="mono nowrap dim" >
                       {row.id}
                     </td>
                     <td>{row.requirement}</td>
@@ -179,20 +179,20 @@ export default function Delivery() {
 
       <section className="panel mb-6" >
         <h3 className="mb-5">Sprints</h3>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s2)" }}>
+        <ul className="plain-list">
           {record.sprints.map((sprint) => (
             <li
               key={sprint.number}
               style={{ display: "grid", gridTemplateColumns: "4ch 1fr 8ch 1fr", gap: "var(--s3)", padding: "var(--s2) 0", borderBottom: "1px solid var(--line)" }}
             >
               <span className="mono dim">{sprint.number}</span>
-              <span style={{ color: "var(--text)" }}>{sprint.name}</span>
+              <span className="ink">{sprint.name}</span>
               <span className="mono dim finer">{sprint.release}</span>
-              <span className="mono" style={{ color: "var(--text-2)", fontSize: "0.8125rem" }}>{sprint.velocity}</span>
+              <span className="mono muted finer" >{sprint.velocity}</span>
             </li>
           ))}
         </ul>
-        <p style={{ color: "var(--text-3)", fontSize: "0.8125rem", marginTop: "var(--s4)" }}>
+        <p className="note">
           Ceremonies map to work sessions rather than calendar days, and that mapping is
           disclosed here rather than dressed up as a two-week cadence. Faking the calendar
           would have made every number on this page fiction.
@@ -208,12 +208,12 @@ export default function Delivery() {
           the files they summarise. */}
       <section className="panel">
         <h3 className="mb-3">Architecture decisions</h3>
-        <p style={{ color: "var(--text-2)", marginBottom: "var(--s5)" }}>
+        <p className="para-mb5">
           {record.adrs.length} records. Each is immutable once accepted — a reversal is a new
           record that supersedes it, never an edit — and each carries what it cost, because a
           decision log that only records upside is a marketing document.
         </p>
-        <div style={{ display: "grid", gap: "var(--s3)" }}>
+        <div className="stack-3">
           {record.adrs.map((adr) => (
             <details key={adr.file} className="adr">
               <summary className="adr-summary">

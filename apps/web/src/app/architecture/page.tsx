@@ -18,7 +18,7 @@ export default function Architecture() {
   return (
     <main className="voice-proof wrap surface">
       <header className="mb-7">
-        <p className="mono" style={{ color: "var(--text-3)", marginBottom: "var(--s3)" }}>
+        <p className="mono eyebrow-p" >
           {config.wordmark} / ARCHITECTURE
         </p>
         <h2 className="mb-4">Decisions, and what they cost</h2>
@@ -55,7 +55,7 @@ export default function Architecture() {
 
       <section className="panel mb-6" >
         <h3 className="mb-3">Provider order</h3>
-        <p style={{ color: "var(--text-2)", fontSize: "0.9375rem", marginBottom: "var(--s5)" }}>
+        <p className="para-sm">
           Fixed, not adaptive. A provider that rate-limits is disabled for a bounded interval
           rather than the process lifetime, and the clock is injected so expiry is tested
           instead of waited on. Spend is reserved against the worst-case <em>surviving</em>{" "}
@@ -82,7 +82,7 @@ export default function Architecture() {
 
       <section>
         <h3 className="mb-5">Decision records</h3>
-        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: "var(--s4)" }}>
+        <ol className="plain-list plain-list--4">
           {adrs.map((a) => (
             <li key={a.id} className="panel">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "var(--s4)", flexWrap: "wrap" }}>
@@ -115,7 +115,7 @@ export default function Architecture() {
         </ol>
       </section>
 
-      <p className="mono" style={{ color: "var(--text-3)", fontSize: "0.75rem", marginTop: "var(--s6)" }}>
+      <p className="mono dim finest mt-6" >
         derived at {data.generatedAt} from {data.sha}
       </p>
     </main>

@@ -118,10 +118,19 @@ const NODES: NodeSpec[] = [
   },
   {
     id: "upstash",
-    x: 710, y: 150, w: 170,
+    // In the EDGE column, not DATA, because the edge is the only thing that
+    // calls it: the sole reference in the repository is the BFF's rate
+    // limiter. Drawn in the data column it had no incoming edge at all — the
+    // arrow pointing at it started in empty space, because there was no node
+    // on that side that talks to it.
+    x: 0, y: 150, w: 110,
     title: "Upstash",
-    sub: "redis · vector",
-    what: "Per-IP rate limiting at the edge. Holds a salted digest of the address rather than the address — the limiter needs to tell visitors apart, not identify them.",
+    // Redis only. This read "redis · vector" for six sprints; Upstash Vector
+    // appears exactly once in the repository, in training/benchmark_vector_store.py,
+    // as the managed-store comparison arm for ADR-0011. It has never served a
+    // request, and a diagram is the wrong place to find that out.
+    sub: "redis · edge",
+    what: "Per-IP rate limiting, called from the edge before a request reaches the runtime. Hosted in Ireland. Holds a salted digest of the address rather than the address — the limiter needs to tell visitors apart, not identify them.",
     file: "apps/web/src/lib/ratelimit.ts",
   },
 ];
@@ -142,7 +151,7 @@ export default function SystemMap() {
         // svg -- the masthead mark is one too -- so a positional selector
         // silently asserted against the logo instead of the diagram.
         data-testid="system-map"
-        aria-label="Request path: browser to edge BFF to agent runtime, through retrieval, the evidence gate, the semantic cache and the provider chain, with dashed returns for cache hits and refusals. Select any component to see the file that implements it."
+        aria-label="Request path: the browser console calls the edge BFF, which checks the Upstash rate limiter before reaching the agent runtime. The runtime runs hybrid retrieval against Neon, then the evidence gate, the spend guard, the semantic cache and the provider chain. Dashed returns show the two paths that never reach a provider: a cache hit and a refusal. Select any component to see the file that implements it."
         style={{ width: "100%", height: "auto", display: "block" }}
       >
         <defs>
@@ -159,11 +168,21 @@ export default function SystemMap() {
         {[
           [190, 44, 240, 44], [95, 66, 95, 86], [190, 108, 240, 108],
           [335, 66, 335, 86], [335, 130, 335, 150], [335, 194, 335, 214],
-          [430, 44, 480, 44], [575, 66, 575, 86], [670, 108, 710, 108],
-          [670, 172, 710, 172],
+          [430, 44, 480, 44], [575, 66, 575, 86],
+          // the edge calls the rate limiter before anything else runs
+          [55, 130, 55, 150],
         ].map(([x1, y1, x2, y2], i) => (
           <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--text-3)" strokeWidth="1" markerEnd="url(#a)" />
         ))}
+
+        {/* Retrieval reads the corpus out of Neon. This edge used to leave the
+            PROVIDER CHAIN, which never opens a database connection — nothing in
+            router.py imports the db module. It is routed under the provider
+            column rather than drawn straight, because a straight line at y=108
+            would pass through the middle of the Provider chain box and read as
+            though it originated there, which is the error being corrected. */}
+        <path d="M430 108 L440 108 L440 250 L690 250 L690 108 L710 108" fill="none"
+              stroke="var(--text-3)" strokeWidth="1" markerEnd="url(#a)" />
 
         {NODES.map((node) => {
           const on = node.id === activeId;
@@ -228,9 +247,9 @@ export default function SystemMap() {
                 cache hit — no provider call
               </text>
 
-              <path d="M240 172 L215 172 L215 314 L120 314 L120 142" fill="none" stroke="var(--refused)"
+              <path d="M240 172 L215 172 L215 314 L140 314 L140 130" fill="none" stroke="var(--refused)"
                     strokeWidth="1" strokeDasharray="3 3" markerEnd="url(#a)" />
-              <text x={134} y={317} {...sub} {...halo} fill="var(--refused)">
+              <text x={154} y={317} {...sub} {...halo} fill="var(--refused)">
                 INSUFFICIENT — nothing is emitted
               </text>
             </>

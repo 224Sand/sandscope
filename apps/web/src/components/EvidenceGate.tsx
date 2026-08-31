@@ -115,7 +115,7 @@ export default function EvidenceGate() {
           className="gate-zone gate-zone--refused"
           style={{ width: `calc(${pos(SUFFICIENT_ABOVE)} - ${pos(INSUFFICIENT_BELOW)})` }}
         />
-        <span className="gate-zone gate-zone--grounded" style={{ flex: 1 }} />
+        <span className="gate-zone gate-zone--grounded grow"/>
 
         {PROBES.map((probe) => (
           <button
