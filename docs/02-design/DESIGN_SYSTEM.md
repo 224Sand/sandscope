@@ -104,6 +104,14 @@ motion is rejected at review.
 **The reader sets the pace.** Scroll-driven, never timed. A visitor who stops
 scrolling stops the animation.
 
+**A state change does not cross-fade its own legibility.** Two colour pairs can
+each be legible while every point between them is not: interpolating `color`
+and `background-color` together from dark-on-light to light-on-dark passes
+through a midpoint where they meet. D-029 was a tab label at 1.71:1 for ~60ms
+on every selection, between two states measuring 7.66:1 and 19.29:1. Discrete
+state changes snap; only properties that cannot carry text — `border-color`,
+`transform`, `opacity` on a whole element — are eased across them.
+
 **Nothing is reachable only by animating.** AC-C10. Content is present in the DOM
 and legible with animation removed; motion changes emphasis, never availability.
 

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-31T11:05:15.512Z",
-  "sha": "ba98d8c",
+  "generatedAt": "2026-08-31T11:19:23.653Z",
+  "sha": "e4ad1d0",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,7 +90,7 @@
     }
   },
   "defects": {
-    "total": 28,
+    "total": 29,
     "severity1": 7,
     "caughtByReview": 0,
     "rows": [
@@ -317,6 +317,14 @@
         "severity": "3",
         "description": "The role tabs on the story surface gave **no hover feedback at all once selected**: `.role-tab:hover` and `.role-tab[data-on=\"true\"]` have identical specificity (0,2,0), so the later rule took back both `color` and `background` and the pointer sat over a control that showed no sign of being one. Selection was also carried by **colour alone** — `color`, `background` and `border-color`, every one of which a forced-colors mode overrides — so in Windows High Contrast the chosen role was indistinguishable from the other ten, and the page could not tell you whose story you were reading. The global `:focus-visible` additionally set `border-radius: 4px`, squaring off the 999px pill for keyboard users only. Reported by the Product Owner",
         "rootCause": "An equal-specificity collision reads as a working rule in review; only the cascade order decides it, and nothing in the suite exercised hover-on-selected. The stylesheet carried no `forced-colors` block anywhere, so every `data-on` control on the site shared the second half of this"
+      },
+      {
+        "id": "D-029",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "2",
+        "description": "The label of a role tab was **unreadable for ~60ms every time it was selected**. `transition: color, background` interpolates the two independently, and the path from unselected (#a1a1a8 on #0b0b0d) to selected (#000 on #f5f5f7) runs the text toward black while the background is still near-black. Measured through the fade: contrast 7.66 → 5.39 → **1.71** → 8.62 → 19.29. Reported by the Product Owner as \"the button does not display the text that is selected\", with a screenshot that had caught the surface mid-fade",
+        "rootCause": "Every check anyone would think to run — reading the CSS, reading the cascade, measuring computed style — samples the SETTLED state, and the settled state was always correct at 19.29:1. The defect existed only in the transition between two individually-legible states, which nothing had ever sampled. Two earlier investigations in the same session concluded \"renders correctly\" for exactly this reason"
       }
     ]
   },
