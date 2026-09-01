@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-31T11:19:23.653Z",
-  "sha": "e4ad1d0",
+  "generatedAt": "2026-09-01T02:03:26.660Z",
+  "sha": "8d121db",
   "thresholds": {
     "insufficientBelow": 0.74,
     "sufficientAbove": 10.38
@@ -90,7 +90,7 @@
     }
   },
   "defects": {
-    "total": 29,
+    "total": 30,
     "severity1": 7,
     "caughtByReview": 0,
     "rows": [
@@ -325,6 +325,14 @@
         "severity": "2",
         "description": "The label of a role tab was **unreadable for ~60ms every time it was selected**. `transition: color, background` interpolates the two independently, and the path from unselected (#a1a1a8 on #0b0b0d) to selected (#000 on #f5f5f7) runs the text toward black while the background is still near-black. Measured through the fade: contrast 7.66 → 5.39 → **1.71** → 8.62 → 19.29. Reported by the Product Owner as \"the button does not display the text that is selected\", with a screenshot that had caught the surface mid-fade",
         "rootCause": "Every check anyone would think to run — reading the CSS, reading the cascade, measuring computed style — samples the SETTLED state, and the settled state was always correct at 19.29:1. The defect existed only in the transition between two individually-legible states, which nothing had ever sampled. Two earlier investigations in the same session concluded \"renders correctly\" for exactly this reason"
+      },
+      {
+        "id": "D-030",
+        "foundIn": "Sprint 9",
+        "sprint": "9",
+        "severity": "3",
+        "description": "The traceability matrix cites **26 sprint-story identifiers that no sprint plan ever defines** — S1-DATA, S1-FEED, S1-SEED, S2-CACHE, S2-CHAOS, S2-EVAL, S2-GOV, S2-GUARD, S2-RAG, S2-ROUTER, S2-SPEND, S3-CITE, S3-MEM, S3-RCA, S3-STREAM, S3-TRACE, S3-TRIAGE, S4-PERF, S4-UX, S5-ARCH, S5-DELIV, S6-DELIV, S6-REVIEW, S9-DATA, S9-GOV, S9-KT. Sprints 5 onward list their stories in a table; sprints 1-4 never did, so the matrix's story column points at records that do not exist. Three code comments also cite FR-036, FR-040 and FR-046, none of which appear in the matrix — they are the far ends of range shorthand (`FR-030..FR-036`) written without checking the range existed. Found within minutes of building the lexicon (FR-034), which is the argument for it",
+        "rootCause": "Same class as D-023's twelve links to a directory: a reference that renders as an ordinary reference and resolves to nothing. Nothing had ever checked that a cited identifier has a record, because until the lexicon existed nothing had ever enumerated the citations"
       }
     ]
   },

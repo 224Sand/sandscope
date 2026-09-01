@@ -106,8 +106,8 @@ defect count, and including the numbers in this README.
 | | |
 |---|---|
 | Tests | 423 across 24 files |
-| Requirements | 61, of which 61 `Done` and each names a test that exists |
-| Defects logged | 29, of which 7 severity 1 |
+| Requirements | 62, of which 62 `Done` and each names a test that exists |
+| Defects logged | 30, of which 7 severity 1 |
 | ADRs | 14 |
 
 **Not one defect was caught by code review, and not one by a unit test written
@@ -154,7 +154,7 @@ Docker Spaces went PRO-only — see
 - The corpus is synthetic by design. No real customer data touches this.
 - Session identity is a cookie. It scopes memory and binds approvals; it is not
   authentication, and the threat model says so.
-- 0 of 61 requirements are still `Planned`. That is a statement about the
+- 0 of 62 requirements are still `Planned`. That is a statement about the
   matrix, not a claim that the product is finished: `Done` here means the row
   names a test that exists and passes in CI, which is a floor worth enforcing
   and is not the same as a feature being good. 20 rows sat at `Planned` while

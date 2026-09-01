@@ -89,6 +89,7 @@ directions.
 | FR-031 | The synthetic dataset published in full | S9-DATA | `apps/web/e2e/data_and_council.spec.ts`, `TestDatasetSummaryIsCurrent` | 9 | Done |
 | FR-032 | The governance record published | S9-GOV | `apps/web/e2e/data_and_council.spec.ts` | 9 | Done |
 | FR-033 | Handover document serving non-technical and architect readers alike | S9-KT | `apps/web/e2e/handover.spec.ts` | 9 | Done |
+| FR-034 | Every identifier the project cites is followable to its own record and every place it appears | S9-FIND | `apps/web/e2e/lookup.spec.ts` | 9 | Done |
 
 ---
 

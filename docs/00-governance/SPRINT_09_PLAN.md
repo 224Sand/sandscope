@@ -38,6 +38,7 @@ will open.
 | S9-STORY | `/story` — the project explained to anyone | 13 | A non-technical reader can follow it end to end; every claim cites a real artefact |
 | S9-ROLE | Role-perspective chooser inside `/story` | 8 | Viewer picks a role; that role's thread through the project resolves in place |
 | S9-CONTEXT | Why it was built, what the scope is, what is missing | 3 | Stated on the surface, not only in the repository |
+| S9-FIND | Every identifier the project cites is followable | 8 | An id is clickable wherever it sits; selecting any text offers the same lookup; the answer is one sentence lifted from the defining record, never authored twice; every occurrence listed in date order |
 
 **Committed: 37 points.** Above the 28–34 of recent sprints, deliberately: S9-STORY and S9-ROLE
 are one coherent piece of work and splitting them across a sprint boundary would ship half a

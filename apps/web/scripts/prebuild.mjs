@@ -18,6 +18,7 @@ const scripts = [
   "../../scripts/derive-delivery.mjs",
   "../../scripts/derive-surfaces.mjs",
   "../../scripts/derive-council.mjs",
+  "../../scripts/derive-lexicon.mjs",
   "../../scripts/fill-project-record.mjs",
 ];
 

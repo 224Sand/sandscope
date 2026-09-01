@@ -10,6 +10,7 @@ import {
 import Mark from "@/components/Mark";
 import config from "@/generated/product.config.json";
 import "./globals.css";
+import Lookup from "@/components/Lookup";
 
 /**
  * Three typographic voices, one per surface family (S9-TYPE).
@@ -118,6 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ["/council", "Council"],
               ["/reliability", "Reliability"],
               ["/delivery", "Delivery"],
+              ["/find", "Find"],
               [`https://github.com/${config.repo}`, "Source"],
             ].map(([href, label]) => (
               <a key={href} href={href} style={{ color: "var(--text-2)", fontSize: "0.875rem" }}>
@@ -127,6 +129,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         {children}
+        {/* Site-wide. Makes every identifier on every surface clickable after
+            hydration and offers a lookup on any text selection, so a reference
+            is followable without twenty pages each remembering to link it. */}
+        <Lookup />
       </body>
     </html>
   );
