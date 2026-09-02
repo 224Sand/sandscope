@@ -41,6 +41,12 @@ ml = [
   # ~1GB installed, against the ~50MB onnxruntime costs to serve what it trains.
   "torch>=2.5",
   "transformers>=4.45",
+  # DeBERTa-v3's tokenizer is sentencepiece-backed; transformers will not load
+  # it without this.
+  "sentencepiece>=0.2",
+  # LoRA. Training only, like torch and transformers above: adapters are merged
+  # into the base before ONNX export, so nothing peft-shaped reaches serving.
+  "peft>=0.13",
 ]
 
 [build-system]
