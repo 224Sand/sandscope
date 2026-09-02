@@ -9,7 +9,7 @@
 
 export function Frame({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="panel" style={{ padding: 0, overflow: "hidden" }}>
+    <div className="panel flush">
       <div
         className="mono"
         style={{

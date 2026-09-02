@@ -41,7 +41,7 @@ export default function Architecture() {
         {/* Scrolls inside its own box below ~700px rather than scaling its
             labels down to an unreadable size. See globals.css. */}
         <div className="scroll-x">
-          <div style={{ minWidth: 720 }}>
+          <div className="min-720">
             <SystemMap />
           </div>
         </div>

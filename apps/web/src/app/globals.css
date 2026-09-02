@@ -1271,3 +1271,5 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 @media (forced-colors: active) {
   .find-kind[data-on="true"] { background: Highlight; color: HighlightText; border-color: Highlight; }
 }
+.min-720   { min-width: 720px; }
+.flush     { padding: 0; overflow: hidden; }

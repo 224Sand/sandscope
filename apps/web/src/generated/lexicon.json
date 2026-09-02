@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-01T02:03:26.854Z",
-  "sha": "8d121db",
+  "generatedAt": "2026-09-02T13:35:38.208Z",
+  "sha": "a8bf4d4",
   "kinds": [
     {
       "kind": "defect",
@@ -190,7 +190,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 725,
           "text": "DOM for search and for a screen reader (AC-C10). */",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -387,7 +387,7 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 477,
           "text": "ADR-0003 placed the agent runtime on a host that later moved behind a paid plan.",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -732,7 +732,7 @@
           "file": "README.md",
           "line": 92,
           "text": "creates a continuation run (ADR-0006).",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -856,6 +856,12 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "README.md",
+          "line": 90,
+          "text": "refused, not allowed (ADR-0007).",
+          "date": "2026-09-01"
+        },
+        {
           "file": "docs/06-operations/LOAD_CEILING.md",
           "line": 23,
           "text": "The limiter fails closed (ADR-0007). When its store is unreachable the",
@@ -865,12 +871,6 @@
           "file": "docs/06-operations/RUNBOOK.md",
           "line": 70,
           "text": "(ADR-0007). The limiter fails closed: an outage becomes unavailability rather",
-          "date": "2026-08-31"
-        },
-        {
-          "file": "README.md",
-          "line": 90,
-          "text": "refused, not allowed (ADR-0007).",
           "date": "2026-08-31"
         },
         {
@@ -1010,7 +1010,7 @@
           "file": "README.md",
           "line": 88,
           "text": "at once (ADR-0008).",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -1089,7 +1089,7 @@
           "file": "README.md",
           "line": 65,
           "text": "split is ADR-0009,",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -1273,6 +1273,18 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "apps/agent/sandscope_agent/evaluation/entailment_dataset.py",
+          "line": 1,
+          "text": "\"\"\"Claim-support pairs, labelled by construction (ADR-0010).",
+          "date": "2026-09-02"
+        },
+        {
+          "file": "apps/agent/tests/test_entailment_dataset.py",
+          "line": 1,
+          "text": "\"\"\"Claim-support pairs, with labels true by construction (ADR-0010).",
+          "date": "2026-09-02"
+        },
+        {
           "file": "apps/agent/sandscope_agent/evaluation/dataset.py",
           "line": 1,
           "text": "\"\"\"Labelled question generation, with labels true by construction (ADR-0010).",
@@ -1335,7 +1347,7 @@
       ],
       "status": "Accepted",
       "file": "0010-training-labels-must-be-true-by-construction.md",
-      "count": 10
+      "count": 12
     },
     {
       "id": "ADR-0011",
@@ -1398,7 +1410,7 @@
           "file": "README.md",
           "line": 148,
           "text": "ADR-0012.",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -1480,10 +1492,28 @@
       "date": "2026-08-29",
       "occurrences": [
         {
+          "file": "apps/agent/tests/test_folds.py",
+          "line": 3,
+          "text": "ADR-0013: an operating point chosen on the data it is scored against is a",
+          "date": "2026-09-02"
+        },
+        {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 10,
+          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
+          "date": "2026-09-01"
+        },
+        {
           "file": "apps/web/src/app/globals.css",
           "line": 1137,
           "text": "The site cites D-016, ADR-0013, FR-020 and T-15 constantly and none of it",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 10,
+          "text": "* The site is full of references a reader cannot follow. \"D-016\", \"ADR-0013\",",
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -1532,23 +1562,11 @@
           "line": 1,
           "text": "# ADR-0013 — The trained classifier stays out of the live evidence gate",
           "date": "2026-08-29"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 10,
-          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 10,
-          "text": "* The site is full of references a reader cannot follow. \"D-016\", \"ADR-0013\",",
-          "date": null
         }
       ],
       "status": "Accepted",
       "file": "0013-the-classifier-stays-out-of-the-live-gate.md",
-      "count": 11
+      "count": 12
     },
     {
       "id": "ADR-0014",
@@ -1936,7 +1954,7 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 497,
           "text": "<span class=\"chip chip--blocked\" style=\"margin-bottom: var(--s3);\">D-001 · severity 1</span>",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -2899,13 +2917,25 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 511,
           "text": "<span class=\"chip chip--refused\" style=\"margin-bottom: var(--s3);\">D-016 · severity 2</span>",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 10,
+          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/globals.css",
           "line": 1137,
           "text": "The site cites D-016, ADR-0013, FR-020 and T-15 constantly and none of it",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 10,
+          "text": "* The site is full of references a reader cannot follow. \"D-016\", \"ADR-0013\",",
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -2954,18 +2984,6 @@
           "line": 59,
           "text": "| The Product Owner asking a direct question | 1 (D-016) |",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 10,
-          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 10,
-          "text": "* The site is full of references a reader cannot follow. \"D-016\", \"ADR-0013\",",
-          "date": null
         }
       ],
       "count": 12
@@ -2982,7 +3000,19 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 479,
           "text": "quietly dropped — but it held only after the gap was found. Recorded as D-017,",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 21,
+          "text": "* (D-017, D-019, D-027).",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 30,
+          "text": "* and the two would drift the first time one was edited — which is D-017,",
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -3043,18 +3073,6 @@
           "line": 60,
           "text": "| Reaching the deploy and finding the platform had changed | 1 (D-017) |",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 21,
-          "text": "* (D-017, D-019, D-027).",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 30,
-          "text": "* and the two would drift the first time one was edited — which is D-017,",
-          "date": null
         }
       ],
       "count": 13
@@ -3120,6 +3138,18 @@
       "definedIn": "docs/04-quality/DEFECT_LOG.md",
       "date": "2026-08-20",
       "occurrences": [
+        {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 21,
+          "text": "* (D-017, D-019, D-027).",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 31,
+          "text": "* D-019 and D-027, three times already.",
+          "date": "2026-09-01"
+        },
         {
           "file": "docs/03-architecture/adr/0014-one-vercel-project-connected-to-git.md",
           "line": 3,
@@ -3197,18 +3227,6 @@
           "line": 57,
           "text": "| The Product Owner quoting stale text back and asking \"true?\" | 1 (D-019) |",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 21,
-          "text": "* (D-017, D-019, D-027).",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 31,
-          "text": "* D-019 and D-027, three times already.",
-          "date": null
         }
       ],
       "count": 15
@@ -3225,7 +3243,7 @@
           "file": "README.md",
           "line": 161,
           "text": "already implemented and tested until an audit went looking (D-020), so the",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/council/page.tsx",
@@ -3527,6 +3545,18 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 21,
+          "text": "* (D-017, D-019, D-027).",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 31,
+          "text": "* D-019 and D-027, three times already.",
+          "date": "2026-09-01"
+        },
+        {
           "file": "scripts/check-media.mjs",
           "line": 9,
           "text": "* the same class as D-019, D-022 and D-027: a document describing a guard that",
@@ -3537,18 +3567,6 @@
           "line": 40,
           "text": "| D-027 | Sprint 9 | 9 | 2 | The public architecture diagram asserted three things about the system that were not true. The arrow pointing at Upstash had no source node — its tail began in empty space, because the only caller is the edge rate limiter and the node was drawn in the runtime's data column. The node was lab",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 21,
-          "text": "* (D-017, D-019, D-027).",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 31,
-          "text": "* D-019 and D-027, three times already.",
-          "date": null
         }
       ],
       "count": 4
@@ -3582,7 +3600,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 1253,
           "text": "/* border-color only — see D-029: interpolating colour and background walks",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "docs/02-design/DESIGN_SYSTEM.md",
@@ -3963,7 +3981,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 675,
           "text": "/ ------------------------------------------------------- session memory (FR-008) /",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/components/Console.tsx",
@@ -4110,7 +4128,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 634,
           "text": "/* --------------------------------------------------- chaos injection (FR-011)",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/components/Console.tsx",
@@ -4468,7 +4486,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 694,
           "text": "/* ------------------------------------------------- interactive system map (FR-019)",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/components/SystemMap.tsx",
@@ -4500,15 +4518,27 @@
       "date": "2026-08-20",
       "occurrences": [
         {
-          "file": "apps/web/src/app/delivery/page.tsx",
-          "line": 8,
-          "text": "* The delivery record (FR-020 .. FR-024, AC-C12).",
-          "date": "2026-08-31"
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 10,
+          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/globals.css",
           "line": 1137,
           "text": "The site cites D-016, ADR-0013, FR-020 and T-15 constantly and none of it",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 11,
+          "text": "* \"FR-020\", \"T-15\" appear across every surface, and each one is a dead end",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/app/delivery/page.tsx",
+          "line": 8,
+          "text": "* The delivery record (FR-020 .. FR-024, AC-C12).",
           "date": "2026-08-31"
         },
         {
@@ -4534,18 +4564,6 @@
           "line": 78,
           "text": "| FR-020 | Live CI/CD status from the GitHub API | S5-DELIV | test_delivery_reads_live_github | 6 | Done |",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 10,
-          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 11,
-          "text": "* \"FR-020\", \"T-15\" appear across every surface, and each one is a dead end",
-          "date": null
         }
       ],
       "count": 8
@@ -4559,15 +4577,15 @@
       "date": "2026-08-20",
       "occurrences": [
         {
-          "file": "apps/web/src/app/delivery/page.tsx",
-          "line": 131,
-          "text": "{/* FR-021: the matrix itself, not a summary of it.",
-          "date": "2026-08-31"
-        },
-        {
           "file": "apps/web/src/app/globals.css",
           "line": 554,
           "text": "/* ------------------------------------------------ traceability matrix (FR-021)",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/app/delivery/page.tsx",
+          "line": 131,
+          "text": "{/* FR-021: the matrix itself, not a summary of it.",
           "date": "2026-08-31"
         },
         {
@@ -4635,6 +4653,12 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "apps/web/src/app/globals.css",
+          "line": 595,
+          "text": "/* ------------------------------------------------- decision records (FR-023)",
+          "date": "2026-09-01"
+        },
+        {
           "file": "apps/web/src/app/architecture/page.tsx",
           "line": 101,
           "text": "{/* FR-023: the consequences, not only the reasoning that led to",
@@ -4644,12 +4668,6 @@
           "file": "apps/web/src/app/delivery/page.tsx",
           "line": 202,
           "text": "{/* FR-023: decision records rendered WITH context and consequences.",
-          "date": "2026-08-31"
-        },
-        {
-          "file": "apps/web/src/app/globals.css",
-          "line": 595,
-          "text": "/* ------------------------------------------------- decision records (FR-023)",
           "date": "2026-08-31"
         },
         {
@@ -5084,7 +5102,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 720,
           "text": "/* ══════════════════════════════════════════ the handover surface (FR-033)",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -5134,6 +5152,12 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 8,
+          "text": "* Every identifier this project uses, and every place it appears (FR-034).",
+          "date": "2026-09-01"
+        },
+        {
           "file": "docs/01-requirements/TRACEABILITY.md",
           "line": 92,
           "text": "| FR-034 | Every identifier the project cites is followable to its own record and every place it appears | S9-FIND | apps/web/e2e/lookup.spec.ts | 9 | Done |",
@@ -5144,12 +5168,6 @@
           "line": 43,
           "text": "| D-030 | Sprint 9 | 9 | 3 | The traceability matrix cites 26 sprint-story identifiers that no sprint plan ever defines — S1-DATA, S1-FEED, S1-SEED, S2-CACHE, S2-CHAOS, S2-EVAL, S2-GOV, S2-GUARD, S2-RAG, S2-ROUTER, S2-SPEND, S3-CITE, S3-MEM, S3-RCA, S3-STREAM, S3-TRACE, S3-TRIAGE, S4-PERF, S4-UX, S5-ARCH, S5-DELIV, S6-",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 8,
-          "text": "* Every identifier this project uses, and every place it appears (FR-034).",
-          "date": null
         }
       ],
       "count": 3
@@ -5561,7 +5579,7 @@
           "file": "apps/web/src/app/layout.tsx",
           "line": 32,
           "text": "* weight (IMP-11).",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "docs/00-governance/SPRINT_09_PLAN.md",
@@ -7791,7 +7809,7 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 533,
           "text": "<li class=\"panel\"><strong>Sprint 8 (Hardening &amp; Release) is open</strong> — deployment landed (both S8-HOST and S8-VERCEL done); the remainder is pen tests against the public URLs, the threat-model review, and observability, per <code>SPRINT_08_PLAN.md</code>.</li>",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "docs/00-governance/SPRINT_08_PLAN.md",
@@ -7907,7 +7925,7 @@
           "file": "docs/00-governance/PROJECT_RECORD.html",
           "line": 533,
           "text": "<li class=\"panel\"><strong>Sprint 8 (Hardening &amp; Release) is open</strong> — deployment landed (both S8-HOST and S8-VERCEL done); the remainder is pen tests against the public URLs, the threat-model review, and observability, per <code>SPRINT_08_PLAN.md</code>.</li>",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "docs/00-governance/SPRINT_08_PLAN.md",
@@ -8025,6 +8043,12 @@
       "date": null,
       "occurrences": [
         {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 57,
+          "text": "/** One regex for every known identifier, longest first so S9-KT is not",
+          "date": "2026-09-01"
+        },
+        {
           "file": "scripts/fetch-media.mjs",
           "line": 52,
           "text": "// Handover surface (S9-KT). Two grounds only: one for the opening, one for",
@@ -8041,12 +8065,6 @@
           "line": 43,
           "text": "| D-030 | Sprint 9 | 9 | 3 | The traceability matrix cites 26 sprint-story identifiers that no sprint plan ever defines — S1-DATA, S1-FEED, S1-SEED, S2-CACHE, S2-CHAOS, S2-EVAL, S2-GOV, S2-GUARD, S2-RAG, S2-ROUTER, S2-SPEND, S3-CITE, S3-MEM, S3-RCA, S3-STREAM, S3-TRACE, S3-TRIAGE, S4-PERF, S4-UX, S5-ARCH, S5-DELIV, S6-",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 57,
-          "text": "/** One regex for every known identifier, longest first so S9-KT is not",
-          "date": null
         }
       ],
       "count": 4
@@ -8149,13 +8167,13 @@
           "file": "apps/web/src/app/globals.css",
           "line": 19,
           "text": "/* Three typographic voices, assigned per surface (S9-TYPE). The tokens below",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/layout.tsx",
           "line": 16,
           "text": "* Three typographic voices, one per surface family (S9-TYPE).",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "docs/00-governance/SPRINT_09_PLAN.md",
@@ -8461,7 +8479,7 @@
           "file": "apps/web/src/app/globals.css",
           "line": 637,
           "text": "another's demonstration is T-6 in the threat model. */",
-          "date": "2026-08-31"
+          "date": "2026-09-01"
         },
         {
           "file": "apps/web/src/app/handover/page.tsx",
@@ -8881,6 +8899,24 @@
       "date": "2026-08-20",
       "occurrences": [
         {
+          "file": "apps/web/src/app/find/page.tsx",
+          "line": 10,
+          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/app/globals.css",
+          "line": 1137,
+          "text": "The site cites D-016, ADR-0013, FR-020 and T-15 constantly and none of it",
+          "date": "2026-09-01"
+        },
+        {
+          "file": "apps/web/src/components/Lookup.tsx",
+          "line": 11,
+          "text": "* \"FR-020\", \"T-15\" appear across every surface, and each one is a dead end",
+          "date": "2026-09-01"
+        },
+        {
           "file": "docs/05-security/PENTEST_RESULTS.md",
           "line": 22,
           "text": "P-7 SKIP T-15 oversized body refused",
@@ -8896,12 +8932,6 @@
           "file": "docs/06-operations/RUNBOOK.md",
           "line": 141,
           "text": "structural, and T-14, T-15, T-17 are recorded as accepted rather than",
-          "date": "2026-08-31"
-        },
-        {
-          "file": "apps/web/src/app/globals.css",
-          "line": 1137,
-          "text": "The site cites D-016, ADR-0013, FR-020 and T-15 constantly and none of it",
           "date": "2026-08-31"
         },
         {
@@ -8951,18 +8981,6 @@
           "line": 142,
           "text": "| T-15 injection via the body | Verified | P-5 passes against production — a crafted body does not override grounding |",
           "date": "2026-08-20"
-        },
-        {
-          "file": "apps/web/src/app/find/page.tsx",
-          "line": 10,
-          "text": "* The site cited D-016, ADR-0013, FR-020 and T-15 across every surface and not",
-          "date": null
-        },
-        {
-          "file": "apps/web/src/components/Lookup.tsx",
-          "line": 11,
-          "text": "* \"FR-020\", \"T-15\" appear across every surface, and each one is a dead end",
-          "date": null
         }
       ],
       "count": 14
