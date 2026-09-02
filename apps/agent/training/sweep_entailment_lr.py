@@ -30,6 +30,7 @@ from sandscope_agent.evaluation.entailment_dataset import build_entailment_pairs
 from training.train_entailment import (
     ARMS,
     BASE_MODEL,
+    SEED,
     device,
     predict,
     reserved_documents,
@@ -48,7 +49,7 @@ from training.train_entailment import (
 #: so the report records whether the choice was interior and a boundary win is
 #: treated as an unfinished search rather than a result.
 CANDIDATES = {
-    "lora": (1e-3, 5e-4, 2e-4, 5e-5),
+    "lora": (3e-3, 2e-3, 1e-3, 5e-4, 2e-4, 5e-5),
     "full": (1e-4, 5e-5, 3e-5, 1e-5),
 }
 OUT = Path(__file__).resolve().parents[1] / "reports" / "entailment_lr_sweep.json"
@@ -76,7 +77,9 @@ def main(only: str | None = None, extra: tuple[float, ...] = ()) -> None:
         results = {}
         rates = tuple(sorted(set(CANDIDATES[arm]) | set(extra), reverse=True))
         for rate in rates:
-            model = train_one(inner, tokenizer, dev, arm, quiet=True, lr=rate)
+            # One seed for every configuration, so a rate's score reflects the
+            # rate and not its position in the sweep.
+            model = train_one(inner, tokenizer, dev, arm, quiet=True, lr=rate, seed=SEED)
             predicted = predict(model, tokenizer, dev_set, dev)
             truth = np.array([p.label for p in dev_set])
             s = scores(truth, predicted)

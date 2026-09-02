@@ -22,6 +22,7 @@ Trained offline, merged, exported to ONNX and served without the framework
 from __future__ import annotations
 
 import json
+import random
 import time
 from pathlib import Path
 
@@ -65,6 +66,12 @@ BATCH = 8
 #: manufactured by an unfair hyperparameter.
 LR = {"lora": 2e-4, "full": 3e-5}
 FOLDS = 5
+
+#: Base seed for weight initialisation and shuffling. Each fold uses SEED+n and
+#: BOTH arms use the same value at the same fold, so the comparison is paired:
+#: any difference between them comes from the method rather than from where
+#: they happened to fall in the run order.
+SEED = 20260902
 
 
 def device() -> torch.device:
@@ -125,7 +132,25 @@ def train_one(
     arm: str,
     quiet: bool = False,
     lr: float | None = None,
+    seed: int = SEED,
 ):
+    # Seed EVERY call. Without this, torch's global RNG advances with each model
+    # trained, so a configuration's result depends on its position in the
+    # sequence: the same rate scored 0.842 as the third config in one run and
+    # 0.886 as the fifth in the next -- five times what was being reported as
+    # seed noise. Worse, in the arm comparison LoRA trains before full, so the
+    # second arm would systematically start from a different state and part of
+    # any margin would be an artefact of the order they were run in.
+    #
+    # The seed is a function of the FOLD, not the arm or the rate, so both arms
+    # see identical initialisation and identical shuffling at each fold. That
+    # makes the comparison paired rather than merely averaged.
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if dev.type == "mps":
+        torch.mps.manual_seed(seed)
+
     model = build(arm).to(dev)
     model.train()
     loader = DataLoader(
@@ -271,7 +296,9 @@ def main() -> None:
         trainable = 0
         for number, (train_idx, test_idx) in enumerate(folds, start=1):
             print(f"[{arm}] fold {number}/{FOLDS}", flush=True)
-            model = train_one([scored[i] for i in train_idx], tokenizer, dev, arm, quiet=True)
+            model = train_one(
+                [scored[i] for i in train_idx], tokenizer, dev, arm, quiet=True, seed=SEED + number
+            )
             trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
             held = [scored[i] for i in test_idx]
             predicted = predict(model, tokenizer, held, dev)
