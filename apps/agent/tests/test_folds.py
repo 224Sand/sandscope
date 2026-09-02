@@ -88,5 +88,50 @@ class TestTheGuardCatchesALeak(unittest.TestCase):
             self.assertFalse({group(items[i]) for i in train} & {group(items[i]) for i in test})
 
 
+class TestReservedDocumentsAreStratified(unittest.TestCase):
+    """Held-out documents must not be drawn by name.
+
+    Document ids carry their type as a prefix, so taking the alphabetically
+    first four reserved BOTH architecture documents and left cross-validation
+    with none of them -- the reported number would have been an average over
+    runbooks and policies for a model that then answers architecture questions.
+    Neither half of a split may be unrepresentative by accident.
+    """
+
+    def setUp(self) -> None:
+        from sandscope_agent.evaluation.entailment_dataset import build_entailment_pairs
+        from training.train_entailment import HELD_OUT_DOCUMENTS, reserved_documents
+
+        self.pairs = build_entailment_pairs()
+        self.reserved = reserved_documents(self.pairs)
+        self.target = HELD_OUT_DOCUMENTS
+        self.documents = sorted({p.document_id for p in self.pairs})
+
+    @staticmethod
+    def _types(documents) -> dict[str, int]:
+        from collections import Counter
+
+        return dict(Counter(d.split("-")[0] for d in documents))
+
+    def test_it_reserves_the_number_it_asked_for(self) -> None:
+        """Flooring each type's share alone reserved one of four, because every
+        type but the largest rounds to zero."""
+        self.assertEqual(len(self.reserved), self.target)
+
+    def test_every_document_type_survives_into_cross_validation(self) -> None:
+        scored = [d for d in self.documents if d not in self.reserved]
+        self.assertEqual(
+            set(self._types(scored)),
+            set(self._types(self.documents)),
+            "a document type was reserved out of the folds entirely",
+        )
+
+    def test_no_type_is_left_with_fewer_than_two_documents(self) -> None:
+        """A type with one document left cannot appear in more than one fold."""
+        scored = self._types([d for d in self.documents if d not in self.reserved])
+        thin = {k: v for k, v in scored.items() if v < 2}
+        self.assertFalse(thin, f"{thin} cannot be spread across folds")
+
+
 if __name__ == "__main__":
     unittest.main()
