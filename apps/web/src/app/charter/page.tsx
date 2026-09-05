@@ -56,7 +56,7 @@ export default function CharterPage() {
           suggesting it.
         </p>
         <div className="pull rule-y">A role may not sign off its own work.</div>
-        <p style={{ color: "var(--text-2)", maxWidth: "70ch" }}>
+        <p className="para">
           That rule governed this repository first. Charter is that discipline extracted into an
           MCP server, where the checks are executed instead of asked for. It is open source, runs
           entirely on your machine, and has no accounts, telemetry or paid tier.
@@ -72,7 +72,7 @@ export default function CharterPage() {
         <pre className="kt-code">
           {`/plugin marketplace add 224Sand/charter\n/plugin install charter@charter`}
         </pre>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           Both halves matter. An MCP server only answers when asked; it cannot push. Something has
           to tell your agent to keep calling <code>charter_next</code> until the build is done, and
           that is the bundled skill. Install the server alone and you get four tools nobody calls.
@@ -83,7 +83,7 @@ export default function CharterPage() {
           {`{ "mcpServers": { "charter": { "command": "uvx", "args": [
     "--from", "git+https://github.com/224Sand/charter", "charter", "serve" ] } } }`}
         </pre>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           Then generate the skill yourself, because nothing else will:
         </p>
         <pre className="kt-code">{`charter gen-skill --dest .claude/skills/charter`}</pre>
@@ -162,7 +162,7 @@ export default function CharterPage() {
                   <td className="cell"><code className="mono">{contract}</code></td>
                   <td className="cell">
                     {rejects}
-                    <span className="fine" style={{ display: "block", marginTop: "0.25rem" }}>
+                    <span className="fine fine-block">
                       {why}
                     </span>
                   </td>
@@ -171,7 +171,7 @@ export default function CharterPage() {
             </tbody>
           </table>
         </div>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           <strong>Three roles today, and more coming.</strong> These three shipped first because
           their contracts are the sharpest to check mechanically — a test either fails or it does
           not. Business Analyst, Architect and others are next, each with a contract of its own
@@ -193,13 +193,13 @@ export default function CharterPage() {
           each sign-off, and refuses a review submitted from the same connection that produced the
           work.
         </p>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           That proves a sign-off came from a <strong>separate process</strong>, and that it carries
           its own checkable artifact. It does <strong>not</strong> prove independent reasoning. A
           server restart, an agent deliberately restarting it, or a person clicking through two
           sessions without reading all satisfy the mechanism.
         </p>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           The artifact contract carries the weight. Identity raises the cost of collapsing the
           roles; it does not make it impossible. Charter says this in its own status output, its
           skill and its README, because a governance tool that overstates its guarantee is the
@@ -269,7 +269,7 @@ brief: >-
   Owns the shape of the system across components. Suspicious of a decision
   record that lists only advantages.`}
         </pre>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           New roles ship inside a released version, so you pick them up the same way you picked up
           charter — by updating the plugin. Nothing phones home to fetch them, and nothing executes
           a role definition you did not install: the library is read from the package on disk, which

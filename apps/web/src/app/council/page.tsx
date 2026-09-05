@@ -36,7 +36,7 @@ export default function CouncilPage() {
           it, and one rule does most of that work:
         </p>
         <div className="pull rule-y" >A role may not sign off its own work.</div>
-        <p style={{ color: "var(--text-2)", maxWidth: "70ch" }}>
+        <p className="measure muted">
           The evidence that it held is below: {reactions} reactions from {voices.size} different
           roles across {council.artifacts.length} real decisions and defects, every one citing an
           artefact in this repository. Where roles agreed, it says so. Where they disagreed, that is
@@ -180,7 +180,7 @@ export default function CouncilPage() {
           If a claim cannot be cited it is dropped rather than dressed up, because manufactured
           conflict is exactly as useless as manufactured consensus.
         </p>
-        <div style={{ display: "flex", gap: "var(--s4)", flexWrap: "wrap" }}>
+        <div className="row-links">
           <a className="mono finer" href="/charter">
             charter — install it →
           </a>

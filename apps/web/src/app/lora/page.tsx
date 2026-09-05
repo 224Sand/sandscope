@@ -74,7 +74,7 @@ export default function LoraPage() {
         <div className="pull rule-y">
           Four LoRA adapters over one base encoder, replacing all four.
         </div>
-        <p className="note" style={{ maxWidth: "70ch" }}>
+        <p className="note measure">
           <strong>Status: designed and in progress, not shipped.</strong> The design and the
           implementation plan are written and the training spine is being built, on a branch that
           has not landed yet — so they are cited below by path rather than linked, because a
@@ -139,7 +139,7 @@ export default function LoraPage() {
             5% budget. LoRA&rsquo;s low-rank constraint is the regulariser.
           </li>
         </ul>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           <strong>What LoRA does not buy here, stated plainly:</strong> the serving-side benefit.
           Each adapter is merged into the base and exported to ONNX, so what ships is four ordinary
           models — not a base plus swappable deltas. The saving is training-side. That is a
@@ -209,7 +209,7 @@ export default function LoraPage() {
             adversarial arm and the reason the task exists.
           </li>
         </ul>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           None of it may call a model, and a test asserts that by parsing the module rather than
           trusting the author.
         </p>
@@ -223,7 +223,7 @@ export default function LoraPage() {
           Those are different distributions, and a number from the first does not transfer to the
           second.
         </p>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           The <code className="mono">citation</code> table already stores{" "}
           <code className="mono">claim_text</code> and <code className="mono">chunk_id</code> for
           every completed run — real model-written claims paired with the chunk actually cited. That
@@ -257,18 +257,18 @@ export default function LoraPage() {
           that enforces the same rules on any repository, for anyone. A role must produce a
           machine-checkable artifact before it may sign off, and no role may sign off its own work.
         </p>
-        <p className="para" style={{ color: "var(--text-2)" }}>
+        <p className="para">
           So the adapters are governed by the tool the adapters&rsquo; own project produced. When A1
           ships, the number it ships with will have been argued over by roles that were required to
           disagree in public — and the record of that argument will be in the repository next to the
           model.
         </p>
-        <p className="footnote" style={{ marginBottom: "var(--s4)" }}>
+        <p className="footnote mb-4">
           The design is <code className="mono">{SPEC_PATH}</code> and the plan is{" "}
           <code className="mono">{PLAN_PATH}</code>. Both land on <code className="mono">main</code>{" "}
           when the branch does, and this page will link them once they resolve.
         </p>
-        <div style={{ display: "flex", gap: "var(--s4)", flexWrap: "wrap" }}>
+        <div className="row-links">
           <a className="mono finer" href="/charter">charter — the tool this work is governed by →</a>
           <a className="mono finer" href="/council">the council record →</a>
         </div>
