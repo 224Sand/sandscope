@@ -171,6 +171,13 @@ export default function CharterPage() {
             </tbody>
           </table>
         </div>
+        <p className="para" style={{ color: "var(--text-2)" }}>
+          <strong>Three roles today, and more coming.</strong> These three shipped first because
+          their contracts are the sharpest to check mechanically — a test either fails or it does
+          not. Business Analyst, Architect and others are next, each with a contract of its own
+          rather than a job title. The roster is plain YAML and{" "}
+          <a href="#roster">it keeps growing</a>.
+        </p>
         <p className="footnote">
           The build record lives in <code className="mono">.charter/</code> — human-readable,
           git-diffable, append-only. A session with no prior context resumes the build from those
@@ -244,7 +251,7 @@ export default function CharterPage() {
       </section>
 
       {/* ------------------------------------------------- roles keep growing */}
-      <section className="panel mb-6">
+      <section className="panel mb-6" id="roster">
         <h3 className="mb-3">The roster keeps growing, and updates reach you</h3>
         <p className="lede-p">
           Charter ships with QA, Developer and AppSec because those three have the sharpest
