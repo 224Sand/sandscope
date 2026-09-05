@@ -163,10 +163,17 @@ export default function CouncilPage() {
           constrains the work instead of labelling it.
         </p>
         <p className="para">
-          That became <strong>role-council</strong>, an open-source skill that runs this review over
-          any repository&rsquo;s real history — mining defect logs, decision records and commits
-          rather than inventing opinions. Everything on this page is its first real output, run
-          against the project that produced it.
+          That became <strong><a href="/charter">Charter</a></strong>. It started as a skill that
+          replayed this repository&rsquo;s real history through its roles — mining defect logs,
+          decision records and commits rather than inventing opinions — and everything on this page
+          is its first real output, run against the project that produced it.
+        </p>
+        <p className="para">
+          It is no longer only that. Charter is now an installable MCP server that anyone can point
+          at any repository: the roles are enforced rather than requested, a role must produce a
+          machine-checkable artifact before it may sign off, and the build record survives on disk
+          across sessions. The roster is plain YAML and keeps growing, and new roles reach existing
+          users through a plugin update rather than a rewrite.
         </p>
         <p style={{ color: "var(--text-3)", fontSize: "0.875rem", maxWidth: "70ch", marginBottom: "var(--s4)" }}>
           Its most important rule is the one it is easiest to break: never invent the disagreement.
@@ -174,8 +181,11 @@ export default function CouncilPage() {
           conflict is exactly as useless as manufactured consensus.
         </p>
         <div style={{ display: "flex", gap: "var(--s4)", flexWrap: "wrap" }}>
-          <a className="mono finer"  href="https://github.com/224Sand/role-council">
-            github.com/224Sand/role-council →
+          <a className="mono finer" href="/charter">
+            charter — install it →
+          </a>
+          <a className="mono finer" href="https://github.com/224Sand/charter">
+            github.com/224Sand/charter →
           </a>
           <a className="mono finer"  href={`https://github.com/${config.repo}/blob/main/docs/00-governance/WAYS_OF_WORKING.md`}>
             the charter →

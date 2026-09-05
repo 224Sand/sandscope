@@ -243,6 +243,39 @@ export default function CharterPage() {
         </p>
       </section>
 
+      {/* ------------------------------------------------- roles keep growing */}
+      <section className="panel mb-6">
+        <h3 className="mb-3">The roster keeps growing, and updates reach you</h3>
+        <p className="lede-p">
+          Charter ships with QA, Developer and AppSec because those three have the sharpest
+          checkable contracts. The roster is not the product — the enforcement is. Roles are plain
+          YAML, and the kernel enforces whatever they declare.
+        </p>
+        <pre className="kt-code">
+          {`# src/charter/kernel/definitions/roles/architect.yaml
+id: architect
+name: Solutions Architect
+contract: decision_record
+evidence: tree
+activates_on: [scrum, cicd]
+brief: >-
+  Owns the shape of the system across components. Suspicious of a decision
+  record that lists only advantages.`}
+        </pre>
+        <p className="para" style={{ color: "var(--text-2)" }}>
+          New roles ship inside a released version, so you pick them up the same way you picked up
+          charter — by updating the plugin. Nothing phones home to fetch them, and nothing executes
+          a role definition you did not install: the library is read from the package on disk, which
+          is why the roster can grow without becoming a remote-code channel.
+        </p>
+        <pre className="kt-code">{`uvx --refresh --from git+https://github.com/224Sand/charter charter --help`}</pre>
+        <p className="footnote">
+          Fork it and the same applies to your own roster — a Legal reviewer on a fintech repo, a
+          Localization lead on a multi-region product. Write the brief and the contract; the gates,
+          the record and the independence check work unchanged.
+        </p>
+      </section>
+
       <section className="panel">
         <h3 className="mb-3">Source</h3>
         <p className="lede-p">
