@@ -116,6 +116,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ["/console", "Console"],
               ["/data", "Data"],
               ["/architecture", "Architecture"],
+              ["/charter", "Charter"],
+              ["/lora", "LoRA"],
               ["/council", "Council"],
               ["/reliability", "Reliability"],
               ["/delivery", "Delivery"],

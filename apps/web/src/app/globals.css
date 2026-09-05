@@ -1271,3 +1271,9 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 @media (forced-colors: active) {
   .find-kind[data-on="true"] { background: Highlight; color: HighlightText; border-color: Highlight; }
 }
+
+/* Extracted from /charter, /lora and /council: a wrapping row of trailing
+   source links. Was the same inline flex object repeated on three pages. */
+.row-links { display: flex; gap: var(--s4); flex-wrap: wrap; }
+/* A secondary line under a table cell, extracted from /charter's contracts. */
+.fine-block { display: block; margin-top: 0.25rem; }
