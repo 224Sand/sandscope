@@ -164,6 +164,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         {children}
+        {/* The site never said who built it. JSON-LD tells a crawler, but a
+            visible, crawlable link is what actually consolidates the author,
+            this site and the repositories into one entity -- and it is the
+            only way a reader gets from the work to the person. */}
+        <footer className="site-footer">
+          <div className="wrap row-links">
+            <span className="muted fine">
+              Built by <strong>Sandeep Chavan</strong> — Technical Product Manager ·
+              Forward Deployed AI Engineer, Hyderabad
+            </span>
+            <span className="grow" />
+            <a className="mono finer" href="https://github.com/224Sand"
+               rel="me author">GitHub</a>
+            <a className="mono finer" href="https://www.linkedin.com/in/sandeep-c04"
+               rel="me author">LinkedIn</a>
+            <a className="mono finer" href="https://github.com/224Sand/sandscope">Source</a>
+            <a className="mono finer" href="https://github.com/224Sand/charter">Charter</a>
+          </div>
+        </footer>
         {/* Site-wide. Makes every identifier on every surface clickable after
             hydration and offers a lookup on any text selection, so a reference
             is followable without twenty pages each remembering to link it. */}
