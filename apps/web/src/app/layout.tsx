@@ -11,6 +11,7 @@ import Mark from "@/components/Mark";
 import config from "@/generated/product.config.json";
 import "./globals.css";
 import Lookup from "@/components/Lookup";
+import { SiteStructuredData } from "@/components/StructuredData";
 
 /**
  * Three typographic voices, one per surface family (S9-TYPE).
@@ -79,15 +80,46 @@ const fontVariables = [
 ].join(" ");
 
 export const metadata: Metadata = {
-  title: `${config.name} — ${config.tagline}`,
+  // metadataBase makes every relative OG/canonical URL absolute. Without it
+  // Next emits relative og:image and canonical values, which crawlers and
+  // social unfurlers both resolve inconsistently.
+  metadataBase: new URL(config.frontendUrl),
+  title: {
+    default: `${config.name} — ${config.tagline}`,
+    // Every page already sets its own title; this stops them being anonymous
+    // in a results list by naming the site they belong to.
+    template: `%s — ${config.name}`,
+  },
   description: config.description,
   applicationName: config.name,
+  authors: [{ name: "Sandeep Chavan", url: "https://github.com/224Sand" }],
+  creator: "Sandeep Chavan",
+  publisher: "Sandeep Chavan",
+  keywords: [
+    "agent reliability", "evidence gating", "retrieval-augmented generation",
+    "LLM infrastructure", "AI governance", "MCP server", "hallucination",
+    "forward deployed engineering", "Sandeep Chavan",
+  ],
+  alternates: { canonical: "/" },
   openGraph: {
     title: `${config.name} — ${config.tagline}`,
     description: config.description,
     type: "website",
+    url: config.frontendUrl,
+    siteName: config.name,
+    locale: "en",
   },
-  robots: { index: true, follow: true },
+  twitter: {
+    card: "summary_large_image",
+    title: `${config.name} — ${config.tagline}`,
+    description: config.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-snippet": -1,
+                 "max-image-preview": "large", "max-video-preview": -1 },
+  },
 };
 
 export const viewport: Viewport = {
@@ -99,6 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={fontVariables}>
       <body>
+        <SiteStructuredData />
         {/* The navigation keeps ONE voice across every surface. Three
             typographic identities is already one more than most sites can hold
             together; letting the masthead change too would read as three
