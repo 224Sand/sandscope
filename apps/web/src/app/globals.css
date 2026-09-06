@@ -1277,3 +1277,13 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .row-links { display: flex; gap: var(--s4); flex-wrap: wrap; }
 /* A secondary line under a table cell, extracted from /charter's contracts. */
 .fine-block { display: block; margin-top: 0.25rem; }
+
+/* Author attribution. Present on every page so the person, the site and the
+   repositories resolve as one entity rather than three unrelated things. */
+.site-footer {
+  border-top: 1px solid var(--line);
+  margin-top: var(--s8);
+  padding: var(--s5) 0;
+  font-size: 0.8125rem;
+}
+.site-footer .row-links { align-items: center; }

@@ -11,6 +11,7 @@ import Mark from "@/components/Mark";
 import config from "@/generated/product.config.json";
 import "./globals.css";
 import Lookup from "@/components/Lookup";
+import { SiteStructuredData } from "@/components/StructuredData";
 
 /**
  * Three typographic voices, one per surface family (S9-TYPE).
@@ -79,15 +80,46 @@ const fontVariables = [
 ].join(" ");
 
 export const metadata: Metadata = {
-  title: `${config.name} — ${config.tagline}`,
+  // metadataBase makes every relative OG/canonical URL absolute. Without it
+  // Next emits relative og:image and canonical values, which crawlers and
+  // social unfurlers both resolve inconsistently.
+  metadataBase: new URL(config.frontendUrl),
+  title: {
+    default: `${config.name} — ${config.tagline}`,
+    // Every page already sets its own title; this stops them being anonymous
+    // in a results list by naming the site they belong to.
+    template: `%s — ${config.name}`,
+  },
   description: config.description,
   applicationName: config.name,
+  authors: [{ name: "Sandeep Chavan", url: "https://github.com/224Sand" }],
+  creator: "Sandeep Chavan",
+  publisher: "Sandeep Chavan",
+  keywords: [
+    "agent reliability", "evidence gating", "retrieval-augmented generation",
+    "LLM infrastructure", "AI governance", "MCP server", "hallucination",
+    "forward deployed engineering", "Sandeep Chavan",
+  ],
+  alternates: { canonical: "/" },
   openGraph: {
     title: `${config.name} — ${config.tagline}`,
     description: config.description,
     type: "website",
+    url: config.frontendUrl,
+    siteName: config.name,
+    locale: "en",
   },
-  robots: { index: true, follow: true },
+  twitter: {
+    card: "summary_large_image",
+    title: `${config.name} — ${config.tagline}`,
+    description: config.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-snippet": -1,
+                 "max-image-preview": "large", "max-video-preview": -1 },
+  },
 };
 
 export const viewport: Viewport = {
@@ -99,6 +131,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={fontVariables}>
       <body>
+        <SiteStructuredData />
         {/* The navigation keeps ONE voice across every surface. Three
             typographic identities is already one more than most sites can hold
             together; letting the masthead change too would read as three
@@ -131,6 +164,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </nav>
         {children}
+        {/* The site never said who built it. JSON-LD tells a crawler, but a
+            visible, crawlable link is what actually consolidates the author,
+            this site and the repositories into one entity -- and it is the
+            only way a reader gets from the work to the person. */}
+        <footer className="site-footer">
+          <div className="wrap row-links">
+            <span className="muted fine">
+              Built by <strong>Sandeep Chavan</strong> — Technical Product Manager ·
+              Forward Deployed AI Engineer, Hyderabad
+            </span>
+            <span className="grow" />
+            <a className="mono finer" href="https://github.com/224Sand"
+               rel="me author">GitHub</a>
+            <a className="mono finer" href="https://www.linkedin.com/in/sandeep-c04"
+               rel="me author">LinkedIn</a>
+            <a className="mono finer" href="https://github.com/224Sand/sandscope">Source</a>
+            <a className="mono finer" href="https://github.com/224Sand/charter">Charter</a>
+          </div>
+        </footer>
         {/* Site-wide. Makes every identifier on every surface clickable after
             hydration and offers a lookup on any text selection, so a reference
             is followable without twenty pages each remembering to link it. */}
